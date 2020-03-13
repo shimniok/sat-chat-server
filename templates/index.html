@@ -2,7 +2,7 @@
 <title>Rock7</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <body>
-    <form method="post" action="send">
+    <form method="post" action="/api/send">
         <label for="text">Text:</label>
         <input type="text" id="text"/>
         <button id="send">Send</button>

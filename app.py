@@ -12,7 +12,7 @@ def hello():
     return render_template("index.html")
 
 
-@app.route('/send', methods=['post'])
+@app.route('/api/send', methods=['post'])
 def send():
     return "Send!"
 
