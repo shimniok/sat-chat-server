@@ -6,11 +6,11 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    print(os.environ['IMEI'])
     SECRET_KEY = os.environ['SECRET_KEY']
     IMEI = os.environ['IMEI']
     USERNAME = os.environ['USERNAME']
     PASSWORD = os.environ['PASSWORD']
+    API_ENDPOINT = "https://core.rock7.com/rockblock/MT"
 
 
 class ProductionConfig(Config):
