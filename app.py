@@ -1,11 +1,21 @@
 import os
 from flask import Flask, render_template, request, url_for
+from flask_sqlalchemy import SQLAlchemy
 import config
 import requests
 import binascii
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+from models import Message;
+
+#TODO implement authentication
+#TODO log accesses
+#TODO implement message store - sqlalchemy, postgresql?
+
 
 @app.route('/')
 def hello():

@@ -11,7 +11,7 @@ class Config(object):
     USERNAME = os.environ['USERNAME']
     PASSWORD = os.environ['PASSWORD']
     API_ENDPOINT = os.environ['API_ENDPOINT']
-
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 class ProductionConfig(Config):
     DEBUG = False
