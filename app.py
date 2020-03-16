@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 import config
 import requests
 import binascii
@@ -17,9 +17,8 @@ def send():
     text = request.form.get('message')
     hex = binascii.b2a_hex(text.encode('utf-8'))
 
-    print(hex)
-
-    data = {'username': app.config['USERNAME'],
+    data = {
+        'username': app.config['USERNAME'],
         'password': app.config['PASSWORD'],
         'imei': app.config['IMEI'],
         'data': hex
@@ -27,7 +26,25 @@ def send():
 
     r = requests.post(url = app.config['API_ENDPOINT'], data = data )
 
+    #TODO parse return from request and return json
+
     return render_template("send.html", r=r.text)
+
+
+@app.route('/api/receive', methods=['post'])
+def receive():
+    imei = request.form.get('imei')
+    if (imei == app.config['IMEI']):
+        momsn = request.form.get('momsn')
+        transmit_time = request.form.get('transmit_time')
+        iridium_latitude = request.form.get('iridium_latitude')
+        iridium_longitude = request.form.get('iridium_longitude')
+        iridium_cep = request.form.get('iridium_cep')
+        text = request.form.get('data')
+
+        #TODO parse return from request and return json
+
+        return "done"
 
 
 if __name__ == '__main__':

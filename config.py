@@ -10,7 +10,7 @@ class Config(object):
     IMEI = os.environ['IMEI']
     USERNAME = os.environ['USERNAME']
     PASSWORD = os.environ['PASSWORD']
-    API_ENDPOINT = "https://core.rock7.com/rockblock/MT"
+    API_ENDPOINT = os.environ['API_ENDPOINT']
 
 
 class ProductionConfig(Config):
