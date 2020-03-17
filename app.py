@@ -1,6 +1,6 @@
-import os
 from flask import Flask, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
+import os
 import config
 import requests
 import binascii
@@ -10,18 +10,18 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from models import Message;
+from models import Message
+
 
 #TODO implement authentication
 #TODO log accesses
-#TODO implement message store - sqlalchemy, postgresql?
 
 
 @app.route('/')
 def hello():
     return render_template("index.html")
 
-
+# Send data to Rock7
 @app.route('/api/send', methods=['post'])
 def send():
     text = request.form.get('message')
@@ -40,7 +40,7 @@ def send():
 
     return render_template("send.html", r=r.text)
 
-
+# Receive data from Rock7
 @app.route('/api/receive', methods=['post'])
 def receive():
     imei = request.form.get('imei')
@@ -50,7 +50,15 @@ def receive():
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')
-        text = request.form.get('data')
+        hex = request.form.get('data')
+        text = binascii.a2b_hex(hex).decode("utf-8")
+
+        #try:
+        #    result = Message(message=text)
+        #    db.session.add(result)
+        #    db.session.commit()
+        #except:
+        #    errors.append("Unable to add item to database.")
 
         #TODO parse return from request and return json
 
