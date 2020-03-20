@@ -57,7 +57,7 @@ def receive():
 
         # Add message to database
         try:
-            msg = Message(message = text)
+            msg = Message(message=text, transmit_time=transmit_time)
             db.session.add(msg)
             db.session.commit()
             status_code = status.HTTP_200_OK
@@ -73,8 +73,8 @@ def receive():
 @app.route('/api/message', methods=['GET'])
 def messages():
     list = []
-    for i, m in db.session.query(Message.id, Message.message):
-        list.append({'id': i, 'message': m})
+    for i, m, dt in db.session.query(Message.id, Message.message, Message.transmit_time):
+        list.append({'id': i, 'message': m, 'transmit_time': dt})
     return jsonify(list)
     #print(">>> ", list)
     #return "ok" #message_list
