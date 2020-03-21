@@ -8,6 +8,7 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String())
     transmit_time = db.Column(db.String())
+    time = db.Column(db.DateTime())
 
     #from_user = db.Column(db.String())
     #to_user = db.Column(db.String())
@@ -19,10 +20,11 @@ class Message(db.Model):
 
     def __init__(self, message, transmit_time):
         self.message = message
-        self.transmit_time = transmit_time
+        self.time = transmit_time
 
     def __repr__(self):
-        return "Message(<id='{}', message='{}', transmit_time='{}'>)".format(self.id, self.message, self.transmit_time)
+        return "Message(<id='{}', message='{}', transmit_time='{}'>)".format(
+            self.id, self.message, self.time)
 
 
 #class User(db.Model):

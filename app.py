@@ -2,6 +2,7 @@ import os
 import config
 import requests
 import binascii
+from datetime import datetime
 from flask import Flask, render_template, request, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -48,7 +49,7 @@ def receive():
     imei = request.form.get('imei')
     if (imei == app.config['IMEI']):
         momsn = request.form.get('momsn')
-        transmit_time = request.form.get('transmit_time')
+        transmit_time = datetime.strptime(request.form.get('transmit_time'), "%y-%m-%d %H:%M:%S")
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')
@@ -73,8 +74,8 @@ def receive():
 @app.route('/api/message', methods=['GET'])
 def messages():
     list = []
-    for i, m, dt in db.session.query(Message.id, Message.message, Message.transmit_time):
-        list.append({'id': i, 'message': m, 'transmit_time': dt})
+    for i, m, dt in db.session.query(Message.id, Message.message, Message.time):
+        list.append({'id': i, 'message': m, 'time': dt})
     return jsonify(list)
     #print(">>> ", list)
     #return "ok" #message_list
