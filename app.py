@@ -58,7 +58,7 @@ def receive():
 
         # Add message to database
         try:
-            msg = Message(message=text, transmit_time=transmit_time)
+            msg = Message(message=text, momsn=momsn, transmit_time=transmit_time, iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude, iridium_cep=iridium_cep)
             db.session.add(msg)
             db.session.commit()
             status_code = status.HTTP_200_OK
@@ -74,8 +74,16 @@ def receive():
 @app.route('/api/message', methods=['GET'])
 def messages():
     list = []
-    for i, m, dt in db.session.query(Message.id, Message.message, Message.time):
-        list.append({'id': i, 'message': m, 'time': dt})
+    for i, momsn, m, dt, lat, lon, cep in db.session.query(Message.id, Message.momsn, Message.message, Message.time, Message.iridium_latitude, Message.iridium_longitude, Message.iridium_cep):
+        list.append({
+            'id': i,
+            'momsn': momsn,
+            'message': m,
+            'time': dt,
+            'iridium_latitude': lat,
+            'iridium_longitude': lon,
+            'iridium_cep': cep
+            })
     return jsonify(list)
     #print(">>> ", list)
     #return "ok" #message_list
