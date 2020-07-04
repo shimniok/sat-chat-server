@@ -37,9 +37,32 @@ def send():
 
     r = requests.post(url = app.config['API_ENDPOINT'], data = data )
 
-    #TODO parse return from request and return json
+    # Parse return from request and return json
+    #   Success: OK,12345678  --The number uniquely identifies your message.
+    #   Failure: FAILED,15,Textual description of failure
+    list = []
+    msg_bits = r.text.split(',')
+    if msg_bits[0] == 'OK':
+        result = {
+            'status': msg_bits[0],
+            'momsn': msg_bits[1]
+        }
+    elif msg_bits[0] == 'FAILED':
+        result = {
+            'status': msg_bits[0],
+            'error_number': msg_bits[1],
+            'error_text': msg_bits[2]
+        }
+    else:
+        result = {
+            'status': "FAILED",
+            'error_number': "999",
+            'error_text': "unrecognized status received"
+        }
+    list.append(result)
 
-    return render_template("send.html", r=r.text)
+    #return render_template("send.html", r=r.text)
+    return jsonify(list)
 
 # Receive data from Rock7
 @app.route('/api/receive', methods=['POST'])
