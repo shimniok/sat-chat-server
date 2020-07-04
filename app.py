@@ -61,14 +61,13 @@ def send():
         }
     list.append(result)
 
-    #return render_template("send.html", r=r.text)
+    # TODO: store sent messages in database
+
     return jsonify(list)
 
 # Receive data from Rock7
 @app.route('/api/receive', methods=['POST'])
 def receive():
-#    status_code = status.HTTP_400_BAD_REQUEST
-#    error_msg = { 'error': 'generic error' }
     imei = request.form.get('imei')
     if (imei == app.config['IMEI']):
         momsn = request.form.get('momsn')
@@ -84,13 +83,10 @@ def receive():
             msg = Message(message=text, momsn=momsn, transmit_time=transmit_time, iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude, iridium_cep=iridium_cep)
             db.session.add(msg)
             db.session.commit()
-            status_code = status.HTTP_200_OK
         except:
-            #TODO: secure error message & logging
-            error_msg = { 'error': 'unable to add to database' }
+            return 'unable to add to database', 400
     else:
-        error_msg = { 'error': 'imei mismatch' }
-        status_code = status.HTTP_400_BAD_REQUEST
+        return 'imei mismatch', 400
 
     return "done"
 
