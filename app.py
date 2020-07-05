@@ -80,7 +80,10 @@ def receive():
 
         # Add message to database
         try:
-            msg = Message(message=text, momsn=momsn, transmit_time=transmit_time, iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude, iridium_cep=iridium_cep)
+            msg = Message(
+                message=text, momsn=momsn, transmit_time=transmit_time,
+                iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
+                iridium_cep=iridium_cep)
             db.session.add(msg)
             db.session.commit()
         except:
@@ -93,7 +96,15 @@ def receive():
 @app.route('/api/message', methods=['GET'])
 def messages():
     list = []
-    for i, momsn, m, dt, lat, lon, cep in db.session.query(Message.id, Message.momsn, Message.message, Message.time, Message.iridium_latitude, Message.iridium_longitude, Message.iridium_cep):
+    my_query = db.session.query(
+        Message.id,
+        Message.momsn,
+        Message.message,
+        Message.time,
+        Message.iridium_latitude,
+        Message.iridium_longitude,
+        Message.iridium_cep).order_by(Message.momsn)
+    for i, momsn, m, dt, lat, lon, cep in my_query:
         list.append({
             'id': i,
             'momsn': momsn,
