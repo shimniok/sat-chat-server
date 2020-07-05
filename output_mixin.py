@@ -2,7 +2,7 @@
 # https://mmas.github.io/sqlalchemy-serialize-json
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
-import json
+#import json
 from datetime import datetime
 
 class OutputMixin(object):
@@ -31,10 +31,10 @@ class OutputMixin(object):
                                          for i in value]
         return res
 
-    def to_json(self, rel=None):
-        def extended_encoder(x):
-            if isinstance(x, datetime):
-                return x.isoformat()
-        if rel is None:
-            rel = self.RELATIONSHIPS_TO_DICT
-        return json.dumps(self.to_dict(rel), default=extended_encoder)
+#    def to_json(self, rel=None):
+#        def extended_encoder(x):
+#            if isinstance(x, datetime):
+#                return x.isoformat()
+#        if rel is None:
+#            rel = self.RELATIONSHIPS_TO_DICT
+#        return json.dumps(self.to_dict(rel), default=extended_encoder)
