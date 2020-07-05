@@ -42,11 +42,12 @@ def send():
     #   Failure: FAILED,15,Textual description of failure
     msg_bits = r.text.split(',')
     if msg_bits[0] == 'OK':
-        #TODO: add message to database with returned momsn
         #TODO: add IMEI column, to/from
         m = Message(momsn=msg_bits[1], message=text)
-        db.session.add(m)
+        id = db.session.add(m)
+        db.session.commit()
         result = {
+            'id': m.id,
             'status': msg_bits[0],
             'momsn': msg_bits[1]
         }
