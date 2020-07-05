@@ -47,9 +47,8 @@ def send():
         id = db.session.add(m)
         db.session.commit()
         result = {
-            'id': m.id,
             'status': msg_bits[0],
-            'momsn': msg_bits[1]
+            'message': m.to_dict()
         }
     elif msg_bits[0] == 'FAILED':
         result = {
