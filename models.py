@@ -6,6 +6,7 @@ from output_mixin import OutputMixin
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
 
+    # TODO: add IMEI column, to/from
     id = db.Column(db.Integer, primary_key=True)
     momsn = db.Column(db.Integer)
     message = db.Column(db.String())

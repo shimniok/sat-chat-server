@@ -40,9 +40,12 @@ def send():
     # Parse return from request and return json
     #   Success: OK,12345678  --The number uniquely identifies your message.
     #   Failure: FAILED,15,Textual description of failure
-    list = []
     msg_bits = r.text.split(',')
     if msg_bits[0] == 'OK':
+        #TODO: add message to database with returned momsn
+        #TODO: add IMEI column, to/from
+        m = Message(momsn=msg_bits[1], message=text)
+        db.session.add(m)
         result = {
             'status': msg_bits[0],
             'momsn': msg_bits[1]
@@ -59,11 +62,8 @@ def send():
             'error_number': "999",
             'error_text': "unrecognized status received"
         }
-    list.append(result)
 
-    # TODO: store sent messages in database
-
-    return jsonify(list)
+    return jsonify(result)
 
 # Receive data from Rock7
 @app.route('/api/receive', methods=['POST'])
