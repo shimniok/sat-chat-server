@@ -123,9 +123,9 @@ def messages():
 @app.route('/api/message/<msg_id>', methods=['GET', 'DELETE'])
 def message(msg_id=-1):
     if request.method == 'GET':
-        my_query = Message.query().filter_by(momsn = msg_id).first()
-        return jsonify(my_query)
-        #"GET: The message id is %s" % (msg_id)
+        msg = Message.query.filter_by(id = msg_id).first()
+        #return jsonify(msg)
+        return msg.to_json()
 
     if request.method == 'DELETE':
         return "DELETE: The message id is %s" % (msg_id)
