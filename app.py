@@ -5,6 +5,7 @@ import binascii
 from datetime import datetime
 from flask import Flask, render_template, request, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -23,7 +24,7 @@ def hello():
     return render_template("index.html")
 
 # Send data to Rock7
-@app.route('/api/send', methods=['POST'])
+@app.route('/api/send', methods=['post'])
 def send():
     text = request.form.get('message')
     hex = binascii.b2a_hex(text.encode('utf-8'))
@@ -66,7 +67,7 @@ def send():
     return jsonify(result)
 
 # Receive data from Rock7
-@app.route('/api/receive', methods=['POST'])
+@app.route('/api/receive', methods=['post'])
 def receive():
     imei = request.form.get('imei')
     if (imei == app.config['IMEI']):
@@ -101,7 +102,7 @@ def messages():
     return jsonify([m.to_dict() for m in msgs])
 
 
-@app.route('/api/message/<msg_id>', methods=['GET', 'DELETE'])
+@app.route('/api/message/<msg_id>', methods=['get', 'delete'])
 def message(msg_id=-1):
     msg = Message.query.filter_by(id = msg_id).first_or_404()
 
@@ -114,6 +115,63 @@ def message(msg_id=-1):
         db.session.commit()
         return jsonify(msg.to_dict())
 
+
+# Loopback for testing only. Emulates Rock7 MT web service
+@app.route('/api/loopback', methods=['get','post'])
+def loopback():
+    if app.config['LOOPBACK_ENABLED'] == False:
+        return "FAILED",400
+        
+    try:
+        momsn_file = "momsn.txt"
+        with open(momsn_file, "r") as f:
+            momsn_str = f.read()
+            f.close()
+    except OSError as e:
+        return "FAILED,{}: error opening for read. {}".format(momsn_file, e),400
+
+    try:
+        momsn = int(momsn_str)
+    except:
+        momsn = 99
+
+    ## Receive
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    #TODO implement authentication
+    #    if (username == app.config['USERNAME'] and password == app.config['PASSWORD']):
+
+    imei = request.form.get('imei')
+    #TODO validate imei
+
+    # convert hex message back to text and add some text
+    hex = request.form.get('data')
+    text = binascii.a2b_hex(hex).decode("utf-8") + " reply"
+    hex = binascii.b2a_hex(text.encode('utf-8'))
+
+    mobile_momsn = momsn + 1 # the loopback simulates an MO message, incrementing the momsn again
+
+    receive_url = os.environ['RECEIVE_ENDPOINT']
+    message = {
+        'imei': os.environ['IMEI'],
+        'momsn': mobile_momsn,
+        'transmit_time': datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S"),
+        'iridium_latitude': "39.5807",
+        'iridium_longitude': "-104.8772",
+        'iridium_cep': 8,
+        'data': hex
+    }
+    r = requests.post(url=receive_url, data=message)
+
+    try:
+        with open(momsn_file, "w") as f:
+            f.write("{}\n".format(mobile_momsn + 1))
+            f.close()
+    except OSError as e:
+        return "FAILED,{}: error opening for write. {}".format(momsn_file, e),400
+
+    return "OK,{}".format(momsn)
 
 if __name__ == '__main__':
     app.run()

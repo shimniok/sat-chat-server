@@ -12,6 +12,7 @@ class Config(object):
     PASSWORD = os.environ['PASSWORD']
     API_ENDPOINT = os.environ['API_ENDPOINT']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    LOOPBACK_ENABLED = False
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -23,6 +24,7 @@ class StagingConfig(Config):
 
 
 class DevelopmentConfig(Config):
+    LOOPBACK_ENABLED = True
     DEVELOPMENT = True
     DEBUG = True
 
