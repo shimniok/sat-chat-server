@@ -44,7 +44,11 @@ def send():
     msg_bits = r.text.split(',')
     if msg_bits[0] == 'OK':
         #TODO: add IMEI column, to/from
-        m = Message(momsn=msg_bits[1], message=text)
+        m = Message(
+            momsn=msg_bits[1],
+            message=text,
+            transmit_time=datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S")
+        )
         id = db.session.add(m)
         db.session.commit()
         result = {
@@ -121,7 +125,8 @@ def message(msg_id=-1):
 def loopback():
     if app.config['LOOPBACK_ENABLED'] == False:
         return "FAILED",400
-        
+
+    # Read static momsn message serial number
     try:
         momsn_file = "momsn.txt"
         with open(momsn_file, "r") as f:
@@ -130,6 +135,7 @@ def loopback():
     except OSError as e:
         return "FAILED,{}: error opening for read. {}".format(momsn_file, e),400
 
+    # If we can't convert it to int, set it to 99
     try:
         momsn = int(momsn_str)
     except:
@@ -164,6 +170,7 @@ def loopback():
     }
     r = requests.post(url=receive_url, data=message)
 
+    # Update static momsn message serial number
     try:
         with open(momsn_file, "w") as f:
             f.write("{}\n".format(mobile_momsn + 1))
