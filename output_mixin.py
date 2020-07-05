@@ -1,8 +1,9 @@
 # Provides SqlAlchemy model serialization to json
 # https://mmas.github.io/sqlalchemy-serialize-json
 
-#from uuid import UUID
 from sqlalchemy.ext.declarative import DeclarativeMeta
+import json
+from datetime import datetime
 
 class OutputMixin(object):
     RELATIONSHIPS_TO_DICT = False
@@ -34,8 +35,6 @@ class OutputMixin(object):
         def extended_encoder(x):
             if isinstance(x, datetime):
                 return x.isoformat()
-            #if isinstance(x, UUID):
-            #    return str(x)
         if rel is None:
             rel = self.RELATIONSHIPS_TO_DICT
         return json.dumps(self.to_dict(rel), default=extended_encoder)

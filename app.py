@@ -93,39 +93,20 @@ def receive():
 
     return "done"
 
+
 @app.route('/api/message', methods=['GET'])
 def messages():
     list = []
-    my_query = Message.query.order_by(Message.momsn).all()
-    print(my_query)
-#    db.session.query(
-#        Message.id,
-#        Message.momsn,
-#        Message.message,
-#        Message.iridium_latitude,
-#        Message.iridium_longitude,
-#        Message.iridium_cep)
-    for m in my_query:
-    #for i, momsn, m, dt, lat, lon, cep in my_query:
-        list.append({
-            'id': m.id,
-            'momsn': m.momsn,
-            'message': m.message,
-            'time': m.transmit_time,
-            'iridium_latitude': m.iridium_latitude,
-            'iridium_longitude': m.iridium_longitude,
-            'iridium_cep': m.iridium_cep
-            })
-    return jsonify(list)
-    #print(">>> ", list)
-    #return "ok" #message_list
+    msgs = Message.query.order_by(Message.momsn).all()
+    return jsonify([m.to_dict() for m in msgs])
+
 
 @app.route('/api/message/<msg_id>', methods=['GET', 'DELETE'])
 def message(msg_id=-1):
     if request.method == 'GET':
         msg = Message.query.filter_by(id = msg_id).first()
         #return jsonify(msg)
-        return msg.to_json()
+        return jsonify(msg.to_dict())
 
     if request.method == 'DELETE':
         return "DELETE: The message id is %s" % (msg_id)
