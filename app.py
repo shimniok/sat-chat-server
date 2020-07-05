@@ -104,13 +104,16 @@ def messages():
 
 @app.route('/api/message/<msg_id>', methods=['GET', 'DELETE'])
 def message(msg_id=-1):
+    msg = Message.query.filter_by(id = msg_id).first_or_404()
+
     if request.method == 'GET':
-        msg = Message.query.filter_by(id = msg_id).first()
         #return jsonify(msg)
         return jsonify(msg.to_dict())
 
-    if request.method == 'DELETE':
-        return "DELETE: The message id is %s" % (msg_id)
+    elif request.method == 'DELETE':
+        db.session.delete(msg)
+        db.session.commit()
+        return jsonify(msg.to_dict())
 
 
 if __name__ == '__main__':
