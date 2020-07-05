@@ -118,6 +118,11 @@ def messages():
     #print(">>> ", list)
     #return "ok" #message_list
 
+@app.route('/api/message/<id>', methods=['DELETE'])
+def message_del(msg_id=-1):
+    if msg_id > -1:
+        return "The message id is %".format(msg_id)
+
 
 if __name__ == '__main__':
     app.run()
