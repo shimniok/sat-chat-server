@@ -179,5 +179,16 @@ def loopback():
 
     return "OK,{}".format(momsn)
 
+
+@app.route('/login')
+def login():
+    return 'Login'
+
+
+@app.route('/logout')
+def logout():
+    return 'Logout'
+
+
 if __name__ == '__main__':
     app.run()
