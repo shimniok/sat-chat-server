@@ -99,7 +99,7 @@ def receive():
     return "done"
 
 
-@app.route('/api/message', methods=['GET'])
+@app.route('/api/message', methods=['get'])
 def messages():
     list = []
     msgs = Message.query.order_by(Message.momsn).all()
@@ -111,7 +111,6 @@ def message(msg_id=-1):
     msg = Message.query.filter_by(id = msg_id).first_or_404()
 
     if request.method == 'GET':
-        #return jsonify(msg)
         return jsonify(msg.to_dict())
 
     elif request.method == 'DELETE':
