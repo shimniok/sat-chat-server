@@ -5,6 +5,7 @@ import binascii
 from datetime import datetime
 from flask import Flask, render_template, request, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import login_required, current_user
 from datetime import datetime, timezone
 
 app = Flask(__name__)
@@ -182,7 +183,20 @@ def loopback():
 
 @app.route('/login')
 def login():
-    return 'Login'
+    return render_template("login.html")
+
+
+@app.route('/login', methods=['post'])
+def login_post():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    #TODO: remember
+    #user = User.query.filter_by(username=username).first()
+    if not user or not check_password_hash(user.password, password):
+#        flash('Please check login credentials and try again')
+        return redirect(url_for('app.login'))
+
+    return redirect('/')
 
 
 @app.route('/logout')
