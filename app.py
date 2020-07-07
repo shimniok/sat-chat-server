@@ -181,7 +181,7 @@ def loopback():
     return "OK,{}".format(momsn)
 
 
-@app.route('/login')
+@app.route('/login', methods=['get'])
 def login():
     return render_template("login.html")
 
