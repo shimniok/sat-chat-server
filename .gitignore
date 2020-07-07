@@ -1,3 +1,7 @@
+motest.py
+database.txt
+momsn.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
