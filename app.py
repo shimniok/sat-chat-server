@@ -3,10 +3,11 @@ import config
 import requests
 import binascii
 from datetime import datetime
-from flask import Flask, render_template, request, url_for, jsonify
+from flask import Flask, render_template, redirect, request, url_for, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_required, current_user
 from datetime import datetime, timezone
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -181,6 +182,26 @@ def loopback():
     return "OK,{}".format(momsn)
 
 
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+
+@app.route('/signup', methods=['post'])
+def signup_post():
+    email = request.form.get('email')
+    name = request.form.get('name')
+    password = request.form.get('password')
+    user = User.query.filter_by(email=email).first() # does the email already exist in database?
+    if user:
+        return redirect(url_for('signup'))
+    new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect(url_for('login'))
+
+
 @app.route('/login', methods=['get'])
 def login():
     return render_template("login.html")
@@ -194,7 +215,7 @@ def login_post():
     #user = User.query.filter_by(username=username).first()
     if not user or not check_password_hash(user.password, password):
 #        flash('Please check login credentials and try again')
-        return redirect(url_for('app.login'))
+        return redirect(url_for('login'))
 
     return redirect('/')
 
