@@ -9,10 +9,10 @@ from .models import Message, db
 
 rockblock = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
-#@rockblock.before_request
-#def rockblock_before():
-#    if not current_user.is_authenticated:
-#        return "Unauthorized", 401
+@rockblock.before_request
+def rockblock_before():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
 
 
 # Send data to Rock7
