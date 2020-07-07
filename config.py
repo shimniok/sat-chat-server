@@ -1,6 +1,19 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+def create_config(env):
+    config = ()
+    if env == 'Production':
+        config = ProductionConfig()
+    elif env == 'Development':
+        config = DevelopmentConfig()
+    elif env == 'Staging':
+        config = StagingConfig()
+    elif env == 'Testing':
+        config = TestingConfig()
+    else:
+        print("Unrecognized APP_SETTINGS. Must be: Development|Staging|Production")
+    return config
 
 class Config(object):
     DEBUG = False

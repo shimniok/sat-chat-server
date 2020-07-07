@@ -1,8 +1,10 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON
 import json
-from output_mixin import OutputMixin
+from .output_mixin import OutputMixin
 from flask_login import UserMixin
+
+db = SQLAlchemy()
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
