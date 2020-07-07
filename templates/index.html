@@ -1,10 +1,9 @@
-<!doctype html>
-<title>Rock7</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<body>
-    <form method="post" action="/api/send">
-        <label for="text">Text:</label>
-        <input type="text" name="message" id="text"/>
-        <button id="send">Send</button>
-    </form>
-</body>
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post" action="/api/send">
+    <label for="text">Text:</label>
+    <input type="text" name="message" id="text"/>
+    <button id="send">Send</button>
+</form>
+{% endblock %}
