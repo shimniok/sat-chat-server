@@ -21,9 +21,14 @@ from models import *
 #TODO log accesses
 
 
+## APPLICATION #############################################################################################
+
 @app.route('/')
 def hello():
     return render_template("index.html")
+
+
+## SEND/RECEIVE API ########################################################################################
 
 # Send data to Rock7
 @app.route('/api/send', methods=['post'])
@@ -72,6 +77,7 @@ def send():
 
     return jsonify(result)
 
+
 # Receive data from Rock7
 @app.route('/api/receive', methods=['post'])
 def receive():
@@ -99,26 +105,6 @@ def receive():
         return 'imei mismatch', 400
 
     return "done"
-
-
-@app.route('/api/message', methods=['get'])
-def messages():
-    list = []
-    msgs = Message.query.order_by(Message.momsn).all()
-    return jsonify([m.to_dict() for m in msgs])
-
-
-@app.route('/api/message/<msg_id>', methods=['get', 'delete'])
-def message(msg_id=-1):
-    msg = Message.query.filter_by(id = msg_id).first_or_404()
-
-    if request.method == 'GET':
-        return jsonify(msg.to_dict())
-
-    elif request.method == 'DELETE':
-        db.session.delete(msg)
-        db.session.commit()
-        return jsonify(msg.to_dict())
 
 
 # Loopback for testing only. Emulates Rock7 MT web service
@@ -182,6 +168,53 @@ def loopback():
     return "OK,{}".format(momsn)
 
 
+## MESSAGE API ############################################################################################
+
+@app.route('/api/message', methods=['get'])
+def messages():
+    list = []
+    msgs = Message.query.order_by(Message.momsn).all()
+    return jsonify([m.to_dict() for m in msgs])
+
+
+@app.route('/api/message/<id>', methods=['get', 'delete'])
+def message(id=-1):
+    msg = Message.query.filter_by(id = msg_id).first_or_404()
+
+    if request.method == 'GET':
+        return jsonify(msg.to_dict())
+
+    elif request.method == 'DELETE':
+        db.session.delete(msg)
+        db.session.commit()
+        return jsonify(msg.to_dict())
+
+
+## USER API ##############################################################################################
+
+@app.route('/api/user', methods=['get'])
+def users():
+    list = []
+    users = User.query.all()
+    return jsonify([u.to_dict() for u in users])
+
+
+@app.route('/api/user/<id>')
+def user_get(id):
+    u = User.query.filter_by(id=id).first_or_404()
+    return jsonify(u.to_dict())
+
+
+@app.route('/api/user/<id>', methods=['delete'])
+def user_delete(id=-1):
+    u = User.query.filter_by(id=id).first_or_404()
+    db.session.delete(u)
+    db.session.commit()
+    return jsonify(u.to_dict())
+
+
+## AUTHENTICATION #######################################################################################
+
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
@@ -196,7 +229,7 @@ def signup_post():
     if user:
         flash('That email address is already in use')
         return redirect(url_for('signup'))
-    new_user = User(email=email, username=name, password=generate_password_hash(password, method='sha256'))
+    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
     db.session.add(new_user)
     db.session.commit()
 
@@ -210,12 +243,13 @@ def login():
 
 @app.route('/login', methods=['post'])
 def login_post():
-    username = request.form.get('username')
+    email = request.form.get('email')
     password = request.form.get('password')
-    #TODO: remember
-    #user = User.query.filter_by(username=username).first()
+    remember = True if request.form.get('remember') else False
+
+    user = User.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password, password):
-#        flash('Please check login credentials and try again')
+        flash('Please check login credentials and try again')
         return redirect(url_for('login'))
 
     return redirect('/')
@@ -225,6 +259,7 @@ def login_post():
 def logout():
     return 'Logout'
 
+## MAIN ##################################################################################################
 
 if __name__ == '__main__':
     app.run()

@@ -20,14 +20,14 @@ class Message(OutputMixin, db.Model):
         return "Message(<id='{}', momsn='{}' message='{}', transmit_time='{}', iridium_latitude='{}', iridium_longitude='{}', iridium_cep='{}'>)".format(
             self.id, self.momsn, self.message, self.time, self.iridium_latitude, self.iridium_longitude, self.iridium_cep)
 
-class User(OUtputMixin, db.Model):
+class User(OutputMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    password = db.Column(db.String)
     email = db.Column(db.String)
+    name = db.Column(db.String)
+    password = db.Column(db.String)
 
     def __repr__(self):
-        return "User(<id='{}', username='{}', password='{}', email='{}'>".format(
-            self.id, self.username, self,password, self.email)
+        return "User(<id='{}', name='{}', password='{}', email='{}'>".format(
+            self.id, self.name, self.password, self.email)
