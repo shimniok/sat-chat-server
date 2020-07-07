@@ -5,7 +5,7 @@ import binascii
 from datetime import datetime
 from flask import Flask, render_template, redirect, request, url_for, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_required, current_user, LoginManager, login_user
+from flask_login import login_required, current_user, LoginManager, login_user, logout_user
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 from models import *
@@ -32,7 +32,8 @@ def load_user(user_id):
 ## APPLICATION #############################################################################################
 
 @app.route('/')
-def main():
+@login_required
+def index():
     return render_template("index.html", name=current_user.name)
 
 
@@ -265,8 +266,10 @@ def login_post():
 
 
 @app.route('/logout')
+@login_required
 def logout():
-    return 'Logout'
+    logout_user()
+    return redirect(url_for('index'))
 
 ## MAIN ##################################################################################################
 
