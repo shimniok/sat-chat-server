@@ -5,7 +5,7 @@ import binascii
 from datetime import datetime
 from flask import Flask, render_template, redirect, request, url_for, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user, LoginManager, login_user
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,7 +14,15 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
 from models import *
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 #TODO implement authentication
@@ -24,8 +32,8 @@ from models import *
 ## APPLICATION #############################################################################################
 
 @app.route('/')
-def hello():
-    return render_template("index.html")
+def main():
+    return render_template("index.html", name=current_user.name)
 
 
 ## SEND/RECEIVE API ########################################################################################
@@ -252,6 +260,7 @@ def login_post():
         flash('Please check login credentials and try again')
         return redirect(url_for('login'))
 
+    login_user(user, remember=remember)
     return redirect('/')
 
 
