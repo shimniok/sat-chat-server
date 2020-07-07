@@ -42,6 +42,9 @@ def index():
 # Send data to Rock7
 @app.route('/api/send', methods=['post'])
 def send():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     text = request.form.get('message')
     hex = binascii.b2a_hex(text.encode('utf-8'))
 
@@ -90,6 +93,9 @@ def send():
 # Receive data from Rock7
 @app.route('/api/receive', methods=['post'])
 def receive():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     imei = request.form.get('imei')
     if (imei == app.config['IMEI']):
         momsn = request.form.get('momsn')
@@ -119,6 +125,9 @@ def receive():
 # Loopback for testing only. Emulates Rock7 MT web service
 @app.route('/api/loopback', methods=['get','post'])
 def loopback():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     if app.config['LOOPBACK_ENABLED'] == False:
         return "FAILED",400
 
@@ -181,6 +190,9 @@ def loopback():
 
 @app.route('/api/message', methods=['get'])
 def messages():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     list = []
     msgs = Message.query.order_by(Message.momsn).all()
     return jsonify([m.to_dict() for m in msgs])
@@ -188,6 +200,9 @@ def messages():
 
 @app.route('/api/message/<id>', methods=['get', 'delete'])
 def message(id=-1):
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     msg = Message.query.filter_by(id = msg_id).first_or_404()
 
     if request.method == 'GET':
@@ -203,6 +218,9 @@ def message(id=-1):
 
 @app.route('/api/user', methods=['get'])
 def users():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     list = []
     users = User.query.all()
     return jsonify([u.to_dict() for u in users])
@@ -210,12 +228,18 @@ def users():
 
 @app.route('/api/user/<id>')
 def user_get(id):
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     u = User.query.filter_by(id=id).first_or_404()
     return jsonify(u.to_dict())
 
 
 @app.route('/api/user/<id>', methods=['delete'])
 def user_delete(id=-1):
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
+
     u = User.query.filter_by(id=id).first_or_404()
     db.session.delete(u)
     db.session.commit()
