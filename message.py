@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from .models import Message
+from models import Message
 
 message = Blueprint('message', __name__, url_prefix='/api')
 

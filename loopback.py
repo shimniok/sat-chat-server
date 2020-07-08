@@ -5,7 +5,7 @@
 import os
 import binascii
 import requests
-from flask import Blueprint, request
+from flask import Blueprint, request, url_for
 from flask_login import current_user
 from datetime import datetime, timezone
 
@@ -47,7 +47,8 @@ def loopback_post():
 
     mobile_momsn = momsn + 1 # the loopback simulates an MO message, incrementing the momsn again
 
-    receive_url = os.environ['RECEIVE_ENDPOINT']
+    receive_url = request.url_root + url_for('rockblock.receive')[1:]
+    print('receive_url={}'.format(receive_url))
     message = {
         'imei': os.environ['IMEI'],
         'momsn': mobile_momsn,
@@ -57,7 +58,10 @@ def loopback_post():
         'iridium_cep': 8,
         'data': hex
     }
+    print('transmit_time: {} post to {}'.format(message['transmit_time'], receive_url))
     r = requests.post(url=receive_url, data=message)
+
+    print('request status: {}'.format(r.status_code))
 
     # Update static momsn message serial number
     try:

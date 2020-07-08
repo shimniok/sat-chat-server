@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from .models import User
+from models import User
 
 user = Blueprint('user', __name__, template_folder='templates')
 

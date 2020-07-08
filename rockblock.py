@@ -5,19 +5,16 @@ import binascii
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from .models import Message, db
+from models import Message, db
 
 rockblock = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
-
-@rockblock.before_request
-def rockblock_before():
-    if not current_user.is_authenticated:
-        return "Unauthorized", 401
 
 
 # Send data to Rock7
 @rockblock.route('/send', methods=['post'])
 def send():
+    if not current_user.is_authenticated:
+        return "Unauthorized", 401
 
     text = request.form.get('message')
     hex = binascii.b2a_hex(text.encode('utf-8'))
@@ -38,8 +35,10 @@ def send():
         m = Message(
             momsn=msg_bits[1],
             message=text,
-            transmit_time=datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S")
+            transmit_time=datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S"),
+            time=datetime.now(timezone.utc)
         )
+        print('receive(): transmit_time: {}'.format(m.transmit_time))
         id = db.session.add(m)
         db.session.commit()
         result = {
@@ -63,30 +62,48 @@ def send():
 
 
 # Receive data from Rock7
-@rockblock.route('/receive', methods=['post'])
+@rockblock.route('/receive', methods=['get','post'])
 def receive():
 
+    parameters = ['imei', 'momsn', 'transmit_time', 'iridium_latitude', 'iridium_longitude', 'iridium_cep', 'data']
+
+    # check for missing parameters
+    missing = []
+    for p in parameters:
+        if not request.form.get(p):
+            missing.append(p)
+        else:
+            print('{}={}'.format(p, request.form.get(p)))
+    if len(missing):
+        return 'bad request: missing: {}'.format(', '.join(missing)), 400
+
     imei = request.form.get('imei')
-    if (imei == rockblock.config['IMEI']):
+    if not imei == current_app.config['IMEI']:
+        return 'bad imei', 400
+
+    try:
         momsn = request.form.get('momsn')
-        transmit_time = datetime.strptime(request.form.get('transmit_time'), "%y-%m-%d %H:%M:%S")
+        transmit_time_str = request.form.get('transmit_time')
+        transmit_time = datetime.strptime(transmit_time_str, "%y-%m-%d %H:%M:%S")
+        #TODO: set time to current time
+        #datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S")
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
+    except (ValueError, TypeError) as e:
+        return 'bad request: error processing parameters', 400
 
-        # Add message to database
-        try:
-            msg = Message(
-                message=text, momsn=momsn, transmit_time=transmit_time,
-                iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
-                iridium_cep=iridium_cep)
-            db.session.add(msg)
-            db.session.commit()
-        except:
-            return 'unable to add to database', 400
-    else:
-        return 'imei mismatch', 400
+    # Add message to database
+    try:
+        msg = Message(
+            message=text, momsn=momsn, transmit_time=transmit_time,
+            iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
+            iridium_cep=iridium_cep)
+        db.session.add(msg)
+        db.session.commit()
+    except:
+        return 'unable to add to database', 400
 
     return "done"
