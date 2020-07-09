@@ -7,12 +7,15 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+# TODO: create shadow table for password hashes
+
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
 
     # TODO: add IMEI column, to/from
     id = db.Column(db.Integer, primary_key=True)
-    sender = db.Column(db.ForeignKey("users.id"))
+    sender_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    sender = db.relationship("User")
     momsn = db.Column(db.Integer)
     message = db.Column(db.String())
     transmit_time = db.Column(db.DateTime())
