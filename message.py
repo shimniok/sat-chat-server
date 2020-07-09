@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from models import Message
+from models import Message, db
 
 message = Blueprint('message', __name__, url_prefix='/api')
 
@@ -33,7 +33,7 @@ def message_delete(id=-1):
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
-    msg = Message.query.filter_by(id = msg_id).first_or_404()
+    msg = Message.query.filter_by(id = id).first_or_404()
     db.session.delete(msg)
     db.session.commit()
 
