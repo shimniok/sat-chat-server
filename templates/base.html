@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="RockBlockApp">
 
 <head>
     <meta charset="utf-8">
@@ -7,9 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RockBLOCK Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
 </head>
 
-<body>
+<body ng-controller="RockBlockController">
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
     <section class="hero is-primary is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">

@@ -2,7 +2,7 @@
 
 import requests
 import binascii
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, json
 from flask_login import current_user
 from datetime import datetime, timezone
 from models import Message, db
@@ -16,7 +16,9 @@ def send():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
-    text = request.form.get('message')
+    data = json.loads(request.data.decode())
+    #text = request.form.get('message')
+    text = data["message"]
     hex = binascii.b2a_hex(text.encode('utf-8'))
     data = {
         'username': current_app.config['USERNAME'],

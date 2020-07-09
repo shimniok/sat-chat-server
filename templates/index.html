@@ -15,10 +15,10 @@
     <h1 class="title">
       Welcome, {{ my_name }}!
     </h1>
-    <form method="post" action="/api/send">
+    <form method="post" ng-submit="sendMessage()">
         <label for="text">Text:</label>
-        <input type="text" name="message" id="text"/>
-        <button id="send">Send</button>
+        <input type="text" ng-model="message" name="message" id="text"/>
+        <button type="submit" id="send">Send</button>
     </form>
     <br/>
     <a href="/logout">Logout</a>
