@@ -2,13 +2,14 @@
 
 {% block content %}
 <div class="container">
-{% for m in messages %}
-        <div class={% if m.sender_id == my_id %}"level level-left"{% else %}"level level-right"{% endif %}>
-            <div class="box">
-                {{ m.sender.name }}: {{ m.message }} {{ m.id }}
-            </div>
+    // test //
+    <div class="level has-background-light has-background-grey" ng-repeat="message in messages">
+        <div class="box">
+            // message.message //
+            <br/>
+            // message.sender.name //
         </div>
-{% endfor %}
+    </div>
 </div>
 
 <div class="container">

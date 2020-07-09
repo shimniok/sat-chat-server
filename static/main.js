@@ -3,9 +3,18 @@
 
     angular.module('RockBlockApp', [])
 
+    .config(function($interpolateProvider) {
+        $interpolateProvider.startSymbol('//');
+        $interpolateProvider.endSymbol('//');
+    })
+
     .controller('RockBlockController', ['$scope', '$log', '$http', '$timeout',
 
         function($scope, $log, $http, $timeout) {
+
+            var messages = [];
+            var test="test";
+
             $scope.sendMessage = function() {
                 $log.log("sendMessage()");
 
@@ -16,11 +25,9 @@
                 $http.post('/api/send', {"message": message}).
                     success(function(results) {
                         $log.log(results);
-                        return True;
                     }).
                     error(function(error) {
                         $log.log(error);
-                        return False;
                     });
             };
 
@@ -29,8 +36,9 @@
             var poller = function() {
                 $http.get('/api/message').
                     success(function(data, status, headers, config) {
-                        $log.log("poller()");
-                        timeout = $timeout(poller, 10000);
+                        $log.log("poller() ", data);
+                        $scope.messages = data;
+                        $scope.timeout = $timeout(poller, 10000);
                     });
             };
             poller();
