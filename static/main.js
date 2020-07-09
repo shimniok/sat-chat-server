@@ -14,6 +14,7 @@
 
             var messages = [];
             var test="test";
+            var current_user = $scope.current_user;
 
             $scope.sendMessage = function() {
                 $log.log("sendMessage()");

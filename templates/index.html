@@ -1,23 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    // test //
-    <div class="level has-background-light has-background-grey" ng-repeat="message in messages">
-        <div class="box">
+<div class="container has-background-white" ng-repeat="message in messages">
+    <div class="level has-background-white" ng-class="{'level-right': message.sender.id != current_user}">
+        <div class="box has-text-left">
             // message.message //
-            <br/>
-            // message.sender.name //
         </div>
     </div>
 </div>
 
 <div class="container">
-    <h1 class="title">
-      Welcome, {{ my_name }}!
-    </h1>
     <form method="post" ng-submit="sendMessage()">
         <label for="text">Text:</label>
+        <input type="hidden" ng-model="current_user" value="{{ current_user.id }}"/>
         <input type="text" ng-model="message" name="message" id="text"/>
         <button type="submit" id="send">Send</button>
     </form>
