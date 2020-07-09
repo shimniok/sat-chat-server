@@ -12,6 +12,7 @@ db = SQLAlchemy()
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
+    RELATIONSHIPS_TO_DICT = True
 
     # TODO: add IMEI column, to/from
     id = db.Column(db.Integer, primary_key=True)
