@@ -35,10 +35,10 @@ def send():
         m = Message(
             momsn=msg_bits[1],
             message=text,
-            transmit_time=datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S"),
-            time=datetime.now(timezone.utc)
+            transmit_time=datetime.utcnow(),
+            time=datetime.utcnow()
         )
-        print('receive(): transmit_time: {}'.format(m.transmit_time))
+        #print('receive(): transmit_time: {}'.format(m.transmit_time))
         id = db.session.add(m)
         db.session.commit()
         result = {
@@ -47,9 +47,15 @@ def send():
         }
     elif msg_bits[0] == 'FAILED':
         result = {
-            'status': msg_bits[0],
+            'status': 'FAILED',
             'error_number': msg_bits[1],
             'error_text': msg_bits[2]
+        }
+    elif not r.status_code == 200:
+        result = {
+            'status': 'FAILED',
+            'error_number': r.status_code,
+            'error_text': r.text
         }
     else:
         result = {
@@ -65,7 +71,10 @@ def send():
 @rockblock.route('/receive', methods=['get','post'])
 def receive():
 
-    parameters = ['imei', 'momsn', 'transmit_time', 'iridium_latitude', 'iridium_longitude', 'iridium_cep', 'data']
+    parameters = [
+        'imei', 'momsn', 'transmit_time',
+        'iridium_latitude', 'iridium_longitude', 'iridium_cep', 'data'
+    ]
 
     # check for missing parameters
     missing = []
@@ -85,20 +94,19 @@ def receive():
         momsn = request.form.get('momsn')
         transmit_time_str = request.form.get('transmit_time')
         transmit_time = datetime.strptime(transmit_time_str, "%y-%m-%d %H:%M:%S")
-        #TODO: set time to current time
-        #datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S")
+        time = datetime.utcnow()
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
     except (ValueError, TypeError) as e:
-        return 'bad request: error processing parameters', 400
+        return 'bad request: error processing parameters: {}'.format(e), 400
 
     # Add message to database
     try:
         msg = Message(
-            message=text, momsn=momsn, transmit_time=transmit_time,
+            message=text, momsn=momsn, transmit_time=transmit_time, time=time,
             iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
             iridium_cep=iridium_cep)
         db.session.add(msg)

@@ -52,7 +52,7 @@ def loopback_post():
     message = {
         'imei': os.environ['IMEI'],
         'momsn': mobile_momsn,
-        'transmit_time': datetime.strftime(datetime.now(timezone.utc), "%y-%m-%d %H:%M:%S"),
+        'transmit_time': datetime.strftime(datetime.utcnow(), "%y-%m-%d %H:%M:%S"),
         'iridium_latitude': "39.5807",
         'iridium_longitude': "-104.8772",
         'iridium_cep': 8,
@@ -60,8 +60,6 @@ def loopback_post():
     }
     print('transmit_time: {} post to {}'.format(message['transmit_time'], receive_url))
     r = requests.post(url=receive_url, data=message)
-
-    print('request status: {}'.format(r.status_code))
 
     # Update static momsn message serial number
     try:
