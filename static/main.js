@@ -16,6 +16,10 @@
             var test="test";
             var current_user = $scope.current_user;
 
+            $scope.matchUser = function(user) {
+                return (user == current_user) ? 'level-right' : 'level-left';
+            };
+
             $scope.sendMessage = function() {
                 $log.log("sendMessage()");
 

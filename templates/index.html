@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container has-background-white" ng-repeat="message in messages">
-    <div class="level has-background-white" ng-class="{'level-right': message.sender.id != current_user}">
-        <div class="box has-text-left">
+<div class="container has-background-white has-text-dark">
+    <div class="level" ng-repeat="message in messages">
+        <p class="level-item" ng-class="matchUser(message.sender.id)">
             // message.message //
-        </div>
+        </p>
     </div>
 </div>
 
