@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     {% for m in messages %}
-    {{ m.message }}
+    {{ m.message }} {{ m.id }}
     <br/>
 {% endfor %}
 </div>

@@ -12,6 +12,7 @@ class Message(OutputMixin, db.Model):
 
     # TODO: add IMEI column, to/from
     id = db.Column(db.Integer, primary_key=True)
+    sender = db.Column(db.ForeignKey("users.id"))
     momsn = db.Column(db.Integer)
     message = db.Column(db.String())
     transmit_time = db.Column(db.DateTime())
