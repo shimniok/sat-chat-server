@@ -2,7 +2,8 @@
 
 import requests
 import binascii
-from flask import Blueprint, request, jsonify, current_app, json
+import json
+from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
 from models import Message, db
