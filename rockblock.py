@@ -33,6 +33,7 @@ def send():
     if msg_bits[0] == 'OK':
         #TODO: add IMEI column, to/from
         m = Message(
+            sender=current_user.id,
             momsn=msg_bits[1],
             message=text,
             transmit_time=datetime.utcnow(),

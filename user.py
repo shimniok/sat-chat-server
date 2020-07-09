@@ -7,6 +7,8 @@ from models import User
 
 user = Blueprint('user', __name__, template_folder='templates')
 
+#TODO: don't return password hash, like, ever
+
 @user.route('/api/user', methods=['get'])
 def users_get():
     if not current_user.is_authenticated:
