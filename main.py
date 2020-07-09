@@ -12,4 +12,5 @@ main = Blueprint('main', __name__, template_folder='templates')
 def index():
     messages = Message.query.order_by(Message.momsn).all()
 
-    return render_template("index.html", name=current_user.name, messages=messages)
+    return render_template("index.html",
+        my_name=current_user.name, my_id=current_user.id, messages=messages)

@@ -2,15 +2,18 @@
 
 {% block content %}
 <div class="container">
-    {% for m in messages %}
-        {{ m.sender.name }}: {{ m.message }} {{ m.id }}
-    <br/>
+{% for m in messages %}
+        <div class={% if m.sender_id == my_id %}"level level-left"{% else %}"level level-right"{% endif %}>
+            <div class="box">
+                {{ m.sender.name }}: {{ m.message }} {{ m.id }}
+            </div>
+        </div>
 {% endfor %}
 </div>
 
 <div class="container">
     <h1 class="title">
-      Welcome, {{ name }}!
+      Welcome, {{ my_name }}!
     </h1>
     <form method="post" action="/api/send">
         <label for="text">Text:</label>

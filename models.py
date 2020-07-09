@@ -8,6 +8,7 @@ from datetime import datetime
 db = SQLAlchemy()
 
 # TODO: create shadow table for password hashes
+# TODO: create roles table, add role Column to each user
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
