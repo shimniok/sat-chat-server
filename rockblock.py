@@ -34,7 +34,6 @@ def send():
     #   Failure: FAILED,15,Textual description of failure
     msg_bits = r.text.split(',')
     if msg_bits[0] == 'OK':
-        #TODO: add IMEI column, to/from
         m = Message(
             sender_id=current_user.id,
             momsn=msg_bits[1],

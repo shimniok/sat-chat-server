@@ -34,13 +34,14 @@ class ProductionConfig(Config):
 class StagingConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-    SEND_FILE_MAX_AGE_DEFAULT = 0 
+    SEND_FILE_MAX_AGE_DEFAULT = 0
+    LOOPBACK_ENABLED = True
 
 
 class DevelopmentConfig(Config):
-    LOOPBACK_ENABLED = True
     DEVELOPMENT = True
     DEBUG = True
+    LOOPBACK_ENABLED = True
 
 
 class TestingConfig(Config):
