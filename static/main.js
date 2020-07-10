@@ -41,7 +41,7 @@
             var poller = function() {
                 $http.get('/api/message').
                     success(function(data, status, headers, config) {
-                        $log.log("poller() ", data);
+                        $log.log("poller()");
                         $scope.messages = data;
                         $scope.timeout = $timeout(poller, 10000);
                     });
