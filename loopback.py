@@ -8,6 +8,7 @@ import requests
 from flask import Blueprint, request, url_for
 from flask_login import current_user
 from datetime import datetime, timezone
+from app import app
 
 loopback = Blueprint('loopback', __name__)
 
@@ -34,11 +35,12 @@ def loopback_post():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    #TODO implement authentication
-    #    if (username == app.config['USERNAME'] and password == app.config['PASSWORD']):
+    if not (username == app.config['USERNAME'] and password == app.config['PASSWORD']):
+        return "Unauthorized", 401
 
     imei = request.form.get('imei')
-    #TODO validate imei
+    if not (imei == app.config['IMEI']):
+        return "Unauthorized", 401
 
     # convert hex message back to text and add some text
     hex = request.form.get('data')

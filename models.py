@@ -7,14 +7,13 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-# TODO: create shadow table for password hashes
-# TODO: create roles table, add role Column to each user
+#TODO: create roles table, add role Column to each user
+#TODO: add Devices, assign device to user as owner / sender
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
     RELATIONSHIPS_TO_DICT = True
 
-    # TODO: add IMEI column, to/from
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     sender = db.relationship("User")
