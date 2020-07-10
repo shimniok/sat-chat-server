@@ -3,18 +3,18 @@
 from flask import Blueprint, jsonify
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from models import User
+from models import User, db
 
 user = Blueprint('user', __name__, template_folder='templates')
 
 #TODO: don't return password hash, like, ever
+#TODO: one authz check before request
 
 @user.route('/api/user', methods=['get'])
 def users_get():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
-    list = []
     users = User.query.all()
     return jsonify([u.to_dict() for u in users])
 
