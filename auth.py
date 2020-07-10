@@ -20,6 +20,7 @@ def load_user(user_id):
 def signup():
     return render_template('signup.html')
 
+#TODO fix broken signup
 
 @auth.route('/signup', methods=['post'])
 def signup_post():
