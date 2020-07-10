@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, redirect, request, url_for
 from flask_login import login_required, login_user, logout_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User
+from models import User, db
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 
