@@ -7,32 +7,26 @@ from models import User, db
 
 user = Blueprint('user', __name__, template_folder='templates')
 
-#TODO: don't return password hash, like, ever
-#TODO: one authz check before request
-
-@user.route('/api/user', methods=['get'])
-def users_get():
+@user.before_request
+def user_before():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
+
+@user.route('/api/user', methods=['get'])
+def users_get():
     users = User.query.all()
     return jsonify([u.to_dict() for u in users])
 
 
 @user.route('/api/user/<id>')
 def user_get(id):
-    if not current_user.is_authenticated:
-        return "Unauthorized", 401
-
     u = User.query.filter_by(id=id).first_or_404()
     return jsonify(u.to_dict())
 
 
 @user.route('/api/user/<id>', methods=['delete'])
 def user_delete(id=-1):
-    if not current_user.is_authenticated:
-        return "Unauthorized", 401
-
     u = User.query.filter_by(id=id).first_or_404()
     db.session.delete(u)
     db.session.commit()
