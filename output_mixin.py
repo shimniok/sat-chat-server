@@ -7,15 +7,24 @@ from datetime import datetime
 
 class OutputMixin(object):
     RELATIONSHIPS_TO_DICT = False
+    PROTECTED_COLUMNS = []
 
     def __iter__(self):
         return self.to_dict().iteritems()
 
+    # return only list of columns not in PROTECTED_COLUMNS
+    def get_unprotected_items(self):
+        list = []
+        for i in self.__mapper__.c.items():
+            attr, column = i
+            if not column.key in self.PROTECTED_COLUMNS:
+                list.append(i)
+        return list
+
     def to_dict(self, rel=None, backref=None):
         if rel is None:
             rel = self.RELATIONSHIPS_TO_DICT
-        res = {column.key: getattr(self, attr)
-            for attr, column in self.__mapper__.c.items()}
+        res = {column.key: getattr(self, attr) for attr, column in self.get_unprotected_items()}
         if rel:
             for attr, relation in self.__mapper__.relationships.items():
                 # Avoid recursive loop between two tables.

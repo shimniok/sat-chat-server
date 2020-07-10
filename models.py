@@ -34,6 +34,7 @@ class Message(OutputMixin, db.Model):
 
 class User(OutputMixin, UserMixin, db.Model):
     __tablename__ = 'users'
+    PROTECTED_COLUMNS = [ 'password' ]
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(), unique=True)
