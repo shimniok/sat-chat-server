@@ -48,7 +48,7 @@
 
             var poller = function() {
                 getMessages();
-                $scope.timeout = $timeout(poller, 10000);
+                $scope.timeout = $timeout(poller, 30000);
             };
             poller();
 
