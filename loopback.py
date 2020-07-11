@@ -18,19 +18,19 @@ def loopback_post():
 
     # Read static momsn message serial number
     momsn_str = ""
-    #try:
-    #    momsn_file = "momsn.txt"
-    #    with open(momsn_file, "r") as f:
-    #        momsn_str = f.read()
-    #        f.close()
-    #except OSError as e:
-    #    print("loopback: {}: {}".format(momsn_file, e))
+    try:
+        momsn_file = "momsn.txt"
+        with open(momsn_file, "r") as f:
+            momsn_str = f.read()
+            f.close()
+    except OSError as e:
+        print("loopback: {}: {}".format(momsn_file, e))
 
     # If we can't convert it to int, set it to 99
-    #try:
-    #    momsn = int(momsn_str)
-    #except:
-    momsn = 99
+    try:
+        momsn = int(momsn_str)
+    except:
+        momsn = 99
 
     ## Receive
     username = request.form.get('username')
@@ -51,7 +51,7 @@ def loopback_post():
     mobile_momsn = momsn + 1 # the loopback simulates an MO message, incrementing the momsn again
 
     receive_url = request.url_root + url_for('rockblock.receive')[1:]
-    print('receive_url={}'.format(receive_url))
+    print('loopback: receive_url={}'.format(receive_url))
     message = {
         'imei': os.environ['IMEI'],
         'momsn': mobile_momsn,
@@ -61,15 +61,15 @@ def loopback_post():
         'iridium_cep': 8,
         'data': hex
     }
-    print('transmit_time: {} post to {}'.format(message['transmit_time'], receive_url))
+    print('loopback: transmit_time: {} post to {}'.format(message['transmit_time'], receive_url))
     r = requests.post(url=receive_url, data=message)
 
     # Update static momsn message serial number
-    #try:
-    #    with open(momsn_file, "w") as f:
-    #        f.write("{}\n".format(mobile_momsn + 1))
-    #        f.close()
-    #except OSError as e:
-    #    return "FAILED,{}: error opening for write. {}".format(momsn_file, e),400
+    try:
+        with open(momsn_file, "w") as f:
+            f.write("{}\n".format(mobile_momsn + 1))
+            f.close()
+    except OSError as e:
+        return "FAILED,{}: error opening for write. {}".format(momsn_file, e),400
 
     return "OK,{}".format(momsn)
