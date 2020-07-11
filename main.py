@@ -5,6 +5,9 @@ from app import app
 main = Blueprint('main', __name__, template_folder='templates')
 
 #TODO log accesses
+#TODO angularjs login_post
+#TODO remove signup, add user administration page
+#TODO implement SMS alerting
 
 @main.route('/')
 @login_required
