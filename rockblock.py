@@ -22,6 +22,7 @@ def send():
         #text = request.form.get('message')
         text = data["message"]
         hex = binascii.b2a_hex(text.encode('utf-8'))
+        print("send text={} hex={}".format(text, hex))
     except Exception as e:
         return "problem preparing message", 401
 
@@ -89,7 +90,7 @@ def receive():
         if not request.form.get(p):
             missing.append(p)
         else:
-            print('{}={}'.format(p, request.form.get(p)))
+            print('receive: {}={}'.format(p, request.form.get(p)))
     if len(missing):
         return 'bad request: missing: {}'.format(', '.join(missing)), 400
 
