@@ -34,7 +34,7 @@ from rockblock import rockblock as rockblock_blueprint
 app.register_blueprint(rockblock_blueprint)
 
 if app.config['DEVELOPMENT']:
-    from loopback import loopback as loopback_blueprint
+    from loopback import loopback_bp as loopback_blueprint
     app.register_blueprint(loopback_blueprint)
 
 from models import db
