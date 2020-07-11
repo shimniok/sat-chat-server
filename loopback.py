@@ -17,13 +17,14 @@ loopback = Blueprint('loopback', __name__)
 def loopback_post():
 
     # Read static momsn message serial number
+    momsn_str = ""
     try:
         momsn_file = "momsn.txt"
         with open(momsn_file, "r") as f:
             momsn_str = f.read()
             f.close()
     except OSError as e:
-        return "FAILED,{}: error opening for read. {}".format(momsn_file, e),400
+        print("loopback: {}: {}".format(momsn_file, e))
 
     # If we can't convert it to int, set it to 99
     try:
