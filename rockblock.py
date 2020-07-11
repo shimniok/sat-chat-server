@@ -37,7 +37,13 @@ def send():
     #   Success: OK,12345678  --The number uniquely identifies your message.
     #   Failure: FAILED,15,Textual description of failure
     msg_bits = r.text.split(',')
-    if msg_bits[0] == 'OK':
+    if not r.status_code == 200:
+        result = {
+            'status': 'FAILED',
+            'error_number': r.status_code,
+            'error_text': r.text
+        }
+    elif msg_bits[0] == 'OK':
         m = Message(
             sender_id=current_user.id,
             momsn=msg_bits[1],
@@ -57,12 +63,6 @@ def send():
             'status': 'FAILED',
             'error_number': msg_bits[1],
             'error_text': msg_bits[2]
-        }
-    elif not r.status_code == 200:
-        result = {
-            'status': 'FAILED',
-            'error_number': r.status_code,
-            'error_text': r.text
         }
     else:
         result = {
