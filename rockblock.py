@@ -17,10 +17,14 @@ def send():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
-    data = json.loads(request.data.decode())
-    #text = request.form.get('message')
-    text = data["message"]
-    hex = binascii.b2a_hex(text.encode('utf-8'))
+    try:
+        data = json.loads(request.data.decode())
+        #text = request.form.get('message')
+        text = data["message"]
+        hex = binascii.b2a_hex(text.encode('utf-8'))
+    except Exception as e:
+        return "problem preparing message", 401
+
     data = {
         'username': current_app.config['USERNAME'],
         'password': current_app.config['PASSWORD'],
