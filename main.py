@@ -10,3 +10,18 @@ main = Blueprint('main', __name__, template_folder='templates')
 @login_required
 def index():
     return render_template("index.html")
+
+@main.route('/admin')
+@login_required
+def admin():
+    return "admin"
+
+@main.route('/admin/messages')
+@login_required
+def admin_messages():
+    return render_template("admin.html")
+
+@main.route('/admin/users')
+@login_required
+def admin_users():
+    return "admin_users"

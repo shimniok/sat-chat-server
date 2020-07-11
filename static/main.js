@@ -37,6 +37,17 @@
                     });
             };
 
+
+            $scope.deleteMessage = function(message) {
+                $log.log("deleteMessage()");
+                $http.delete('/api/message/' + message.id).then(
+                    function (response) {
+                        var index = $scope.messages.indexOf(message);
+                        $scope.messages.splice(index, 1);
+                    });
+            };
+
+
             var getMessages = function() {
                 $http.get('/api/message').
                     success(function(data, status, headers, config) {

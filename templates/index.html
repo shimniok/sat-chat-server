@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" ng-app="RockBlockApp">
+{% extends "base2.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>RockBLOCK Chat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
-</head>
-
-<body ng-controller="RockBlockController">
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+{% block content %}
     <div class="d-flex flex-column p-3 bg-dark justify-content-end" id="chat-container">
         <div class="d-flex flex-row flex-grow-1 bg-secondary px-2" id="chat-log">
             <div class="d-flex flex-column justify-content-end w-100">
@@ -46,6 +33,4 @@
             </div>
         </div>
     </div>
-</body>
-
-</html>
+{% endblock %}
