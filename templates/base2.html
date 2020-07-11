@@ -13,7 +13,9 @@
 
 <body ng-controller="RockBlockController">
     <script src="{{ url_for('static', filename='main.js') }}"></script>
-    {% block content %}
-    {% endblock %}
+    <div class="container-fluid bg-dark">
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 </html>
