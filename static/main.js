@@ -13,11 +13,10 @@
         function($scope, $log, $http, $timeout) {
 
             var messages = [];
-            var test="test";
             var current_user = $scope.current_user;
 
             $scope.matchUser = function(user) {
-                return (user == current_user) ? 'level-right' : 'level-left';
+                return (user == current_user);
             };
 
             $scope.sendMessage = function() {
@@ -28,23 +27,28 @@
 
                 // fire the API request
                 $http.post('/api/send', {"message": message}).
-                    success(function(results) {
+                    success(function(results, status, headers, config) {
                         $log.log(results);
+                        getMessages();
+                        $scope.message = "";
                     }).
                     error(function(error) {
                         $log.log(error);
                     });
             };
 
+            var getMessages = function() {
+                $http.get('/api/message').
+                    success(function(data, status, headers, config) {
+                        $scope.messages = data;
+                    });
+            }
+
             var timeout = "";
 
             var poller = function() {
-                $http.get('/api/message').
-                    success(function(data, status, headers, config) {
-                        $log.log("poller()");
-                        $scope.messages = data;
-                        $scope.timeout = $timeout(poller, 10000);
-                    });
+                getMessages();
+                $scope.timeout = $timeout(poller, 10000);
             };
             poller();
 
