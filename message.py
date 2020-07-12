@@ -19,6 +19,11 @@ def messages_get():
     return jsonify([m.to_dict() for m in messages])
 
 
+@message.route('/message/since', methods=['get'])
+def message_since_bogus():
+    return jsonify([])
+
+
 # Get messages since the specified momsn
 @message.route('/message/since/<momsn>', methods=['get'])
 def messages_since(momsn):
