@@ -15,16 +15,26 @@ def message_before():
 
 @message.route('/message', methods=['get'])
 def messages_get():
-    msgs = Message.query.order_by(Message.momsn).all()
-    return jsonify([m.to_dict() for m in msgs])
+    messages = Message.query.order_by(Message.momsn).all()
+    return jsonify([m.to_dict() for m in messages])
+
+
+# Get messages since the specified momsn
+@message.route('/message/since/<momsn>', methods=['get'])
+def messages_since(momsn):
+    momsn = int(momsn)
+    messages = Message.query.order_by(Message.momsn).all()
+
+    return jsonify([m.to_dict() for m in messages if m.momsn > momsn])
 
 
 @message.route('/message/<id>')
 def message_get(id=-1):
 
-    msg = Message.query.filter_by(id = id).first_or_404()
+    message = Message.query.filter_by(id = id).first_or_404()
 
-    return jsonify(msg.to_dict())
+    return jsonify(message.to_dict())
+
 
 @message.route('/message/<id>', methods=['delete'])
 def message_delete(id=-1):

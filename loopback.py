@@ -62,7 +62,7 @@ def loopback_post():
     url = request.url_root + url_for('rockblock.receive')[1:]
     message = {
         'imei': os.environ['IMEI'],
-        'momsn': mobile_momsn,
+        'momsn': mobile_momsn + 1,
         'transmit_time': datetime.strftime(datetime.utcnow(), "%y-%m-%d %H:%M:%S"),
         'iridium_latitude': "39.5807",
         'iridium_longitude': "-104.8772",
