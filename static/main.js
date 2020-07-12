@@ -8,14 +8,17 @@
         $interpolateProvider.endSymbol('//');
     })
 
-    .controller('RockBlockController', ['$scope', '$log', '$http', '$timeout', 'Message',
+    .controller('RockBlockController', ['$scope', '$log', '$http', '$timeout', 'Message', 'MessageSince',
 
-        function($scope, $log, $http, $timeout, Message) {
+        function($scope, $log, $http, $timeout, Message, MessageSince) {
             var current_user = $scope.current_user;
 
             $scope.messages = Message.query();
 
-            $log.log("$scope.messages");
+            var arrayLast = function(a) {
+                return a[a.length - 1];
+            }
+
             $log.log($scope.messages);
 
             $scope.matchUser = function(user) {
@@ -49,33 +52,13 @@
                 });
             };
 
-            var updateLast = function() {
-                last_momsn = $scope.messages[$scope.messages.length - 1].momsn;
-            }
-
-            var getMessages = function() {
-                $log.log("getMessages()");
-                $http.get('/api/message')
-                    .success(function(results, status, headers, config) {
-                        $log.log(results);
-                        $scope.messages = results;
-                        updateLast();
-                        $log.log("last_momsn =",last_momsn);
-                    });
-            }
 
             var getNewMessages = function() {
-                $http.get('/api/message/since/'+last_momsn)
-                    .success(function(results, status, headers, config) {
-                        $log.log("since length: " + results.length);
-                        if (results.length > 0) {
-                            $log.log(results);
-                            results.forEach(function(m) {
-                                $scope.messages.push(m);
-                            });
-                            updateLast();
-                        }
+                MessageSince.query(arrayLast($scope.messages), function(results) {
+                    results.forEach(function(m) {
+                        $scope.messages.push(m);
                     });
+                });
             }
 
             var timeout = "";
@@ -83,7 +66,7 @@
             var poller = function() {
                 $log.log("poller()");
                 getNewMessages();
-                $scope.timeout = $timeout(poller, 30000);
+                $scope.timeout = $timeout(poller, 10000);
             };
 
             poller();
