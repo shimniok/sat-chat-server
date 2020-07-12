@@ -3,6 +3,11 @@ angular.module('message', ['ngResource']);
 angular.module('message')
     .factory('Message', ['$resource',
         function($resource) {
-            return $resource('/api/message/:id');
+            return $resource('/api/message/:id', { id: '@id', momsn: '@momsn'}, {
+                'since': {
+                    method: 'get',
+                    url: '/api/message/since/:momsn'
+                }
+            });
         }
-  ]);
+    ]);
