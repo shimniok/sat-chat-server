@@ -1,16 +1,16 @@
 (function () {
     'use strict';
 
-    angular.module('app', ['message'])
+    angular.module('app', ['message', 'rockblock'])
 
     .config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('//');
         $interpolateProvider.endSymbol('//');
     })
 
-    .controller('RockBlockController', ['$scope', '$log', '$http', '$timeout', 'Message', 'MessageSince',
+    .controller('RockBlockController', ['$scope', '$log', '$timeout', 'Message', 'MessageSince', 'RockBlock',
 
-        function($scope, $log, $http, $timeout, Message, MessageSince) {
+        function($scope, $log, $timeout, Message, MessageSince, RockBlock) {
             var current_user = $scope.current_user;
 
             $scope.messages = Message.query();
@@ -26,20 +26,13 @@
             };
 
             $scope.sendMessage = function() {
-                $log.log("sendMessage()");
-
-                // get the URL from the input
                 var message = $scope.message;
 
-                // fire the API request
-                $http.post('/api/send', {"message": message})
-                    .success(function(results, status, headers, config) {
+                if (message)
+                    RockBlock.send({"message": message}, function(results) {
                         $log.log(results);
-                        getNewMessages();
+                        $scope.messages.push(results.message);
                         $scope.message = ""; // clear form
-                    }).
-                    error(function(error) {
-                        $log.log(error);
                     });
             };
 
