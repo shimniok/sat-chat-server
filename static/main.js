@@ -1,20 +1,22 @@
 (function () {
     'use strict';
 
-    angular.module('RockBlockApp', [])
+    angular.module('app', ['message'])
 
     .config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('//');
         $interpolateProvider.endSymbol('//');
     })
 
-    .controller('RockBlockController', ['$scope', '$log', '$http', '$timeout',
+    .controller('RockBlockController', ['$scope', '$log', '$http', '$timeout', 'Message',
 
-        function($scope, $log, $http, $timeout) {
+        function($scope, $log, $http, $timeout, Message) {
             var current_user = $scope.current_user;
-            var last_momsn = -1;
 
-            $scope.messages = [];
+            $scope.messages = Message.query();
+
+            $log.log("$scope.messages");
+            $log.log($scope.messages);
 
             $scope.matchUser = function(user) {
                 return (user == current_user);
@@ -41,11 +43,10 @@
 
             $scope.deleteMessage = function(message) {
                 $log.log("deleteMessage()");
-                $http.delete('/api/message/' + message.id).then(
-                    function (response) {
-                        var index = $scope.messages.indexOf(message);
-                        $scope.messages.splice(index, 1);
-                    });
+                Message.delete(message, function() {
+                    var index = $scope.messages.indexOf(message);
+                    $scope.messages.splice(index, 1);
+                });
             };
 
             var updateLast = function() {
@@ -85,7 +86,6 @@
                 $scope.timeout = $timeout(poller, 30000);
             };
 
-            getNewMessages();
             poller();
 
         }
