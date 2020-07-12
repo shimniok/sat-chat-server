@@ -4,11 +4,21 @@ from flask import Blueprint, render_template, redirect, request, url_for, flash
 from flask_login import login_required, login_user, logout_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, db
+from functools import wraps
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 1 == 0: # TODO: roles
+            return "Unauthorized", 404
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @login_manager.user_loader
