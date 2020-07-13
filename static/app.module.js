@@ -16,7 +16,7 @@
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
     .when('/chat', {
-      templateUrl: 'chat.html',
+      templateUrl: 'static/chat.template.html',
       controller: 'ChatController'
     })
     /*
@@ -24,10 +24,10 @@
       templateUrl: 'admin.html',
       controller: 'AdminController'
     })
+    */
     .otherwise({
       redirectTo: '/chat'
     })
-    */
   }]);
 
 }());
