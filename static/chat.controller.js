@@ -1,4 +1,8 @@
-angular.module('chat.controller', ['rockblock'])
+angular.module('chat', [
+  'rockblock',
+  'message'
+])
+
 .controller('ChatController', [
   '$scope', '$log', '$timeout', 'Message', 'MessageSince', 'RockBlockProvider',
 

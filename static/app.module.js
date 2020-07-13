@@ -3,9 +3,8 @@
 
   angular.module('RockBlockApp', [
     'ngRoute',
-    'message',
     'login',
-    'chat.controller'
+    'chat'
   ])
 
   .config(function($interpolateProvider) {
@@ -18,6 +17,10 @@
     .when('/chat', {
       templateUrl: 'static/chat.template.html',
       controller: 'ChatController'
+    })
+    .when('/login', {
+      templateUrl: 'static/login.template.html',
+      controller: 'LoginController'
     })
     /*
     .when('/chat/admin', {
