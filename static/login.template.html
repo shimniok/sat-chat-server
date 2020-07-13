@@ -1,0 +1,26 @@
+<div class="container" ng-controller="LoginController">
+    <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <div class="card my-5 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Login</h5>
+                    <form class="p-3" ng-submit="authenticate()">
+                        <div class="input-group input-group-lg mb-3">
+                            <input type="email" class="form-control" ng-model="email" placeholder="Email Address">
+                        </div>
+                        <div class="input-group input-group-lg mb-3">
+                            <input type="password" class="form-control" ng-model="password" placeholder="Password">
+                        </div>
+                        <div class="input-group mb-3">
+                            <label for="remember"><input type="checkbox" id="remember">
+                            Remember Me</label>
+                        </div>
+                        <div class="input-group input-group-lg mb-3">
+                            <button type="submit" class="btn btn-outline-primary">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
