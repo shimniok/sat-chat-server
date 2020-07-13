@@ -1,10 +1,11 @@
 ## AUTHENTICATION #######################################################################################
 
-from flask import Blueprint, render_template, redirect, request, url_for, flash
+from flask import Blueprint, render_template, redirect, request, url_for, flash, jsonify
 from flask_login import login_required, login_user, logout_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, db
 from functools import wraps
+import json
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 
@@ -24,6 +25,25 @@ def admin_required(f):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+@auth.route('/auth', methods=['post'])
+def auth_post():
+    try:
+        data = json.loads(request.data.decode())
+
+        remember = True if "remember" in data and data["remember"] else False
+        user = User.query.filter_by(email = data["email"]).first()
+
+        if not user or not check_password_hash(user.password, data["password"]):
+            return "Login incorrect", 401
+        else:
+            login_user(user, remember=remember)
+            return jsonify(user.to_dict())
+
+    except Exception as e:
+        print("auth_post(): Exception: {}".format(e))
+        return "bad request", 400
 
 
 @auth.route('/signup')
