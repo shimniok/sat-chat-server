@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 def create_config(env):
@@ -26,6 +27,10 @@ class Config(object):
     API_ENDPOINT = os.environ['API_ENDPOINT']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     LOOPBACK_ENABLED = False
+    REMEMBER_COOKIE_DURATION = timedelta(seconds=300)
+    REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_REFRESH_EACH_REQUEST = False
 
 class ProductionConfig(Config):
     DEBUG = False
