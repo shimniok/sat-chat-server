@@ -63,4 +63,4 @@ function($scope, $log, $timeout, Message, MessageSince, RockBlock) {
   poller();
 
 }
-])
+]);

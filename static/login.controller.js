@@ -4,7 +4,7 @@ angular.module('login', ['auth'])
 function($log, auth) {
   var user = auth.get();
 
-  this.check = function() {
+  this.valid = function() {
     return user.$promise;
   };
 
