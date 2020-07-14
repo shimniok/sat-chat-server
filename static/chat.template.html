@@ -1,32 +1,26 @@
-<div class="d-flex flex-column p-3 justify-content-end" ng-controller="ChatController">
-    <div class="d-flex flex-row bg-secondary px-2" id="chat-log">
-        <div class="d-flex flex-column overflow-auto justify-content-end w-100">
-            <div ng-repeat="m in messages">
-                <div class="d-flex" ng-class="m.sender_id == null ? 'flex-row' : 'flex-row-reverse'">
-                    <p class="p-2 rounded-lg" ng-class="m.sender_id == null ? 'alert-info' : 'alert-light'">
-                        // m.message //
-                    </p>
+<div class="container bg-light p-0" id="app-window">
+    <div class="chat-window overflow mb-2 px-3 bg-dark" ng-controller="ChatController">
+        <div ng-repeat="m in messages">
+            <!-- <div class="row border align-items-end" ng-class="m.sender_id != null ? 'justify-content-end' : 'justify-content-start'">-->
+            <div class="message-row mb-1">
+                <div class="message rounded p-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
+                    //m.sender.name//: // m.message //
                 </div>
             </div>
         </div>
     </div>
-    <div class="d-flex flex-column bg-light p-3">
-        <div class="d-flex flex-row">
-            <div class="col-md-12">
-                <form class="form-inline" method="post" ng-submit="sendMessage()">
-                    <div class="input-group flex-fill">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">Message</div>
-                        </div>
-                        <input class="form-control" type="text" ng-model="message" name="message" id="text"/>
-                    </div>
+    <div class="chat-input m-0 p-3">
+        <form class="form-inline" method="post" ng-submit="sendMessage()">
+            <div class="input-group col-sm-12">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Message</div>
+                </div>
+                <input class="form-control" type="text" ng-model="message" name="message"/>
+                <div class="col-auto">
                     <button class="form-control ml-sm-3" type="submit" id="send">Send</button>
-                    <input type="hidden" ng-model="current_user" value="{{ current_user.id }}"/>
-                </form>
+                </div>
             </div>
-        </div>
-        <div class="d-flex flex-row justify-content-center mt-2">
-            <a href="" ng-click="logout()">Logout</a>
-        </div>
+        </form>
+        <a href="" ng-click="logout()">Logout</a>
     </div>
 </div>

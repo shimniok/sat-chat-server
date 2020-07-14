@@ -1,3 +1,50 @@
-.vh-100 {
+#app {
     height: 100vh;
+}
+
+#app-window {
+    max-width: 40rem;
+}
+
+.chat-input {
+    height: 7rem;
+    text-align: center;
+}
+
+.chat-window {
+    max-height: calc(100vh - 7rem);
+    overflow-y: scroll;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-form {
+    margin: 0 auto 0 auto;
+}
+
+.message-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.message {
+    background-color: #fff;
+}
+
+.mine {
+    margin-left: auto;
+}
+
+.theirs {
+    background-color: #cef
+}
+
+.vh-100 {
+    max-height: 100vh;
+}
+
+#scroll {
+    max-height: calc(100vh - 300);
+    overflow-y: scroll;
 }
