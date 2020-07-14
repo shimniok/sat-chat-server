@@ -12,7 +12,6 @@ main = Blueprint('main', __name__, template_folder='templates')
 #TODO evaluate flask_login security
 
 @main.route('/')
-@login_required
 def index():
     return render_template("index.html")
 

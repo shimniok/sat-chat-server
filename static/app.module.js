@@ -16,7 +16,8 @@
     $routeProvider
     .when('/chat', {
       templateUrl: 'static/chat.template.html',
-      controller: 'ChatController'
+      controller: 'ChatController',
+      requireAuth: true
     })
     .when('/login', {
       templateUrl: 'static/login.template.html',

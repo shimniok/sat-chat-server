@@ -3,32 +3,42 @@ angular.module('login', [])
 .service('SessionService', function() {
   var user = null;
 
-  this.isAuthenticated = function(value){
+  this.authenticated = function() {
     return user != null;
   };
 
 })
 
-.controller('LoginController', [ '$scope', '$log', '$http',
-  function($scope, $log, $http) {
+.controller('SessionController', [ '$scope', '$log', '$location', 'SessionService',
+  function ($scope, $log, $location, session) {
+    $scope.$on('$routeChangeStart', function (angularEvent, next, current) {
+      if (next.requireAuth && !session.user) {
+        $location.path("/login"); // TODO: redirect parameter
+      }
+    });
+  }
+])
+
+
+.controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService',
+  function($scope, $log, $location, $http, session) {
 
     $scope.authenticate = function() {
       $log.log("authenticate()");
 
-      var data = {
+      $http.post('/auth', {
         "email": $scope.email,
         "password": $scope.password
-      };
-      var config = { headers: { 'Content-Type': 'application/json', 'Accepts': 'application/json' } }
-      $http.post('/auth', data, config)
-        .success(function(result) {
-          $log.log("success");
-          this.user = result;
-        },
-        function() {
-          $log.log("failure");
-        });
-      };
+      })
+      .success(function(result) {
+        $log.log("success");
+        session.user = result;
+        $location.path("/");
+      },
+      function() {
+        $log.log("failure");
+      });
+    };
 
   }
 ]);
