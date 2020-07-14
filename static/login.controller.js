@@ -8,8 +8,18 @@ function($log, auth) {
     return "id" in user;
   };
 
-  this.authenticate = function(username, password, success, failure) {
-    return auth.save({ "email": username, "password": password }).$promise;
+  this.login = function(username, password, success, failure) {
+    auth.save({ "email": username, "password": password }).$promise
+    .then(function(result) {
+      user = result;
+      success(result);
+    },function(result) {
+      failure(result);
+    });
+  }
+
+  this.logout = function() {
+    this.user = auth.delete();
   }
 
 }])
@@ -28,13 +38,18 @@ function($log, auth) {
 .controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService', 'AuthProvider',
   function($scope, $log, $location, $http, session, auth) {
 
+    $scope.logout = function() {
+      $log.log("logout()");
+      session.logout();
+      $location.path("/");
+    }
+
     $scope.authenticate = function() {
       $log.log("authenticate()");
 
-      session.authenticate($scope.email, $scope.password,
+      session.login($scope.email, $scope.password,
         success = function(result) {
           $log.log("success");
-          session.user = result;
           $location.path("/");
         },
         failure = function() {
