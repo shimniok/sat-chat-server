@@ -1,6 +1,6 @@
 <div class="d-flex flex-column p-3 justify-content-end" ng-controller="ChatController">
-    <div class="d-flex flex-row flex-grow-1 bg-secondary px-2" id="chat-log">
-        <div class="d-flex flex-column justify-content-end w-100">
+    <div class="d-flex flex-row bg-secondary px-2" id="chat-log">
+        <div class="d-flex flex-column overflow-auto justify-content-end w-100">
             <div ng-repeat="m in messages">
                 <div class="d-flex" ng-class="m.sender_id == null ? 'flex-row' : 'flex-row-reverse'">
                     <p class="p-2 rounded-lg" ng-class="m.sender_id == null ? 'alert-info' : 'alert-light'">

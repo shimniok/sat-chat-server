@@ -4,8 +4,8 @@ angular.module('login', ['auth'])
 function($log, auth) {
   var user = auth.get();
 
-  this.isAuthenticated = function() {
-    return "id" in user;
+  this.check = function() {
+    return user.$promise;
   };
 
   this.login = function(username, password, success, failure) {
@@ -19,7 +19,7 @@ function($log, auth) {
   }
 
   this.logout = function() {
-    this.user = auth.delete();
+    user = auth.delete();
   }
 
 }])
@@ -27,8 +27,15 @@ function($log, auth) {
 .controller('SessionController', [ '$scope', '$log', '$location', 'SessionService',
   function ($scope, $log, $location, session) {
     $scope.$on('$routeChangeStart', function (angularEvent, next, current) {
-      if (next.requireAuth && !session.isAuthenticated()) {
-        $location.path("/login"); // TODO: redirect to next after login
+      if (next.requireAuth) {
+        session.valid().then(
+          function() {
+            $log.log("session valid");
+          },
+          function() {
+            $location.path("/login"); // TODO: redirect to next after login
+          }
+        )
       }
     });
   }
@@ -55,19 +62,6 @@ function($log, auth) {
         failure = function() {
           $log.log("failure");
         });
-
-      //auth.post({ "email": $scope.email, "password": $scope.password })
-      /*
-      $http.post('/auth', { "email": $scope.email, "password": $scope.password })
-      .success(function(result) {
-        $log.log("success");
-        session.user = result;
-        $location.path("/");
-      },
-      function() {
-        $log.log("failure");
-      });
-      */
     };
 
   }
