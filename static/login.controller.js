@@ -1,35 +1,49 @@
-angular.module('login', [])
+angular.module('login', ['auth'])
 
-.service('SessionService', function() {
-  var user = null;
+.service('SessionService', [ '$log', 'AuthProvider',
+function($log, auth) {
+  var user = auth.get();
 
-  this.authenticated = function() {
-    return user != null;
+  this.isAuthenticated = function() {
+    return "id" in user;
   };
 
-})
+  this.authenticate = function(username, password, success, failure) {
+    return auth.save({ "email": username, "password": password }).$promise;
+  }
+
+}])
 
 .controller('SessionController', [ '$scope', '$log', '$location', 'SessionService',
   function ($scope, $log, $location, session) {
     $scope.$on('$routeChangeStart', function (angularEvent, next, current) {
-      if (next.requireAuth && !session.user) {
-        $location.path("/login"); // TODO: redirect parameter
+      if (next.requireAuth && !session.isAuthenticated()) {
+        $location.path("/login"); // TODO: redirect to next after login
       }
     });
   }
 ])
 
 
-.controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService',
-  function($scope, $log, $location, $http, session) {
+.controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService', 'AuthProvider',
+  function($scope, $log, $location, $http, session, auth) {
 
     $scope.authenticate = function() {
       $log.log("authenticate()");
 
-      $http.post('/auth', {
-        "email": $scope.email,
-        "password": $scope.password
-      })
+      session.authenticate($scope.email, $scope.password,
+        success = function(result) {
+          $log.log("success");
+          session.user = result;
+          $location.path("/");
+        },
+        failure = function() {
+          $log.log("failure");
+        });
+
+      //auth.post({ "email": $scope.email, "password": $scope.password })
+      /*
+      $http.post('/auth', { "email": $scope.email, "password": $scope.password })
       .success(function(result) {
         $log.log("success");
         session.user = result;
@@ -38,6 +52,7 @@ angular.module('login', [])
       function() {
         $log.log("failure");
       });
+      */
     };
 
   }
