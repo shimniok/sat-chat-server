@@ -9,7 +9,9 @@ angular.module('session', ['auth'])
             $log.log("session valid");
           },
           function() {
-            $location.path("/login"); // TODO: redirect to next after login
+            // TODO: redirect to next after login
+            // TODO: the path really should come from somewhere else
+            $location.path("/login");
           }
         )
       }
