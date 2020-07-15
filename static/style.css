@@ -2,10 +2,8 @@
     height: 100vh;
 }
 
-div.container.app-width {
-    max-width: 40rem;
-    min-height: 0;
-    display: flex;
+#app-header {
+    height: 3.3rem;
 }
 
 #app-main {
@@ -14,17 +12,9 @@ div.container.app-width {
     flex: 1;
 }
 
-#app-header {
-/*
-    height: 3rem;
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-*/
-}
-
-.header-title {
+#header-title {
     font-weight: bold;
+    margin-left: 0;
 }
 
 #message-window {
@@ -33,14 +23,25 @@ div.container.app-width {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    height: calc(100vh - 7rem - 3rem);
+    max-height: calc(100vh - 7rem - 3.3rem);
+    min-height: 0;
+    min-width: 0;
 }
 
 #message-row {
     display: flex;
+    flex: 1;
     flex-direction: row;
     justify-content: space-between;
+    min-height: 0;
+    min-width: 0;
 }
+
+#input-row {
+    height: 7rem;
+    text-align: center;
+}
+
 
 .mine {
     background-color: #fff;
@@ -49,11 +50,6 @@ div.container.app-width {
 
 .theirs {
     background-color: #cef
-}
-
-.chat-input {
-    height: 7rem;
-    text-align: center;
 }
 
 .chat-form {
