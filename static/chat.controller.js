@@ -4,7 +4,7 @@ angular.module('chat', [
 ])
 
 .controller('ChatController', [
-  '$scope', '$log', '$timeout', 'Message', 'MessageSince', 'RockBlockProvider',
+  '$scope', '$log', '$timeout', 'MessageService', 'MessageSinceService', 'RockBlockProvider',
 
 function($scope, $log, $timeout, Message, MessageSince, RockBlock) {
   var current_user = $scope.current_user;
@@ -31,16 +31,6 @@ function($scope, $log, $timeout, Message, MessageSince, RockBlock) {
       $scope.message = ""; // clear form
     });
   };
-
-
-  $scope.deleteMessage = function(message) {
-    $log.log("deleteMessage()");
-    Message.delete(message, function() {
-      var index = $scope.messages.indexOf(message);
-      $scope.messages.splice(index, 1);
-    });
-  };
-
 
   var getNewMessages = function() {
     MessageSince.query(arrayLast($scope.messages), function(results) {

@@ -1,5 +1,7 @@
 angular.module('login', ['session'])
 
+// TODO: fix logout button!
+
 .controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService', 'AuthProvider',
   function($scope, $log, $location, $http, session, auth) {
 

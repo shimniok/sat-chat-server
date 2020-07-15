@@ -4,8 +4,11 @@
   angular.module('RockBlockApp', [
     'ngRoute',
     'login',
-    'chat'
+    'chat',
+    'admin'
   ])
+
+  // TODO: add admin functionality so I can delete messages
 
   .config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('//');
@@ -23,12 +26,10 @@
       templateUrl: 'static/login.template.html',
       controller: 'LoginController'
     })
-    /*
-    .when('/chat/admin', {
-      templateUrl: 'admin.html',
+    .when('/admin', {
+      templateUrl: 'static/admin.template.html',
       controller: 'AdminController'
     })
-    */
     .otherwise({
       redirectTo: '/chat'
     })

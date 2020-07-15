@@ -33,7 +33,7 @@ def messages_since(momsn):
     return jsonify([m.to_dict() for m in messages if m.momsn > momsn])
 
 
-@message.route('/message/<id>')
+@message.route('/message/<id>', methods=['get'])
 def message_get(id=-1):
 
     message = Message.query.filter_by(id = id).first_or_404()
