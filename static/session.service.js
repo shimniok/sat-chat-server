@@ -1,4 +1,4 @@
-angular.module('login')
+angular.module('session', ['auth'])
 
 .service('SessionService', [ '$log', 'AuthProvider',
 function($log, auth) {

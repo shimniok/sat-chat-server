@@ -1,4 +1,4 @@
-angular.module('login', ['auth'])
+angular.module('login', ['session'])
 
 .controller('SessionController', [ '$scope', '$log', '$location', 'SessionService',
   function ($scope, $log, $location, session) {
