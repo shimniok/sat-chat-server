@@ -1,8 +1,8 @@
-<div class="chat-window overflow px-3 bg-dark" ng-controller="ChatController">
+<div class="overflow px-3 bg-dark" ng-controller="ChatController" id="message-window">
     <div ng-repeat="m in messages">
         <!-- <div class="row border align-items-end" ng-class="m.sender_id != null ? 'justify-content-end' : 'justify-content-start'">-->
-        <div class="message-row mb-1">
-            <div class="message rounded p-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
+        <div class="mb-1" id="message-row">
+            <div class="rounded p-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
                 // m.message //
             </div>
         </div>

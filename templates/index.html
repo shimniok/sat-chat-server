@@ -28,11 +28,11 @@
     <script src="{{ url_for('static', filename='admin.controller.js') }}"></script>
 
     <div class="container-fluid bg-secondary" ng-controller="SessionController" id="app">
-        <div class="container bg-primary text-light p-1 app-header align-items-center">
-            <div class="header-title">
+        <div class="row px-3 bg-primary text-light align-items-center justify-content-between" id="app-header">
+            <div class="header-title col col-2 border">
                 <span class="app-title">RockBlock Chat</span>
             </div>
-            <div class="header-menu">
+            <div class="col col-1 border">
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         // user.name //
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="container bg-light text-dark p-0 app-window">
+        <div class="container bg-light text-dark p-0" id="app-main">
             <div ng-view></div>
         </div>
     </div>
