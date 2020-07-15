@@ -1,4 +1,4 @@
-angular.module('session', ['auth'])
+angular.module('session')
 
 .service('SessionService', [ '$log', 'AuthProvider',
 function($log, auth) {
@@ -22,4 +22,4 @@ function($log, auth) {
     user = auth.delete();
   }
 
-}])
+}]);
