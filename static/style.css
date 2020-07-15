@@ -1,13 +1,30 @@
-#app {
+ #app {
     height: 100vh;
 }
 
-#app-window {
+div.container.app-width {
     max-width: 40rem;
 }
 
+.app-header {
+    height: 3rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.header-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-menu {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+}
+
 .chat-window {
-    height: calc(100vh - 7rem);
+    height: calc(100vh - 7rem - 3rem);
     overflow-y: scroll;
     margin: 0;
     display: flex;

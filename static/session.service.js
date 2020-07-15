@@ -4,6 +4,10 @@ angular.module('session')
 function($log, auth) {
   var user = auth.get();
 
+  this.getUser = function() {
+    return user;
+  };
+
   this.valid = function() {
     user = auth.get();
 
