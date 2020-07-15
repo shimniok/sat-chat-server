@@ -12,7 +12,7 @@ angular.module('login', ['session'])
     $scope.authenticate = function() {
       $log.log("authenticate()");
 
-      session.login($scope.email, $scope.password,
+      session.authenticate($scope.email, $scope.password,
         success = function(result) {
           $log.log("success");
           $location.path("/");

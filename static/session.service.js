@@ -5,10 +5,12 @@ function($log, auth) {
   var user = auth.get();
 
   this.valid = function() {
+    user = auth.get();
+
     return user.$promise;
   };
 
-  this.login = function(username, password, success, failure) {
+  this.authenticate = function(username, password, success, failure) {
     auth.save({ "email": username, "password": password }).$promise
     .then(function(result) {
       user = result;

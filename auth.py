@@ -27,11 +27,9 @@ def load_user(user_id):
 
 
 @auth.route('/auth', methods=['get'])
+@login_required
 def auth_get():
-    if current_user.is_authenticated:
-        return jsonify(current_user.to_dict())
-    else:
-        return jsonify({})
+    return jsonify(current_user.to_dict())
 
 
 @auth.route('/auth', methods=['post'])
