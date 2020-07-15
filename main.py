@@ -14,8 +14,3 @@ main = Blueprint('main', __name__, template_folder='templates')
 @main.route('/')
 def index():
     return render_template("index.html")
-
-@main.route('/admin')
-@admin_required
-def admin():
-    return render_template("admin.html")
