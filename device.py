@@ -14,11 +14,13 @@ def device_before():
     if not current_user.is_authenticated:
         abort(401)
 
+
 @device.route('/device', methods=['get'])
 def device_get():
     devices = Device.query.all()
 
     return jsonify([d.to_dict() for d in devices])
+
 
 @device.route('/device', methods=['post'])
 def devices_post():
@@ -38,6 +40,7 @@ def devices_post():
 
     return jsonify(dev.to_dict())
 
+
 @device.route('/device/<id>', methods=['put'])
 def device_put(id):
     if not request.json:
@@ -53,6 +56,7 @@ def device_put(id):
         return "Bad request: {}".format(e), 400
 
     return jsonify(dev.to_dict())
+
 
 @device.route('/device/<id>', methods=['delete'])
 def device_del(id):
