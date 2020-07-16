@@ -12,7 +12,7 @@ device = Blueprint('device', __name__, url_prefix='/api')
 @device.before_request
 def device_before():
     if not current_user.is_authenticated:
-        return "Unauthorized", 401
+        abort(401)
 
 @device.route('/device', methods=['get'])
 def device_get():
@@ -39,7 +39,7 @@ def devices_post():
     return jsonify(dev.to_dict())
 
 @device.route('/device/<id>', methods=['put'])
-def devices_put(id):
+def device_put(id):
     if not request.json:
         abort(400)
     try:
@@ -54,4 +54,13 @@ def devices_put(id):
 
     return jsonify(dev.to_dict())
 
-# DELETE
+@device.route('/device/<id>', methods=['delete'])
+def device_del(id):
+    try:
+        dev = Device.query.filter_by(id = id).first_or_404()
+        db.session.delete(dev)
+        db.session.commit()
+    except Exception as e:
+        return "Bad request: {}".format(e), 400
+
+    return jsonify(dev.to_dict())
