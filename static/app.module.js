@@ -5,7 +5,8 @@
     'ngRoute',
     'login',
     'chat',
-    'admin'
+    'admin',
+    'chat.device'
   ])
 
   .config(function($interpolateProvider) {
@@ -27,6 +28,10 @@
     .when('/admin', {
       templateUrl: 'static/admin.template.html',
       controller: 'AdminController'
+    })
+    .when('/device', {
+      templateUrl: 'static/device.template.html',
+      controller: 'DeviceController'
     })
     .otherwise({
       redirectTo: '/chat'

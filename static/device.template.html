@@ -1,8 +1,27 @@
 
 <div ng-controller="DeviceController">
-<form ng-click="saveDevice">
-    <input type="imei" name="imei"/>
-    <input type="text" name="username"/>
-    <input type="password" name="password"/>
-</form>
+    <div class="container-fluid bg-secondary" id="app">
+
+        <div class="row row-col-1">
+            <div class="d-flex flex-column mx-auto bg-light p-3">
+                <form class="" ng-submit="saveDevice">
+                    <div class="form-group">
+                        <label for="imei">RockBlock IMEI</label>
+                        <input class="form-control" type="text" name="imei"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Rock7 Username</a>
+                        <input class="form-control" type="email" name="username"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Rock7 Password</a>
+                        <input class="form-control" type="password" name="password"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

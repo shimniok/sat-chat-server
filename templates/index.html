@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script src="{{ url_for('static', filename='app.module.js') }}"></script>
+<script src="{{ url_for('static', filename='message.service.js') }}"></script>
+<script src="{{ url_for('static', filename='rockblock.service.js') }}"></script>
+<script src="{{ url_for('static', filename='auth.service.js') }}"></script>
+<script src="{{ url_for('static', filename='login.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='session.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='session.service.js') }}"></script>
+<script src="{{ url_for('static', filename='chat.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='admin.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='device.controller.js') }}"></script>
+
 <div ng-controller="SessionController as session">
 <div ng-view></div>
 </div>

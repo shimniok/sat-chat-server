@@ -20,6 +20,10 @@ function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock) {
     $location.url("/admin");
   };
 
+  $scope.device = function() {
+    $location.url("/device");
+  }
+
   $scope.sendMessage = function() {
     var message = $scope.message;
 
