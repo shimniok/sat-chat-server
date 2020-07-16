@@ -39,7 +39,7 @@ class User(OutputMixin, UserMixin, db.Model):
     email = db.Column(db.String(), unique=True)
     name = db.Column(db.String())
     password = db.Column(db.String())
-    device = db.relationship('Device', uselist=False, back_populates='owner')
+    #device = db.relationship("Device", uselist=False, back_populates="owner")
 
     def __repr__(self):
         return "User(<id='{}', name='{}', email='{}'>".format(
@@ -50,30 +50,24 @@ class Device(OutputMixin, db.Model):
     PROTECTED_COLUMNS = [ 'IMEI', 'password' ]
 
     id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    owner = db.relationship('User', back_populates='device')
+    #owner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    #owner = db.relationship("User", back_populates="device")
     imei = db.Column(db.String())
     username = db.Column(db.String())
     password = db.Column(db.String())
 
-    def __init__(self, owner_id, imei, username, password):
-        self.owner_id = owner_id
-        self.imei = imei
-        self.username = username
-        self.password = password
-
     def __repr__(self):
-        return "Device(<id='{}', owner='{}', imei='{}', username='{}'".format(
-            self.id, self.owner.email, self.imei, self.username )
+        return "Device(<id='{}', imei='{}', username='{}'".format(
+            self.id, self.imei, self.username )
 
-class Connection(OutputMixin, db.Model):
-    __tablename__ = 'connections'
-    PROTECTED_COLUMNS = [ ]
+#class Connection(OutputMixin, db.Model):
+#    __tablename__ = 'connections'
+#    PROTECTED_COLUMNS = [ ]
 
-    id = db.Column(db.Integer, primary_key=True)
+#    id = db.Column(db.Integer, primary_key=True)
     #device_id = db.Column(db.Integer, db.ForeignKey("devices.id"))
     #device = db.relationship("Device", uselist=False, back_populates='devices')
     #connected_user_id = 0
 
-    def __repr__(self):
-        return ""
+#    def __repr__(self):
+#        return ""

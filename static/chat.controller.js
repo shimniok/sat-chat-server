@@ -47,7 +47,7 @@ function($scope, $log, $timeout, Message, MessageSince, RockBlock) {
   var poller = function() {
     $log.log("poller()");
     getNewMessages();
-    $scope.timeout = $timeout(poller, 10000);
+    $scope.timeout = $timeout(poller, 60000);
   };
 
   poller();

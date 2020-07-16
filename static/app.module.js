@@ -8,8 +8,6 @@
     'admin'
   ])
 
-  // TODO: add admin functionality so I can delete messages
-
   .config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('//');
     $interpolateProvider.endSymbol('//');
