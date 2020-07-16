@@ -1,7 +1,8 @@
 <div class="container-fluid bg-secondary" id="app">
-    <div class="col col-sm-8 col-md-7 col-lg-6 h-100 border mx-auto">
-        <div class="row bg-primary text-light align-items-center justify-content-between p-1" id="app-header">
-            <div class="col col-2 pl-0" id="header-title">
+    <div class="border col col-sm-8 col-md-7 col-lg-6 h-100 mx-auto">
+        <!-- header row -->
+        <div class="row bg-primary text-light align-items-center justify-content-between p-1" id="header-window">
+            <div class="col col-3 pl-0" id="header-title">
                 RockBlock Chat
             </div>
             <div class="col col-3">
@@ -18,29 +19,33 @@
                 </div>
             </div>
         </div>
-        <div class="row overflow p-2 bg-dark" ng-controller="ChatController" id="message-window">
-            <div ng-repeat="m in messages">
-                <!-- <div class="row border align-items-end" ng-class="m.sender_id != null ? 'justify-content-end' : 'justify-content-start'">-->
-                <div class="mb-1" id="message-row">
-                    <div class="rounded p-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
-                        // m.message //
+
+        <!-- chat window -->
+        <div class="row border" id="message-window">
+            <div class="col h-100 bg-dark p-2 align-items-end" ng-controller="ChatController">
+                <div ng-repeat="m in messages">
+                    <div class="row" ng-class="m.sender_id != null ? 'justify-content-end' : 'justify-content-start'">
+                        <div class="col col-5 justify-content-between">
+                                <div class="rounded p-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
+                                    // m.message //
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="m-0 p-3 bg-light" id="input-row">
+
+        <!-- input window -->
+        <div class="row bg-light border" id="input-window">
             <form class="form-inline" method="post" ng-submit="sendMessage()">
-                <div class="input-group col-sm-12">
+                <div class="input-group col-12">
                     <div class="input-group-prepend">
                         <div class="input-group-text">Message</div>
                     </div>
                     <input class="form-control" type="text" ng-model="message" name="message"/>
-                    <div class="col-auto">
-                        <button class="form-control ml-sm-3" type="submit" id="send">Send</button>
-                    </div>
                 </div>
+                <button class="form-control col-2 ml-sm-3" type="submit" id="send">Send</button>
             </form>
-            <a href="" ng-click="logout()">Logout</a>
         </div>
     </div>
 </div>

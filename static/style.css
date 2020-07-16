@@ -2,10 +2,29 @@
     height: 100vh;
 }
 
-#app-header {
-    height: 3.3rem;
+#header-window {
 }
 
+#input-window {
+    height: 7rem;
+}
+
+#message-window {
+    height: calc(100vh - 7rem - 3rem);
+    /*max-height: calc(100vh - 7rem - 3.3rem);*/
+    min-height: 0;
+/*
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-end;
+    */
+}
+
+/*
 #app-main {
     display: flex;
     flex-direction: column;
@@ -37,11 +56,12 @@
     min-width: 0;
 }
 
+
 #input-row {
     height: 7rem;
     text-align: center;
 }
-
+*/
 
 .mine {
     background-color: #fff;
