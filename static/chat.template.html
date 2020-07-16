@@ -36,16 +36,21 @@
         </div>
 
         <!-- input window -->
-        <div class="row bg-light border" id="input-window">
-            <form class="form-inline" method="post" ng-submit="sendMessage()">
-                <div class="input-group col-12">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">Message</div>
+        <div class="row bg-light" id="input-window">
+
+            <form class="form-inline justify-content-between col-12" method="post" ng-submit="sendMessage()">
+                <div class="form-group border col-10 p-0">
+                    <div class="input-group p-0 w-100 justify-content-start">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Message</div>
+                        </div>
+                        <input class="form-control" type="text" ng-model="message" name="message"/>
                     </div>
-                    <input class="form-control" type="text" ng-model="message" name="message"/>
                 </div>
-                <button class="form-control col-2 ml-sm-3" type="submit" id="send">Send</button>
+                <div class="form-group border">
+                    <button class="form-control" type="submit" id="send">Send</button>
+                </div>
             </form>
-        </div>
+
     </div>
 </div>
