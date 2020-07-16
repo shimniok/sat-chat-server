@@ -7,7 +7,7 @@ angular.module('chat', [
   '$scope', '$log', '$timeout', '$location', 'MessageService',
   'MessageSinceService', 'RockBlockProvider',
 
-function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock, session) {
+function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock) {
   $scope.messages = Message.query();
 
   var arrayLast = function(a) {
@@ -15,6 +15,10 @@ function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock, se
   }
 
   $log.log($scope.messages);
+
+  $scope.admin = function() {
+    $location.url("/admin");
+  };
 
   $scope.sendMessage = function() {
     var message = $scope.message;

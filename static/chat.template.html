@@ -8,12 +8,12 @@
             <div class="col col-3">
                 <div class="row justify-content-end">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-model="user">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Hi, // user.name //
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-                            <button class="dropdown-item" type="button">Devices</button>
-                            <button class="dropdown-item" type="button">Admin</button>
+                            <button class="dropdown-item" type="button" ng-click="devices()">Devices</button>
+                            <button class="dropdown-item" type="button" ng-click="admin()">Admin</button>
                             <button class="dropdown-item" type="button" ng-click="logout()">Logout</button>
                         </div>
                     </div>
