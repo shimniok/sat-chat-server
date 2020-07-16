@@ -18,7 +18,7 @@ def device_before():
 def device_get():
     devices = Device.query.all()
 
-    return jsonify([m.to_dict() for m in devices])
+    return jsonify([d.to_dict() for d in devices])
 
 @device.route('/device', methods=['post'])
 def devices_post():
@@ -26,9 +26,8 @@ def devices_post():
         abort(400)
     try:
         dev = Device()
-        #dev.owner_id = current_user,
-        dev.imei = request.json['imei'],
-        dev.username = request.json['username'],
+        dev.imei = request.json['imei']
+        dev.username = request.json['username']
         dev.password = request.json['password']
 
     except Exception as e:
@@ -39,6 +38,20 @@ def devices_post():
 
     return jsonify(dev.to_dict())
 
-# PUSH
+@device.route('/device/<id>', methods=['put'])
+def devices_put(id):
+    if not request.json:
+        abort(400)
+    try:
+        dev = Device.query.filter_by(id=id).first_or_404()
+        dev.imei = request.json['imei']
+        dev.username = request.json['username']
+        dev.password = request.json['password']
+        db.session.commit()
+
+    except Exception as e:
+        return "Bad request: {}".format(e), 400
+
+    return jsonify(dev.to_dict())
 
 # DELETE
