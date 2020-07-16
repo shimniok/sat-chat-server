@@ -11,17 +11,25 @@
 
 #message-window {
     height: calc(100vh - 7rem - 3rem);
-    /*max-height: calc(100vh - 7rem - 3.3rem);*/
-    min-height: 0;
     /*
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: scroll;
     display: flex;
     flex: 1;
     flex-direction: column;
     flex-grow: 1;
     justify-content: flex-end;
     */
+}
+
+#message-row {
+    /*
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    */
+    min-height: 0;
+    min-width: 0;
 }
 
 /*
@@ -36,27 +44,6 @@
     margin-left: 0;
 }
 
-#message-window {
-    overflow-y: scroll;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    max-height: calc(100vh - 7rem - 3.3rem);
-    min-height: 0;
-    min-width: 0;
-}
-
-#message-row {
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-between;
-    min-height: 0;
-    min-width: 0;
-}
-
-
 #input-row {
     height: 7rem;
     text-align: center;
@@ -65,7 +52,6 @@
 
 .mine {
     background-color: #fff;
-    margin-left: auto;
 }
 
 .theirs {

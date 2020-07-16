@@ -21,15 +21,13 @@
         </div>
 
         <!-- chat window -->
-        <div class="row border" id="message-window">
-            <div class="col h-100 bg-dark p-2 align-items-end" ng-controller="ChatController">
+        <div class="row d-flex flex-row">
+            <div class="col d-flex flex-column overflow-hidden bg-dark p-2 justify-content-end" ng-controller="ChatController" id="message-window">
                 <div ng-repeat="m in messages">
-                    <div class="row" ng-class="m.sender_id != null ? 'justify-content-end' : 'justify-content-start'">
-                        <div class="col col-5 justify-content-between">
-                                <div class="rounded p-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
-                                    // m.message //
-                                </div>
-                        </div>
+                    <div class="d-flex flex-row" ng-class="m.sender_id != null ? 'justify-content-end' : 'justify-content-start'">
+                            <div class="rounded px-2 py-1" ng-class="m.sender_id != null ? 'mine' : 'theirs'">
+                                // m.message //
+                            </div>
                     </div>
                 </div>
             </div>
@@ -37,7 +35,6 @@
 
         <!-- input window -->
         <div class="row bg-light" id="input-window">
-
             <form class="form-inline justify-content-between col-12" method="post" ng-submit="sendMessage()">
                 <div class="form-group border col-10 p-0">
                     <div class="input-group p-0 w-100 justify-content-start">
@@ -51,6 +48,6 @@
                     <button class="form-control" type="submit" id="send">Send</button>
                 </div>
             </form>
-
+        </div>
     </div>
 </div>
