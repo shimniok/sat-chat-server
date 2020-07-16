@@ -4,11 +4,11 @@ angular.module('chat', [
 ])
 
 .controller('ChatController', [
-  '$scope', '$log', '$timeout', 'MessageService', 'MessageSinceService', 'RockBlockProvider', 'SessionService',
+  '$scope', '$log', '$timeout', '$location', 'MessageService',
+  'MessageSinceService', 'RockBlockProvider',
 
-function($scope, $log, $timeout, Message, MessageSince, RockBlock, session) {
+function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock, session) {
   $scope.messages = Message.query();
-  $scope.user = session.getUser();
 
   var arrayLast = function(a) {
     return a[a.length - 1];
