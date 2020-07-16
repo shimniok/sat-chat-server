@@ -1,4 +1,4 @@
- #app {
+#app {
     height: 100vh;
 }
 
@@ -54,4 +54,8 @@
 
 .chat-form {
     margin: 0 auto 0 auto;
+}
+
+.dialog-no-x.close {
+    display: none;
 }
