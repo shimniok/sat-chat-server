@@ -6,13 +6,13 @@
 }
 
 #input-window {
-    height: 7rem;
+    /*height: 7rem;*/
 }
 
 #message-window {
-    height: calc(100vh - 7rem - 3rem);
-    /*
     overflow-y: scroll;
+    /*
+    height: calc(100vh - 7rem - 3rem);
     display: flex;
     flex: 1;
     flex-direction: column;

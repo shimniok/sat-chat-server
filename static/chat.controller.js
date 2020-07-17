@@ -4,11 +4,11 @@ angular.module('chat', [
 ])
 
 .controller('ChatController', [
-  '$scope', '$log', '$timeout', '$location', 'MessageService',
+  '$scope', '$log', '$timeout', '$location', '$anchorScroll', '$timeout', 'MessageService',
   'MessageSinceService', 'RockBlockProvider',
 
-function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock) {
-  $scope.messages = Message.query();
+function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, MessageSince, RockBlock) {
+  $scope.messages = null;
 
   var arrayLast = function(a) {
     return a[a.length - 1];
@@ -28,20 +28,32 @@ function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock) {
     var message = $scope.message;
 
     if (message)
-    RockBlock.send({"message": message}, function(results) {
-      $log.log(results);
-      $scope.messages.push(results.message);
-      $scope.message = ""; // clear form
+      RockBlock.send({"message": message}, function(results) {
+        $scope.message = ""; // clear form
+        getMessages();
+      });
+  };
+
+  var gotoBottom = function() {
+    $timeout(function() {
+      $anchorScroll('bottom');
     });
   };
 
-  var getNewMessages = function() {
-    MessageSince.query(arrayLast($scope.messages), function(results) {
-      results.forEach(function(m) {
-        $scope.messages.push(m);
+  var getMessages = function() {
+    if ($scope.messages == null) {
+      $scope.messages = Message.query(function(results) {
+        gotoBottom();
       });
-    });
-  }
+    } else {
+      MessageSince.query(arrayLast($scope.messages), function(results) {
+        gotoBottom();
+        results.forEach(function(m) {
+          $scope.messages.push(m);
+        });
+      });
+    }
+  };
 
   // TODO: backoff algorithm or login timeout
 
@@ -49,8 +61,8 @@ function($scope, $log, $timeout, $location, Message, MessageSince, RockBlock) {
 
   var poller = function() {
     $log.log("poller()");
-    getNewMessages();
-    $scope.timeout = $timeout(poller, 60000);
+    getMessages();
+    $scope.timeout = $timeout(poller, 10000);
   };
 
   poller();
