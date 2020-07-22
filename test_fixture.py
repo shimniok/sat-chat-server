@@ -8,8 +8,11 @@ def app():
     '''
     Create a Flask app context for the tests.
     '''
+
     app = create_app()
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
     app.app_context().push()
+    db.create_all()
 
     yield app
 
