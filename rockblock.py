@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from models import Message, db
+from models import Message
 
 rockblock = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
