@@ -8,11 +8,11 @@ from flask_login import current_user
 from datetime import datetime, timezone
 from models import Message
 
-rockblock = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
+rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
 
 # Send data to Rock7
-@rockblock.route('/send', methods=['post'])
+@rockblock_bp.route('/send', methods=['post'])
 def send():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
@@ -76,7 +76,7 @@ def send():
 
 
 # Receive data from Rock7
-@rockblock.route('/receive', methods=['get','post'])
+@rockblock_bp.route('/receive', methods=['get','post'])
 def receive():
 
     parameters = [

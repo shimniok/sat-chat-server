@@ -5,24 +5,24 @@ from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 from models import Device
 
-device = Blueprint('device', __name__, url_prefix='/api')
+device_bp = Blueprint('device', __name__, url_prefix='/api')
 
 # TODO: admin role can interact with anything
 
-@device.before_request
+@device_bp.before_request
 def device_before():
     if not current_user.is_authenticated:
         abort(401)
 
 
-@device.route('/device', methods=['get'])
+@device_bp.route('/device', methods=['get'])
 def device_get():
-    devices = Device.query.all()
+    devices = device_bp.query.all()
 
     return jsonify([d.to_dict() for d in devices])
 
 
-@device.route('/device', methods=['post'])
+@device_bp.route('/device', methods=['post'])
 def devices_post():
     if not request.json:
         abort(400)
@@ -41,12 +41,12 @@ def devices_post():
     return jsonify(dev.to_dict())
 
 
-@device.route('/device/<id>', methods=['put'])
+@device_bp.route('/device/<id>', methods=['put'])
 def device_put(id):
     if not request.json:
         abort(400)
     try:
-        dev = Device.query.filter_by(id=id).first_or_404()
+        dev = device_bp.query.filter_by(id=id).first_or_404()
         dev.imei = request.json['imei']
         dev.username = request.json['username']
         dev.password = request.json['password']
@@ -58,10 +58,10 @@ def device_put(id):
     return jsonify(dev.to_dict())
 
 
-@device.route('/device/<id>', methods=['delete'])
+@device_bp.route('/device/<id>', methods=['delete'])
 def device_del(id):
     try:
-        dev = Device.query.filter_by(id = id).first_or_404()
+        dev = device_bp.query.filter_by(id = id).first_or_404()
         db.session.delete(dev)
         db.session.commit()
     except Exception as e:

@@ -31,14 +31,14 @@ def create_app(test_config=None):
         from message import message_bp
         app.register_blueprint(message_bp)
 
-        from user import user as user_blueprint
-        app.register_blueprint(user_blueprint)
+        from user import user_bp
+        app.register_blueprint(user_bp)
 
-        from device import device as device_blueprint
-        app.register_blueprint(device_blueprint)
+        from device import device_bp
+        app.register_blueprint(device_bp)
 
-        from rockblock import rockblock as rockblock_blueprint
-        app.register_blueprint(rockblock_blueprint)
+        from rockblock import rockblock_bp
+        app.register_blueprint(rockblock_bp)
 
         if app.config['DEVELOPMENT']:
             from loopback import loopback_bp as loopback_blueprint
