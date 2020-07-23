@@ -1,10 +1,12 @@
-from test_fixture import app
+from test_fixture import *
 from models import User, Message, db
 
-def test_db_user(app):
-    # Empty table
+def test_db_user(application):
+    # User table should only contain 'admin' user
     users = User.query.all()
-    assert len(users) == 0, 'table not empty'
+    assert len(users) == 1
+    admin = User.query.filter_by(name='admin').first()
+    assert admin != None
 
     # Add a user
     u = User()
@@ -12,16 +14,26 @@ def test_db_user(app):
     u.email = "test@example.com"
     u.password = "asdf1234"
     db.session.add(u)
-    users = User.query.all()
-    assert len(users) == 1, 'should be 1 row in table'
+    db.session.commit()
+    new = User.query.filter_by(name = u.name).first()
+    assert new != None
+    assert new.name == u.name
+    assert new.email == u.email
+    assert new.password == u.password
+    assert new.id == 2
 
     # Delete user
-    db.session.delete(u)
+    db.session.delete(new)
+    db.session.commit()
+    new = User.query.filter_by(name = u.name).first()
+    assert new == None
     users = User.query.all()
-    assert len(users) == 0, 'table not empty'
+    assert len(users) == 1
+    admin = User.query.filter_by(name='admin').first()
+    assert admin != None
 
 
-def test_db_message(app):
+def test_db_message(application):
     # Empty table
     messages = Message.query.all()
     assert len(messages) == 0, 'table not empty'
