@@ -1,16 +1,34 @@
 from sqlalchemy import Column, ForeignKey, Integer, Float, String, DateTime
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy, Model
-#from sqlalchemy.dialects.postgresql import JSON
-#import json
 from output_mixin import OutputMixin
 from flask_login import UserMixin
 from datetime import datetime
+from werkzeug.security import generate_password_hash
+
 
 db = SQLAlchemy()
 
 #TODO: create roles table, add role Column to each user
 #TODO: add Devices, assign device to user as owner / sender
+
+def init_db(app):
+    db.init_app(app)
+
+    # creates db if it doesn't exist
+    db.create_all()
+
+    # insert admin user if doesn't exist
+    admin = User.query.filter_by(name='admin').first()
+    if not admin:
+        admin = User(
+            name='admin',
+            email='',
+            password=generate_password_hash('admin', method='sha256')
+        );
+    db.session.add(admin)
+    db.session.commit()
+    return
 
 
 class Message(OutputMixin, db.Model):
@@ -43,6 +61,11 @@ class User(OutputMixin, UserMixin, db.Model):
     name = Column(String())
     password = Column(String())
     #device = relationship("Device", uselist=False, back_populates="owner")
+
+    def __init__(self, email="", name="", password=""):
+        self.email=email
+        self.name=name
+        self.password=password
 
     def __repr__(self):
         return "User(<id='{}', name='{}', email='{}'>".format(

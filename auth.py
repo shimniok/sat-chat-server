@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, redirect, request, url_for, flash, jsonify, current_app
 from flask_login import login_required, login_user, logout_user, LoginManager, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User
+from models import User, db
 from functools import wraps
 import json
 
@@ -56,25 +56,25 @@ def auth_delete():
     return jsonify({})
 
 
-#@auth_bp.route('/signup')
-#def signup():
-#    return render_template('signup.html')
+@auth_bp.route('/signup', methods=['get'])
+def signup_get():
+    return render_template('signup.html')
 
 
-#@auth_bp.route('/signup', methods=['post'])
-#def signup_post():
-#    email = request.form.get('email')
-#    name = request.form.get('name')
-#    password = request.form.get('password')
-#    user = User.query.filter_by(email=email).first() # does the email already exist in database?
-#    if user:
-#        flash('That email address is already in use')
-#        return redirect(url_for('auth_bp.signup'))
-#    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
-#    db.session.add(new_user)
-#    db.session.commit()
-#
-#    return redirect(url_for('auth_bp.login'))
+@auth_bp.route('/signup', methods=['post'])
+def signup_post():
+    email = request.form.get('email')
+    name = request.form.get('name')
+    password = request.form.get('password')
+    user = User.query.filter_by(email=email).first() # does the email already exist in database?
+    if user:
+        flash('That email address is already in use')
+        return redirect('/signup')
+    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect('/signup')
 
 
 #@auth_bp.route('/login', methods=['get'])

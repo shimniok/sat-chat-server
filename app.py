@@ -17,10 +17,9 @@ def create_app(test_config=None):
     from auth import login_manager
     login_manager.init_app(app)
 
-
     with app.app_context():
-        from models import db
-        db.init_app(app)
+        from models import db, init_db
+        init_db(app)
 
         from auth import auth_bp
         app.register_blueprint(auth_bp)
