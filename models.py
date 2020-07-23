@@ -23,7 +23,7 @@ def init_db(app):
     if not admin:
         admin = User(
             name='admin',
-            email='',
+            email='admin',
             password=generate_password_hash('admin', method='sha256')
         );
     db.session.add(admin)
