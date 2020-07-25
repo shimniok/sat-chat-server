@@ -30,7 +30,7 @@ def loopback_post():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    from app import app
+    from main import app
     if not (username == app.config['USERNAME'] and password == app.config['PASSWORD']):
         return "Unauthorized", 401
 

@@ -25,6 +25,7 @@ function($log, auth) {
   }
 
   this.logout = function() {
+    $log.log("SessionService: logout");
     user = auth.delete();
   }
 

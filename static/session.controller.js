@@ -11,16 +11,23 @@ angular.module('session', ['auth'])
       if (next.requireAuth) {
         session.valid().then(
           function() {
-            $log.log("session valid");
+            $log.log("SessionController: session valid");
           },
           function() {
             // TODO: redirect to next after login
             // TODO: the path really should come from somewhere else
-            $log.log("session invalid");
+            $log.log("SessionController: session invalid");
             $location.path("/login");
           }
         )
       }
     });
+
+    $scope.logout = function() {
+      $log.log("SessionController: logging out");
+      session.logout();
+      $location.path("/login");
+    }
+
   }
 ]);
