@@ -1,13 +1,19 @@
 from test_fixture import *
 
+new = {
+    'email': 'test@example.com',
+    'name': 'Test',
+    'password': 'Password'
+}
+
 def test_user_list(client):
     """Start with fresh database with initial user."""
 
-    r = client.get('/api/user')
+    r = client.get('/api/user', content_type="application/json")
     assert r.status_code == 200
 
     # only one user returned
-    d = json.loads(r.data.decode())
+    d = r.json #json.loads(r.data.decode())
     assert len(d) == 1
     u = d[0]
 
@@ -18,3 +24,32 @@ def test_user_list(client):
 
     # Password not returned via api
     assert "password" not in u
+
+def test_user_post(client):
+    r = client.post('/api/user', json=new, content_type="application/json")
+    assert r.status_code == 200
+    assert r.content_type == 'application/json'
+    u = r.json
+    assert 'id' in u
+    r = client.get('/api/user/{}'.format(u['id']))
+    assert r.status_code == 200
+    assert r.content_type == 'application/json'
+    u = r.json
+    assert u['name'] == new['name']
+    assert u['email'] == new['email']
+
+def test_user_delete(client):
+    r = client.get('/api/user', content_type="application/json")
+    assert r.status_code == 200
+    assert r.content_type == 'application/json'
+    users = r.json
+    for u in users:
+         if u['email'] == new['email']:
+             user = u;
+             break;
+    r = client.delete('/api/user/{}'.format(u['id']), content_type="application/json")
+    assert r.status_code == 200
+    assert r.content_type == "application/json"
+    u = r.json
+    assert u['email'] == new['email']
+    assert u['name'] == new['name']
