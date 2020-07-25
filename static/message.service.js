@@ -1,11 +1,11 @@
 angular.module('message', ['ngResource'])
     .factory('MessageService', ['$resource',
         function($resource) {
-            return $resource('/api/message/:id', { id: '@id' });
+            return $resource('/api/message/:id', {});
         }
     ])
     .factory('MessageSinceService', ['$resource',
         function($resource) {
-            return $resource('/api/message/since/:momsn', {momsn: '@momsn'});
+            return $resource('/api/message/since/:momsn');
         }
     ]);
