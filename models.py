@@ -60,7 +60,7 @@ class User(OutputMixin, UserMixin, db.Model):
     email = Column(String(), unique=True)
     name = Column(String())
     password = Column(String())
-    #device = relationship("Device", uselist=False, back_populates="owner")
+    device = relationship("Device", uselist=False, back_populates="owner")
 
     def __init__(self, email="", name="", password=""):
         self.email=email
@@ -76,8 +76,8 @@ class Device(OutputMixin, db.Model):
     PROTECTED_COLUMNS = [ 'IMEI', 'password' ]
 
     id = Column(Integer, primary_key=True)
-    #owner_id = Column(Integer, ForeignKey("users.id"))
-    #owner = relationship("User", back_populates="device")
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="device")
     imei = Column(String())
     username = Column(String())
     password = Column(String())

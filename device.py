@@ -17,7 +17,7 @@ def device_before():
 
 @device_bp.route('/device', methods=['get'])
 def device_get():
-    devices = device_bp.query.all()
+    devices = Device.query.all()
 
     return jsonify([d.to_dict() for d in devices])
 
@@ -46,7 +46,7 @@ def device_put(id):
     if not request.json:
         abort(400)
     try:
-        dev = device_bp.query.filter_by(id=id).first_or_404()
+        dev = Device.query.filter_by(id=id).first_or_404()
         dev.imei = request.json['imei']
         dev.username = request.json['username']
         dev.password = request.json['password']
@@ -61,7 +61,7 @@ def device_put(id):
 @device_bp.route('/device/<id>', methods=['delete'])
 def device_del(id):
     try:
-        dev = device_bp.query.filter_by(id = id).first_or_404()
+        dev = Device.query.filter_by(id = id).first_or_404()
         db.session.delete(dev)
         db.session.commit()
     except Exception as e:
