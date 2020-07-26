@@ -36,6 +36,7 @@ class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
     #RELATIONSHIPS_TO_DICT = True
     RELATIONSHIPS_TO_DICT = False
+    #TODO: Fix relationships output!
 
     id = Column(Integer, primary_key=True)
     sender_id = Column(Integer, ForeignKey("users.id"))
@@ -49,15 +50,17 @@ class Message(OutputMixin, db.Model):
     iridium_cep = Column(Integer)
 
     def __init__(self, imei='', sender_id=-1, momsn=-1, message='',
-        transmit_time="70-01-01 00:00:00", time="70-01-01 00:00:00",
+        transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
         self.message = message
         #self.imei = imei
         #self.sender_id = sender_id
         self.momsn = momsn
-        self.transmit_time = datetime.strptime(transmit_time, "%y-%m-%d %H:%M:%S"),
-        self.time = datetime.strptime(time, "%y-%m-%d %H:%M:%S"),
+        # TODO: standardize date formatting on input vs output
+        # currently: Sat, 25 Jul 2020 06:12:30 GMT
+        self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
+        self.time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
         self.iridium_latitude=iridium_latitude
         self.iridium_longitude=iridium_longitude
         self.iridium_cep=iridium_cep
@@ -65,9 +68,8 @@ class Message(OutputMixin, db.Model):
 
     def __repr__(self):
         return "Message(<id='{}', momsn='{}' message='{}', transmit_time='{}', iridium_latitude='{}', iridium_longitude='{}', iridium_cep='{}'>)".format(
-            self.id, self.momsn, self.message, strftime(self.transmit_time, '%y-%m-%d %H:%M:%S'),
-            strftime(self.time, '%y-%m-%d %H:%M:%S'), self.iridium_latitude, self.iridium_longitude,
-            self.iridium_cep)
+            self.id, self.momsn, self.message, self.transmit_time.isoformat(), self.time.isoformat(),
+            self.iridium_latitude, self.iridium_longitude, self.iridium_cep)
 
 class User(OutputMixin, UserMixin, db.Model):
     __tablename__ = 'users'

@@ -10,6 +10,7 @@ from models import Message
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
+# TODO: Convert to using message api versus databse
 
 # Send data to Rock7
 @rockblock_bp.route('/send', methods=['post'])

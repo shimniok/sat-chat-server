@@ -21,6 +21,9 @@ def create_app(test_config=None):
         from models import db, init_db
         init_db(app)
 
+        from json_parser import CustomJSONEncoder
+        app.json_encoder = CustomJSONEncoder
+
         from auth import auth_bp
         app.register_blueprint(auth_bp)
 
