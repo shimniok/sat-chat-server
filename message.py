@@ -46,23 +46,22 @@ def message_post():
     try:
         data = request.json
         message = Message(
-            imei = data['imei'],
+            #imei = data['imei'],
             momsn = data['momsn'],
             sender_id = current_user,
             transmit_time = data['transmit_time'],
             time = data['time'],
-            iridium_latitude = data['iridium_latitude'],
-            iridium_longitude = data['iridium_longitude'],
+            iridium_latitude = float(data['iridium_latitude']),
+            iridium_longitude = float(data['iridium_longitude']),
             iridium_cep = data['iridium_cep'],
             message = data['message']
         )
         #db.session.add(message)
         #db.session.commit()
+        return jsonify(message.to_dict())
+
     except Exception as e:
         return "Error: {}".format(e), 400
-
-    # TODO: finish message post implementation
-    return jsonify(message.to_dict())
 
 
 @message_bp.route('/message/<id>', methods=['delete'])
