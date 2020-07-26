@@ -8,6 +8,8 @@ from werkzeug.security import generate_password_hash
 import json
 from models import db
 
+endpoint='/api/user'
+
 user_bp = Blueprint('user', __name__, template_folder='templates')
 
 @user_bp.before_request
@@ -16,19 +18,19 @@ def user_before():
         return "Unauthorized", 401
 
 
-@user_bp.route('/api/user', methods=['get'])
+@user_bp.route(endpoint, methods=['get'])
 def users_get():
     users = User.query.all()
     return jsonify([u.to_dict() for u in users])
 
 
-@user_bp.route('/api/user/<id>', methods=['get'])
+@user_bp.route(endpoint+'/<id>', methods=['get'])
 def user_get(id):
     u = User.query.filter_by(id=id).first_or_404()
     return jsonify(u.to_dict())
 
 
-@user_bp.route('/api/user', methods=['post'])
+@user_bp.route(endpoint, methods=['post'])
 def user_post():
     #Get request parameters
     print("user_post()")
@@ -48,7 +50,7 @@ def user_post():
         return "Error: {}".format(e), 400
 
 
-@user_bp.route('/api/user/<id>', methods=['delete'])
+@user_bp.route(endpoint+'/<id>', methods=['delete'])
 def user_delete(id=-1):
     u = User.query.filter_by(id=id).first_or_404()
     db.session.delete(u)

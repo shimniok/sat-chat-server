@@ -1,6 +1,5 @@
 from test_fixture import *
-
-endpoint='/api/user'
+from user import endpoint
 
 new = {
     'email': 'test@example.com',
