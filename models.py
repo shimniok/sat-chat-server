@@ -34,9 +34,8 @@ def init_db(app):
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
-    #RELATIONSHIPS_TO_DICT = True
+    #TODO: RELATIONSHIPS_TO_DICT = True
     RELATIONSHIPS_TO_DICT = False
-    #TODO: Fix relationships output!
 
     id = Column(Integer, primary_key=True)
     sender_id = Column(Integer, ForeignKey("users.id"))
@@ -54,11 +53,9 @@ class Message(OutputMixin, db.Model):
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
         self.message = message
-        #self.imei = imei
+        #TODO: self.imei = imei
         #self.sender_id = sender_id
         self.momsn = momsn
-        # TODO: standardize date formatting on input vs output
-        # currently: Sat, 25 Jul 2020 06:12:30 GMT
         self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
         self.time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
         self.iridium_latitude=iridium_latitude

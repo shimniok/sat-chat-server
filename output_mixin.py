@@ -30,7 +30,7 @@ class OutputMixin(object):
         if rel:
             for attr, relation in self.__mapper__.relationships.items():
                 # Avoid recursive loop between two tables.
-                #TODO: Fix recursion problem with bidirectional relation
+                #TODO: Fix recursion problem with bidirectional relations
                 if hasattr(relation, 'table') and backref == relation.table:
                     continue
                 value = getattr(self, attr)

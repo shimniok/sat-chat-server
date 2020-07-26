@@ -56,8 +56,8 @@ def message_post():
             iridium_cep = data['iridium_cep'],
             message = data['message']
         )
-        #db.session.add(message)
-        #db.session.commit()
+        db.session.add(message)
+        db.session.commit()
         return jsonify(message.to_dict())
 
     except Exception as e:
