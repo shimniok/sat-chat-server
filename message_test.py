@@ -2,8 +2,7 @@ from test_fixture import *
 from datetime import datetime, timezone
 import binascii
 from models import Message
-
-endpoint = '/api/message'
+from message import endpoint
 
 new = {
     #TODO: 'imei': os.environ['IMEI'],
