@@ -51,7 +51,7 @@ def test_user_delete(client):
          if u['email'] == new['email']:
              user = u;
              break;
-    r = client.delete('/api/user/{}'.format(u['id']), content_type="application/json")
+    r = client.delete(endpoint+'/{}'.format(u['id']), content_type="application/json")
     assert r.status_code == 200
     assert r.content_type == "application/json"
     u = r.json
