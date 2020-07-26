@@ -1,15 +1,18 @@
 from test_fixture import *
 
+endpoint='/api/user'
+
 new = {
     'email': 'test@example.com',
     'name': 'Test',
     'password': 'Password'
 }
 
+
 def test_user_list(client):
     """Start with fresh database with initial user."""
 
-    r = client.get('/api/user', content_type="application/json")
+    r = client.get(endpoint, content_type="application/json")
     assert r.status_code == 200
 
     # only one user returned
@@ -25,8 +28,9 @@ def test_user_list(client):
     # Password not returned via api
     assert "password" not in u
 
+
 def test_user_post(client):
-    r = client.post('/api/user', json=new, content_type="application/json")
+    r = client.post(endpoint, json=new, content_type="application/json")
     assert r.status_code == 200
     assert r.content_type == 'application/json'
     u = r.json
@@ -38,8 +42,9 @@ def test_user_post(client):
     assert u['name'] == new['name']
     assert u['email'] == new['email']
 
+
 def test_user_delete(client):
-    r = client.get('/api/user', content_type="application/json")
+    r = client.get(endpoint, content_type="application/json")
     assert r.status_code == 200
     assert r.content_type == 'application/json'
     users = r.json

@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy, Model
 from output_mixin import OutputMixin
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
 
 
@@ -33,7 +33,8 @@ def init_db(app):
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
-    RELATIONSHIPS_TO_DICT = True
+    #RELATIONSHIPS_TO_DICT = True
+    RELATIONSHIPS_TO_DICT = False
 
     id = Column(Integer, primary_key=True)
     sender_id = Column(Integer, ForeignKey("users.id"))
@@ -45,6 +46,21 @@ class Message(OutputMixin, db.Model):
     iridium_latitude = Column(Float())
     iridium_longitude = Column(Float())
     iridium_cep = Column(Integer)
+
+    def __init__(self, imei='', sender_id=-1, momsn=-1, message='',
+        transmit_time="70-01-01 00:00:00", time="70-01-01 00:00:00",
+        iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
+
+        #self.imei = imei
+        #self.sender_id = sender_id
+        self.momsn = momsn
+        self.message = message
+        self.transmit_time = datetime.strptime(transmit_time, "%y-%m-%d %H:%M:%S"),
+        self.time = datetime.strptime(time, "%y-%m-%d %H:%M:%S"),
+        self.iridium_latitude=iridium_latitude
+        self.iridium_longitude=iridium_longitude
+        self.iridium_cep=iridium_cep
+
 
     def __repr__(self):
         return "Message(<id='{}', momsn='{}' message='{}', transmit_time='{}', iridium_latitude='{}', iridium_longitude='{}', iridium_cep='{}'>)".format(

@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request, abort
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 from models import Device
+from models import db
 
 device_bp = Blueprint('device', __name__, url_prefix='/api')
 
@@ -11,8 +12,9 @@ device_bp = Blueprint('device', __name__, url_prefix='/api')
 
 @device_bp.before_request
 def device_before():
-    if not current_user.is_authenticated:
-        abort(401)
+    print("device_before()")
+    #if not current_user.is_authenticated:
+    #    abort(401)
 
 
 @device_bp.route('/device', methods=['get'])

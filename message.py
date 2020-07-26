@@ -1,9 +1,9 @@
 ## MESSAGE API ############################################################################################
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from models import Message
+from models import Message, db
 
 message_bp = Blueprint('message', __name__, url_prefix='/api')
 
@@ -38,6 +38,30 @@ def message_get(id=-1):
 
     message = Message.query.filter_by(id = id).first_or_404()
 
+    return jsonify(message.to_dict())
+
+
+@message_bp.route('/message', methods=['post'])
+def message_post():
+    try:
+        data = request.json
+        message = Message(
+            imei = data['imei'],
+            momsn = data['momsn'],
+            sender_id = current_user,
+            transmit_time = data['transmit_time'],
+            time = data['time'],
+            iridium_latitude = data['iridium_latitude'],
+            iridium_longitude = data['iridium_longitude'],
+            iridium_cep = data['iridium_cep'],
+            message = data['message']
+        )
+        #db.session.add(message)
+        #db.session.commit()
+    except Exception as e:
+        return "Error: {}".format(e), 400
+
+    # TODO: finish message post implementation
     return jsonify(message.to_dict())
 
 
