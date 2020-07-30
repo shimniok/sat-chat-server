@@ -12,5 +12,7 @@
 <script src="{{ url_for('static', filename='admin.controller.js') }}"></script>
 <script src="{{ url_for('static', filename='device.controller.js') }}"></script>
 
-<div ng-view></div>
+<div ng-controller="SessionController">
+    <div ng-view></div>
+</div>
 {% endblock %}
