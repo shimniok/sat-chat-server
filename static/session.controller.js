@@ -8,6 +8,7 @@ angular.module('session', ['auth'])
     // Intercept route changes and check if authentication is required
     // and if so, check session validity
     $scope.$on('$routeChangeStart', function (angularEvent, next, current) {
+      $log.log("routeChangeStart");
       if (next.requireAuth) {
         session.valid().then(
           function() {

@@ -21,20 +21,23 @@
       controller: 'ChatController',
       requireAuth: true
     })
+    .when('/admin', {
+      templateUrl: 'static/admin.template.html',
+      controller: 'AdminController',
+      requireAuth: true
+    })
+    .when('/device', {
+      templateUrl: 'static/device.template.html',
+      controller: 'DeviceController',
+      requireAuth: true
+    })
     .when('/login', {
       templateUrl: 'static/login.template.html',
       controller: 'LoginController'
     })
-    .when('/admin', {
-      templateUrl: 'static/admin.template.html',
-      controller: 'AdminController'
-    })
-    .when('/device', {
-      templateUrl: 'static/device.template.html',
-      controller: 'DeviceController'
-    })
     .otherwise({
-      redirectTo: '/chat'
+      redirectTo: '/chat',
+      requireAuth: true
     })
   }]);
 
