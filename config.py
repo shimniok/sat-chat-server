@@ -17,6 +17,7 @@ def create_config(env):
     return config
 
 class Config(object):
+    DEVELOPMENT = False
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
