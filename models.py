@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy, Model
 from output_mixin import OutputMixin
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
+import binascii
 
 
 db = SQLAlchemy()
@@ -33,7 +34,8 @@ def init_db(app):
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
-    RELATIONSHIPS_TO_DICT = True
+    #TODO: RELATIONSHIPS_TO_DICT = True
+    RELATIONSHIPS_TO_DICT = False
 
     id = Column(Integer, primary_key=True)
     sender_id = Column(Integer, ForeignKey("users.id"))
@@ -46,11 +48,25 @@ class Message(OutputMixin, db.Model):
     iridium_longitude = Column(Float())
     iridium_cep = Column(Integer)
 
+    def __init__(self, imei='', sender_id=-1, momsn=-1, message='',
+        transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
+        iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
+
+        self.message = message
+        #TODO: self.imei = imei
+        #self.sender_id = sender_id
+        self.momsn = momsn
+        self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
+        self.time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
+        self.iridium_latitude=iridium_latitude
+        self.iridium_longitude=iridium_longitude
+        self.iridium_cep=iridium_cep
+
+
     def __repr__(self):
         return "Message(<id='{}', momsn='{}' message='{}', transmit_time='{}', iridium_latitude='{}', iridium_longitude='{}', iridium_cep='{}'>)".format(
-            self.id, self.momsn, self.message, strftime(self.transmit_time, '%y-%m-%d %H:%M:%S'),
-            strftime(self.time, '%y-%m-%d %H:%M:%S'), self.iridium_latitude, self.iridium_longitude,
-            self.iridium_cep)
+            self.id, self.momsn, self.message, self.transmit_time.isoformat(), self.time.isoformat(),
+            self.iridium_latitude, self.iridium_longitude, self.iridium_cep)
 
 class User(OutputMixin, UserMixin, db.Model):
     __tablename__ = 'users'
@@ -60,7 +76,7 @@ class User(OutputMixin, UserMixin, db.Model):
     email = Column(String(), unique=True)
     name = Column(String())
     password = Column(String())
-    #device = relationship("Device", uselist=False, back_populates="owner")
+    device = relationship("Device", uselist=False, back_populates="owner")
 
     def __init__(self, email="", name="", password=""):
         self.email=email
@@ -76,8 +92,8 @@ class Device(OutputMixin, db.Model):
     PROTECTED_COLUMNS = [ 'IMEI', 'password' ]
 
     id = Column(Integer, primary_key=True)
-    #owner_id = Column(Integer, ForeignKey("users.id"))
-    #owner = relationship("User", back_populates="device")
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="device")
     imei = Column(String())
     username = Column(String())
     password = Column(String())

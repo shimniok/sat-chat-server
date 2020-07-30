@@ -5,7 +5,7 @@
 import os
 import binascii
 import requests
-from flask import Blueprint, request, url_for
+from flask import Blueprint, request, url_for, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
 from worker import q
@@ -30,7 +30,7 @@ def loopback_post():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    from main import app
+    app = current_app
     if not (username == app.config['USERNAME'] and password == app.config['PASSWORD']):
         return "Unauthorized", 401
 

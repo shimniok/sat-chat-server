@@ -16,6 +16,8 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
 
   $log.log($scope.messages);
 
+  //TDOO: Nav Controller, Nav Template
+
   $scope.admin = function() {
     $location.url("/admin");
   };
@@ -46,7 +48,8 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
         gotoBottom();
       });
     } else {
-      MessageSince.query(arrayLast($scope.messages), function(results) {
+      last = arrayLast($scope.messages);
+      MessageSince.query( {"momsn": last.momsn}, function(results) {
         gotoBottom();
         results.forEach(function(m) {
           $scope.messages.push(m);

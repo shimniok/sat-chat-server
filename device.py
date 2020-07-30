@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request, abort
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 from models import Device
+from models import db
 
 device_bp = Blueprint('device', __name__, url_prefix='/api')
 
@@ -11,13 +12,14 @@ device_bp = Blueprint('device', __name__, url_prefix='/api')
 
 @device_bp.before_request
 def device_before():
-    if not current_user.is_authenticated:
-        abort(401)
+    print("device_before()")
+    #if not current_user.is_authenticated:
+    #    abort(401)
 
 
 @device_bp.route('/device', methods=['get'])
 def device_get():
-    devices = device_bp.query.all()
+    devices = Device.query.all()
 
     return jsonify([d.to_dict() for d in devices])
 
@@ -46,7 +48,7 @@ def device_put(id):
     if not request.json:
         abort(400)
     try:
-        dev = device_bp.query.filter_by(id=id).first_or_404()
+        dev = Device.query.filter_by(id=id).first_or_404()
         dev.imei = request.json['imei']
         dev.username = request.json['username']
         dev.password = request.json['password']
@@ -61,7 +63,7 @@ def device_put(id):
 @device_bp.route('/device/<id>', methods=['delete'])
 def device_del(id):
     try:
-        dev = device_bp.query.filter_by(id = id).first_or_404()
+        dev = Device.query.filter_by(id = id).first_or_404()
         db.session.delete(dev)
         db.session.commit()
     except Exception as e:
