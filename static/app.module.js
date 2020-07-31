@@ -36,8 +36,7 @@
       controller: 'LoginController'
     })
     .otherwise({
-      redirectTo: '/chat',
-      requireAuth: true
+      redirectTo: '/chat'
     })
   }]);
 

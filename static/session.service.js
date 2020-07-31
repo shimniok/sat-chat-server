@@ -2,31 +2,38 @@ angular.module('session')
 
 .service('SessionService', [ '$log', 'AuthProvider',
 function($log, auth) {
-  var user = auth.get();
-
-  this.getUser = function() {
-    return user;
-  };
+  var isValid = 0;
 
   this.valid = function() {
-    user = auth.get();
-
-    return user.$promise;
+    return isValid;
   };
 
-  this.authenticate = function(username, password, success, failure) {
+  this.query = function(successCallback, failureCallback) {
+    auth.get().$promise
+    .then(function(result) {
+      isValid = 1;
+      successCallback(result);
+    }, function(result) {
+      isValid = 0;
+      failureCallback(result);
+    });
+  };
+
+  this.authenticate = function(username, password, successCallback, failureCallback) {
     auth.save({ "email": username, "password": password }).$promise
     .then(function(result) {
-      user = result;
-      success(result);
+      isValid = 1;
+      successCallback(result);
     },function(result) {
-      failure(result);
+      isValid = 0;
+      failureCallback(result);
     });
   }
 
   this.logout = function() {
     $log.log("SessionService: logout");
-    user = auth.delete();
+    auth.delete();
+    isValid = 0;
   }
 
 }]);
