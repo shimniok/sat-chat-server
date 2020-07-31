@@ -24,9 +24,9 @@ def device_get():
     device = Device.query.filter_by(owner_id = current_user.id).first()
 
     if device == None:
-        return jsonify({})
+        return jsonify([{}])
     else:
-        return jsonify(device.to_dict())
+        return jsonify([device.to_dict()])
 
 
 @device_bp.route(endpoint, methods=['post'])
