@@ -35,6 +35,7 @@ def devices_post():
             imei = request.json['imei'],
             username = request.json['username'],
             password = request.json['password']
+            #TODO: Add owner_id
         )
         db.session.add(dev)
         db.session.commit()

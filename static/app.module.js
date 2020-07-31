@@ -6,7 +6,7 @@
     'login',
     'chat',
     'admin',
-    'chat.device'
+    'device'
   ])
 
   .config(function($interpolateProvider) {
