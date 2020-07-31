@@ -3,8 +3,8 @@
 
     <div class="row row-col-1 justify-content-center h-100">
         <div class="d-flex flex-column my-auto mx-auto bg-light p-3">
-            <form name="device">
-                <div class="form-group">
+            <form name="device" ng-hide="device.length > 0">
+                <div class="form-group form-group-inline">
                     <label for="imei">RockBlock IMEI</label>
                     <input class="form-control" type="text" name="imei" ng-model='imei'/>
                 </div>
@@ -17,8 +17,13 @@
                 <div class="form-group">
                     <label for="password">Rock7 Password</a>
                     <input class="form-control" type="password" name="password" ng-model='password'/>
+                    <label for="password">New Rock7 Password</a>
+                    <input class="form-control" type="password" name="password1" ng-model='password1' ng-hide="!device"/>
+                    <label for="password">Confirm Rock7 Password</a>
+                    <input class="form-control" type="password" name="password2" ng-model='password2' ng-hide="!device"/>
                 </div>
-                <button type="submit" class="btn btn-primary" ng-click="save()">Submit</button>
+                <button type="submit" class="btn btn-primary" ng-click="save()" ng-hide="device">Submit</button>
+                <button type="submit" class="btn btn-primary" ng-click="update()" ng-hide="!device">Update</button>
             </form>
         </div>
     </div>
