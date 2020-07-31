@@ -4,7 +4,7 @@ import binascii
 from models import Message
 from message import endpoint
 
-new = {
+msg = {
     #TODO: 'imei': os.environ['IMEI'],
     'momsn': 999,
     'transmit_time': "2020-07-25T06:12:30Z",
@@ -26,16 +26,16 @@ def test_empty_messages(client):
 
 def test_post_messages(client):
     # Post new message_get
-    r = client.post(endpoint, json=new, content_type="application/json")
+    r = client.post(endpoint, json=msg, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     m = r.json
     #TODO: assert m['imei'] == new['imei']
-    assert m['momsn'] == new['momsn']
-    assert m['transmit_time'] == new['transmit_time']
-    assert m['time'] == new['time']
-    assert m['iridium_latitude'] == new['iridium_latitude']
-    assert m['iridium_longitude'] == new['iridium_longitude']
-    assert m['message'] == new['message']
+    assert m['momsn'] == msg['momsn']
+    assert m['transmit_time'] == msg['transmit_time']
+    assert m['time'] == msg['time']
+    assert m['iridium_latitude'] == msg['iridium_latitude']
+    assert m['iridium_longitude'] == msg['iridium_longitude']
+    assert m['message'] == msg['message']
 
 
 def test_delete_messages(client):
