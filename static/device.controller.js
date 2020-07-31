@@ -2,21 +2,21 @@ angular.module('device', ['ngResource'])
 
 .controller('DeviceController', ['$scope', '$log', 'DeviceService',
   function($scope, $log, DeviceService) {
-    $scope.myDevice = {};
+    $scope.device = null;
 
     // see if we have a device already and if so, assign to model
     DeviceService.query(content_type='application/json').$promise
     .then(function(result) {
-      $log.log(result);
-      if (result.length != 0) {
-        r = result[0];
-        $scope.username = r.username;
-        $scope.imei = r.imei;
-        $scope.password = "password"; // bogus password
+      if (result.length > 0) {
+        $log.log(result[0]);
+        $scope.password = "password"; // bogus password as placeholder
+        $scope.username = result[0].username;
+        $scope.imei = result[0].imei;
       }
+      return result[0];
+    }, function(result) {
+      $scope.device = null;
     });
-
-    $log.log('device controller');
 
     $scope.save = function() {
       $log.log('DeviceController: save');
@@ -33,6 +33,17 @@ angular.module('device', ['ngResource'])
         $scope.username = '';
         $scope.password = '';
       });
+
+    };
+
+    $scope.update = function() {
+      $log.log('DeviceController: update');
+
+      var update = {};
+
+      if ($scope.imei != $scope.device.imei) update.imei = $scope.imei;
+      if ($scope.username != $scope.device.username) update.username = $scope.username;
+      if ($scope.password != $scope.device.password) update.password = $scope.password;
 
     };
 
