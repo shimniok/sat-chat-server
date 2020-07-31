@@ -1,36 +1,40 @@
 from test_fixture import *
 from flask import request
 from models import Device
+from device import endpoint
 
-def test_device(client):
+dev = {
+    'imei': 'abcdefg',
+    'username': 'bogus',
+    'password': 'alsobogus'
+}
+
+def test_empty_devices(client):
     """Start with fresh database."""
 
-    r = client.get('/api/device', content_type="application/json")
-    assert r.status_code == 200
+    r = client.get(endpoint, content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
     assert len(r.json) == 0
 
-    new = Device(
-        imei='abcdefg',
-        username='bogus',
-        password='alsobogus'
-    )
+def test_post_device(client):
 
-    data = json.dumps(new.to_dict())
+    r = client.post(endpoint, json=dev, content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    assert r.content_type == 'application/json'
 
-#    r = client.post('/api/device', data=data, content_type="application/json")
-#    assert r.status_code == 200
-#    assert r.content_type == 'application/json'
+    r = client.get(endpoint, content_type="application/json")
+    d = r.json[0]
+    assert d['imei'] == dev['imei']
+    assert d['username'] == dev['username']
 
-    # only one user returned
-#    d = json.loads(r.data.decode())
-#    assert len(d) == 1
-#    u = d[0]
+def test_delete_device(client):
+    r = client.get(endpoint, content_type="application/json")
+    d = r.json[0]
 
-#    # email field
-#    assert "email" in u
-#    assert u['email'] == 'admin'
-#    assert u['name'] == 'admin'
+    r = client.delete(endpoint+'/{}'.format(d['id']), content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    assert r.content_type == 'application/json'
 
-    # Password not returned via api
-#    assert "password" not in u
+    r = client.get(endpoint, content_type="application/json")
+    assert len(r.json) == 0
