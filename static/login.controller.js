@@ -2,14 +2,8 @@ angular.module('login', ['session'])
 
 // TODO: fix logout button!
 
-.controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService', 'AuthProvider',
-  function($scope, $log, $location, $http, session, auth) {
-
-    $scope.logout = function() {
-      $log.log("logout()");
-      session.logout();
-      $location.path("/");
-    }
+.controller('LoginController', [ '$scope', '$log', '$location', '$http', 'SessionService',
+  function($scope, $log, $location, $http, session) {
 
     $scope.authenticate = function() {
       $log.log("authenticate()");
@@ -21,6 +15,7 @@ angular.module('login', ['session'])
         },
         failure = function() {
           $log.log("failure");
+          //TODO: Alert user, clear form
         });
     };
 
