@@ -98,6 +98,11 @@ class Device(OutputMixin, db.Model):
     username = Column(String())
     password = Column(String())
 
+    def __init__(self, imei, username, password):
+        self.imei = imei
+        self.username = username
+        self.password = generate_password_hash(username, method='sha256')
+
     def __repr__(self):
         return "Device(<id='{}', imei='{}', username='{}'".format(
             self.id, self.imei, self.username )
