@@ -21,17 +21,19 @@
       controller: 'ChatController',
       requireAuth: true
     })
-    .when('/login', {
-      templateUrl: 'static/login.template.html',
-      controller: 'LoginController'
-    })
     .when('/admin', {
       templateUrl: 'static/admin.template.html',
-      controller: 'AdminController'
+      controller: 'AdminController',
+      requireAuth: true
     })
     .when('/device', {
       templateUrl: 'static/device.template.html',
-      controller: 'DeviceController'
+      controller: 'DeviceController',
+      requireAuth: true
+    })
+    .when('/login', {
+      templateUrl: 'static/login.template.html',
+      controller: 'LoginController'
     })
     .otherwise({
       redirectTo: '/chat'

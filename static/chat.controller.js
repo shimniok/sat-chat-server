@@ -5,9 +5,9 @@ angular.module('chat', [
 
 .controller('ChatController', [
   '$scope', '$log', '$timeout', '$location', '$anchorScroll', '$timeout', 'MessageService',
-  'MessageSinceService', 'RockBlockProvider',
+  'MessageSinceService', 'RockBlockProvider', 'SessionService',
 
-function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, MessageSince, RockBlock) {
+function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, MessageSince, RockBlock, session) {
   $scope.messages = null;
 
   var arrayLast = function(a) {
@@ -44,7 +44,7 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
 
   var getMessages = function() {
     if ($scope.messages == null) {
-      $scope.messages = Message.query(function(results) {
+      $scope.messages = Message.query(function() {
         gotoBottom();
       });
     } else {
@@ -64,7 +64,9 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
 
   var poller = function() {
     $log.log("poller()");
-    getMessages();
+    if (session.valid()) {
+      getMessages();
+    }
     $scope.timeout = $timeout(poller, 10000);
   };
 
