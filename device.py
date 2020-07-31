@@ -34,17 +34,17 @@ def devices_post():
         dev = Device(
             imei = request.json['imei'],
             username = request.json['username'],
-            password = request.json['password']
-            #TODO: Add owner_id
+            password = request.json['password'],
+            owner_id = current_user.id
         )
         db.session.add(dev)
         db.session.commit()
-
     except Exception as e:
+        print("Error: {}".format(e))
         return "Bad request: {}".format(e), 400
 
-
     return jsonify(dev.to_dict())
+
 
 
 @device_bp.route(endpoint+'/<id>', methods=['put'])
