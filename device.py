@@ -21,9 +21,9 @@ def device_before():
 
 @device_bp.route(endpoint, methods=['get'])
 def device_get():
-    devices = Device.query.all()
+    device = Device.query.filter_by(owner_id = current_user.id).first()
 
-    return jsonify([d.to_dict() for d in devices])
+    return jsonify(device.to_dict())
 
 
 @device_bp.route(endpoint, methods=['post'])
