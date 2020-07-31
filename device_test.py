@@ -37,4 +37,4 @@ def test_delete_device(client):
     assert r.content_type == 'application/json'
 
     r = client.get(endpoint, content_type="application/json")
-    assert len(r.json) == 0
+    assert r.json == {}
