@@ -15,7 +15,7 @@ def test_empty_devices(client):
     r = client.get(endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
-    assert r.json == {}
+    assert r.json[0] == {}
 
 def test_post_device(client):
 
@@ -24,17 +24,17 @@ def test_post_device(client):
     assert r.content_type == 'application/json'
 
     r = client.get(endpoint, content_type="application/json")
-    d = r.json
+    d = r.json[0]
     assert d['imei'] == dev['imei']
     assert d['username'] == dev['username']
 
 def test_delete_device(client):
     r = client.get(endpoint, content_type="application/json")
-    d = r.json
+    d = r.json[0]
 
     r = client.delete(endpoint+'/{}'.format(d['id']), content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
 
     r = client.get(endpoint, content_type="application/json")
-    assert r.json == {}
+    assert r.json[0] == {}
