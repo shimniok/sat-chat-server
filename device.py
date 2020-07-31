@@ -24,7 +24,7 @@ def device_get():
     device = Device.query.filter_by(owner_id = current_user.id).first()
 
     if device == None:
-        return jsonify([{}])
+        return jsonify([])
     else:
         return jsonify([device.to_dict()])
 
