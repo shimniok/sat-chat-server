@@ -1,5 +1,5 @@
 from test_fixture import *
-from models import User, Message, db
+from models import *
 
 def test_db_user(application):
     ''' User table should only contain 'admin' user '''
@@ -13,3 +13,8 @@ def test_db_message(application):
     ''' Message table should be empty '''
     messages = Message.query.all()
     assert len(messages) == 0, 'table not empty'
+
+def test_db_device(application):
+    ''' Device table should be empty '''
+    devices = Device.query.all()
+    assert len(devices) == 0, 'table not empty'
