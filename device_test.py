@@ -15,7 +15,7 @@ def test_empty_devices(client):
     r = client.get(endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
-    #assert r.json == {}
+    assert r.json == {}
 
 def test_post_device(client):
 
