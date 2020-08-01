@@ -54,7 +54,7 @@ class Message(OutputMixin, db.Model):
 
         self.message = message
         self.imei = imei
-        #self.sender_id = sender_id
+        self.sender_id = sender_id
         self.momsn = momsn
         try:
             self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
