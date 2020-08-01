@@ -63,7 +63,7 @@ def loopback_post():
     message = {
         'imei': os.environ['IMEI'],
         'momsn': mobile_momsn + 1,
-        'transmit_time': datetime.strftime(datetime.utcnow(), "%y-%m-%d %H:%M:%S"),
+        'transmit_time': datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%SZ"),
         'iridium_latitude': "39.5807",
         'iridium_longitude': "-104.8772",
         'iridium_cep': 8,
