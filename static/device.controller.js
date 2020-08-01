@@ -9,7 +9,8 @@ angular.module('device', ['ngResource'])
     .then(function(result) {
       if (result.length > 0) {
         $log.log(result[0]);
-        $scope.password = "password"; // bogus password as placeholder
+        $scope.device = result[0];
+        //$scope.password = "password"; // bogus password as placeholder
         $scope.username = result[0].username;
         $scope.imei = result[0].imei;
       }
@@ -43,7 +44,10 @@ angular.module('device', ['ngResource'])
 
       if ($scope.imei != $scope.device.imei) update.imei = $scope.imei;
       if ($scope.username != $scope.device.username) update.username = $scope.username;
-      if ($scope.password != $scope.device.password) update.password = $scope.password;
+
+      if ($scope.password1 != "" && $scope.password1 == $scope.password2) {
+        update.password = $scope.password1;
+      }
 
     };
 

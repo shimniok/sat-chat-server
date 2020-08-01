@@ -55,6 +55,7 @@ def device_put(id):
     if not request.json:
         abort(400)
     try:
+        #TODO: ensure current_user owns this device!
         dev = Device.query.filter_by(id=id).first_or_404()
         dev.imei = request.json['imei']
         dev.username = request.json['username']
@@ -70,6 +71,7 @@ def device_put(id):
 @device_bp.route(endpoint+'/<id>', methods=['delete'])
 def device_del(id):
     try:
+        #TODO: ensure current_user owns this device!
         dev = Device.query.filter_by(id = id).first_or_404()
         db.session.delete(dev)
         db.session.commit()
