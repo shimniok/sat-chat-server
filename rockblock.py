@@ -7,6 +7,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
 from models import Message, db
+from json_parser import dt_fmt
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
@@ -50,8 +51,8 @@ def send():
             sender_id=current_user.id,
             momsn=msg_bits[1],
             message=text,
-            transmit_time=datetime.strftime(datetime.utcnow(),"%Y-%M-%DT%H:%M:%SZ"),
-            time=datetime.strftime(datetime.utcnow(),"%Y-%M-%DT%H:%M:%SZ")
+            transmit_time=datetime.strftime(datetime.utcnow(), dt_fmt),
+            time=datetime.strftime(datetime.utcnow(), dt_fmt)
         )
         #print('receive(): transmit_time: {}'.format(m.transmit_time))
         id = db.session.add(m)
@@ -102,7 +103,7 @@ def receive():
     try:
         momsn = request.form.get('momsn')
         transmit_time = request.form.get('transmit_time')
-        time = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%SZ")
+        time = datetime.strftime(datetime.utcnow(), dt_fmt)
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')

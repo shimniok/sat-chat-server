@@ -6,7 +6,7 @@ from flask_login import UserMixin
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
 import binascii
-
+from json_parser import dt_fmt
 
 db = SQLAlchemy()
 
@@ -57,8 +57,8 @@ class Message(OutputMixin, db.Model):
         self.sender_id = sender_id
         self.momsn = momsn
         try:
-            self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
-            self.time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
+            self.transmit_time = datetime.strptime(transmit_time, dt_fmt)
+            self.time = datetime.strptime(time, dt_fmt)
         except ValueError as e:
             print("Message: bad time format: {}".format(e))
         self.iridium_latitude=iridium_latitude

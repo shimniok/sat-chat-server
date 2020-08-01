@@ -2,12 +2,13 @@ from test_fixture import *
 from datetime import datetime
 import binascii
 import message
+from json_parser import dt_fmt
 
 text = 'Test Message'
 mo_msg = {
     'imei': os.environ['IMEI'],
     'momsn': 99,
-    'transmit_time': datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%SZ"),
+    'transmit_time': datetime.strftime(datetime.utcnow(), dt_fmt),
     'iridium_latitude': 39.5807,
     'iridium_longitude': -104.8772,
     'iridium_cep': 8,
