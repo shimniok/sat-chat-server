@@ -26,6 +26,7 @@ def send():
         hex = binascii.b2a_hex(text.encode('utf-8'))
         print("send text={} hex={}".format(text, hex))
     except Exception as e:
+        print("send(): problem preparing message {}".format(e))
         return "problem preparing message", 401
 
     data = {
@@ -73,7 +74,8 @@ def send():
             'error_number': "999",
             'error_text': r.text
         }
-
+    if result['status'] == 'FAILED':
+        print("{}".format(result.error_text))
     return jsonify(result)
 
 
@@ -94,14 +96,18 @@ def receive():
         else:
             print('receive: {}={}'.format(p, request.form.get(p)))
     if len(missing):
+        print('receive(): bad request: missing: {}'.format(', '.join(missing)))
         return 'bad request: missing: {}'.format(', '.join(missing)), 400
 
     imei = request.form.get('imei')
     if not imei == current_app.config['IMEI']:
+        print('receive(): bad imei')
         return 'bad imei', 400
 
     try:
         momsn = request.form.get('momsn')
+        #TODO: lookup sender_id based on IMEI lookup in devices
+        #sender_id = 1
         transmit_time = request.form.get('transmit_time')
         time = datetime.strftime(datetime.utcnow(), dt_fmt)
         iridium_latitude = request.form.get('iridium_latitude')
@@ -110,10 +116,11 @@ def receive():
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
         msg = Message(
-            message=text, momsn=momsn, transmit_time=transmit_time, time=time,
+            sender_id=sender_id, message=text, momsn=momsn, transmit_time=transmit_time, time=time,
             iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
             iridium_cep=iridium_cep)
     except (ValueError, TypeError) as e:
+        print('receive(): bad request: error processing parameters: {}'.format(e))
         return 'bad request: error processing parameters: {}'.format(e), 400
 
     # Add message to database
@@ -121,6 +128,7 @@ def receive():
         db.session.add(msg)
         db.session.commit()
     except Exception as e:
+        print('receive(): unable to add to database {}'.format(e))
         return 'unable to add to database {}'.format(e), 400
 
     return "done"
