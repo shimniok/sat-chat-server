@@ -11,7 +11,7 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
   $scope.messages = null;
 
   var arrayLast = function(a) {
-    return a[a.length - 1];
+    return (a == null || a.length == 0) ? null : a[a.length - 1];
   }
 
   $log.log($scope.messages);
@@ -49,12 +49,14 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
       });
     } else {
       last = arrayLast($scope.messages);
-      MessageSince.query( {"momsn": last.momsn}, function(results) {
-        gotoBottom();
-        results.forEach(function(m) {
-          $scope.messages.push(m);
+      if (last != null) {
+        MessageSince.query( {"momsn": last.momsn}, function(results) {
+          gotoBottom();
+          results.forEach(function(m) {
+            $scope.messages.push(m);
+          });
         });
-      });
+      }
     }
   };
 
