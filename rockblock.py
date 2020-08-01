@@ -102,7 +102,7 @@ def receive():
     try:
         momsn = request.form.get('momsn')
         transmit_time = request.form.get('transmit_time')
-        time = datetime.utcnow()
+        time = datetime.strftime(datetime.utcnow(), "%Y-%m-%dT%H:%M:%SZ")
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')
