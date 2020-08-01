@@ -3,6 +3,7 @@ from datetime import datetime
 import binascii
 import message
 
+text = 'Test Message'
 mo_msg = {
     'imei': os.environ['IMEI'],
     'momsn': 99,
@@ -10,7 +11,7 @@ mo_msg = {
     'iridium_latitude': 39.5807,
     'iridium_longitude': -104.8772,
     'iridium_cep': 8,
-    'data': binascii.b2a_hex('Test Message'.encode('utf-8'))
+    'data': binascii.b2a_hex(text.encode('utf-8'))
 }
 
 def test_receive(client):
@@ -28,7 +29,12 @@ def test_receive(client):
     assert m['iridium_latitude'] == mo_msg['iridium_latitude']
     assert m['iridium_longitude'] == mo_msg['iridium_longitude']
     assert m['iridium_cep'] == mo_msg['iridium_cep']
-    #assert m['data'] == mo_msg['data']
+    assert m['message'] == text
+    r = client.delete(message.endpoint + '/{}'.format(m['id']), content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    r = client.get(message.endpoint, content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    assert len(r.json) == 0
 
 mt_msg = {
     "message": "This is a test"
