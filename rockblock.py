@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from models import Message
+from models import Message, db
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
@@ -19,8 +19,8 @@ def send():
         return "Unauthorized", 401
 
     try:
+        #data = request.json
         data = json.loads(request.data.decode())
-        #text = request.form.get('message')
         text = data["message"]
         hex = binascii.b2a_hex(text.encode('utf-8'))
         print("send text={} hex={}".format(text, hex))
@@ -50,8 +50,8 @@ def send():
             sender_id=current_user.id,
             momsn=msg_bits[1],
             message=text,
-            transmit_time=datetime.utcnow(),
-            time=datetime.utcnow()
+            transmit_time=datetime.strftime(datetime.utcnow(),"%Y-%M-%DT%H:%M:%SZ"),
+            time=datetime.strftime(datetime.utcnow(),"%Y-%M-%DT%H:%M:%SZ")
         )
         #print('receive(): transmit_time: {}'.format(m.transmit_time))
         id = db.session.add(m)
@@ -101,26 +101,25 @@ def receive():
 
     try:
         momsn = request.form.get('momsn')
-        transmit_time_str = request.form.get('transmit_time')
-        transmit_time = datetime.strptime(transmit_time_str, "%y-%m-%d %H:%M:%S")
+        transmit_time = request.form.get('transmit_time')
         time = datetime.utcnow()
         iridium_latitude = request.form.get('iridium_latitude')
         iridium_longitude = request.form.get('iridium_longitude')
         iridium_cep = request.form.get('iridium_cep')
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
+        msg = Message(
+            message=text, momsn=momsn, transmit_time=transmit_time, time=time,
+            iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
+            iridium_cep=iridium_cep)
     except (ValueError, TypeError) as e:
         return 'bad request: error processing parameters: {}'.format(e), 400
 
     # Add message to database
     try:
-        msg = Message(
-            message=text, momsn=momsn, transmit_time=transmit_time, time=time,
-            iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
-            iridium_cep=iridium_cep)
         db.session.add(msg)
         db.session.commit()
-    except:
-        return 'unable to add to database', 400
+    except Exception as e:
+        return 'unable to add to database {}'.format(e), 400
 
     return "done"
