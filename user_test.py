@@ -21,7 +21,7 @@ def test_user_list(client):
 
     # email field
     assert "email" in u
-    assert u['email'] == 'admin'
+    assert u['email'] == 'admin@example.com'
     assert u['name'] == 'admin'
 
     # Password not returned via api
