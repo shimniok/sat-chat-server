@@ -50,7 +50,7 @@ def message_post():
         message = Message(
             #imei = data['imei'],
             momsn = data['momsn'],
-            sender_id = current_user,
+            sender_id = current_user.id,
             transmit_time = data['transmit_time'],
             time = data['time'],
             iridium_latitude = float(data['iridium_latitude']),
