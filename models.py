@@ -53,11 +53,14 @@ class Message(OutputMixin, db.Model):
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
         self.message = message
-        #TODO: self.imei = imei
+        self.imei = imei
         #self.sender_id = sender_id
         self.momsn = momsn
-        self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
-        self.time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
+        try:
+            self.transmit_time = datetime.strptime(transmit_time, "%Y-%m-%dT%H:%M:%SZ")
+            self.time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
+        except ValueError as e:
+            print("Message: bad time format: {}".format(e))
         self.iridium_latitude=iridium_latitude
         self.iridium_longitude=iridium_longitude
         self.iridium_cep=iridium_cep
