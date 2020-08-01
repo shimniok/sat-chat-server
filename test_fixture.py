@@ -31,7 +31,7 @@ def client(application):
     with application.test_client() as client:
         # Login
         data = {
-            "email": "admin",
+            "email": "admin@example.com",
             "password": "admin",
             "remember": 1
         }

@@ -66,11 +66,6 @@ class Message(OutputMixin, db.Model):
         self.iridium_cep=iridium_cep
 
 
-    #def __repr__(self):
-    #    return "Message(<id='{}', momsn='{}' message='{}', transmit_time='{}', iridium_latitude='{}', iridium_longitude='{}', iridium_cep='{}'>)".format(
-    #        self.id, self.momsn, self.message, self.transmit_time.isoformat(), self.time.isoformat(),
-    #        self.iridium_latitude, self.iridium_longitude, self.iridium_cep)
-
 class User(OutputMixin, UserMixin, db.Model):
     __tablename__ = 'users'
     PROTECTED_COLUMNS = [ 'password' ]
@@ -87,9 +82,6 @@ class User(OutputMixin, UserMixin, db.Model):
         self.name=name
         self.password=password
 
-    #def __repr__(self):
-    #    return "User(<id='{}', name='{}', email='{}'>".format(
-    #        self.id, self.name, self.email)
 
 class Device(OutputMixin, db.Model):
     __tablename__ = 'devices'
@@ -109,9 +101,6 @@ class Device(OutputMixin, db.Model):
         self.username = username
         self.password = generate_password_hash(username, method='sha256')
 
-    #def __repr__(self):
-    #    return "Device(<id='{}', imei='{}', username='{}'".format(
-    #        self.id, self.imei, self.username )
 
 #class Connection(OutputMixin, Model):
 #    __tablename__ = 'connections'
