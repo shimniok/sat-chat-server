@@ -50,14 +50,14 @@ mt_msg = {
     "message": "This is a test"
 }
 
-def test_send(client):
+def test_send(user1):
     ''' Test the send api '''
 
     # Send the Mobile Terminated message
-    r = client.post('/api/send', json=mt_msg, content_type="application/json")
+    r = user1.post('/api/send', json=mt_msg, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
-    r = client.get(message.endpoint, content_type="application/json")
+    r = user1.get(message.endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert len(r.json) == 1
     m = r.json[0]
@@ -66,6 +66,6 @@ def test_send(client):
     assert m['message'] == mt_msg['message']
 
     # Delete the message
-    r = client.delete(message.endpoint+'/{}'.format(m['id']), content_type='application/json')
+    r = user1.delete(message.endpoint+'/{}'.format(m['id']), content_type='application/json')
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
