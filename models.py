@@ -38,6 +38,8 @@ class Message(OutputMixin, db.Model):
     RELATIONSHIPS_TO_DICT = False
 
     id = Column(Integer, primary_key=True)
+    device_id = Column(Integer, ForeignKey("devices.id"))
+    device = relationship("Device")
     sender_id = Column(Integer, ForeignKey("users.id"))
     sender = relationship("User")
     momsn = Column(Integer)
@@ -48,14 +50,14 @@ class Message(OutputMixin, db.Model):
     iridium_longitude = Column(Float())
     iridium_cep = Column(Integer)
 
-    def __init__(self, imei='', sender_id=-1, momsn=-1, message='',
+    def __init__(self, device_id=-1, sender_id=-1, momsn=-1, message='',
         transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
-        self.message = message
-        self.imei = imei
+        self.device_id = device_id
         self.sender_id = sender_id
         self.momsn = momsn
+        self.message = message
         try:
             self.transmit_time = datetime.strptime(transmit_time, dt_fmt)
             self.time = datetime.strptime(time, dt_fmt)
@@ -91,7 +93,7 @@ class Device(OutputMixin, db.Model):
     id = Column(Integer, primary_key=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="device")
-    imei = Column(String())
+    imei = Column(String(), unique=True)
     username = Column(String())
     password = Column(String())
 

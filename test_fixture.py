@@ -17,6 +17,27 @@ admin_data = {
     "remember": 1
 }
 
+user1_data = {
+    'email': "user1@example.com",
+    'name': 'User1',
+    'password': 'user1',
+    'remember': 1
+}
+
+user2_data = {
+    'email': "user2@example.com",
+    'name': 'User2',
+    'password': 'user2',
+    'remember': 1
+}
+
+device1_data = {
+    'imei': '300234010753370',
+    'username': 'device1@example.com',
+    'password': 'device1'
+}
+
+
 @pytest.fixture(scope='module')
 def application():
     '''
@@ -46,40 +67,23 @@ def client(application):
 @pytest.fixture(scope='module')
 def user1(client):
 
-    my_user1 = {
-        'email': "user1@example.com",
-        'name': 'User1',
-        'password': 'user1',
-        'remember': 1
-    }
-
-    my_user2 = {
-        'email': "user2@example.com",
-        'name': 'User2',
-        'password': 'user2',
-        'remember': 1
-    }
-
-    my_device1 = {
-        'imei': '300234010753370',
-        'username': 'device1@example.com',
-        'password': 'device1'
-    }
-
     # Create user1
-    r = client.post(user.endpoint, json=my_user1, content_type='application/json')
+    r = client.post(user.endpoint, json=user1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     user1 = r.json
+    user1_data['id'] = r.json['id']
 
     # Create user2
-    r = client.post(user.endpoint, json=my_user2, content_type='application/json')
+    r = client.post(user.endpoint, json=user2_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     user2 = r.json
+    user2_data['id'] = r.json['id']
 
     # Create device1
-    r = client.post(device.endpoint, json=my_device1, content_type='application/json')
+    r = client.post(device.endpoint, json=device1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     device1 = r.json
+    device1_data['id'] = r.json['id']
 
     # log out of admin
     #r = client.get('/auth', content_type='application/json')
@@ -89,7 +93,7 @@ def user1(client):
     #r = client.delete('/auth/{}'.format(me['id']), content_type='application/json')
 
     # log in as user1
-    r = client.post('/auth', json=my_user1, content_type='application/json')
+    r = client.post('/auth', json=user1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
     yield client
