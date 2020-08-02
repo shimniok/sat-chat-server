@@ -6,7 +6,7 @@ from json_parser import dt_fmt
 
 text = 'Test Message'
 mo_msg = {
-    'imei': os.environ['IMEI'],
+    'imei': '300234010753370',
     'momsn': 99,
     'transmit_time': datetime.strftime(datetime.utcnow(), dt_fmt),
     'iridium_latitude': 39.5807,
@@ -15,23 +15,22 @@ mo_msg = {
     'data': binascii.b2a_hex(text.encode('utf-8'))
 }
 
-def test_receive(client):
+def test_rockblock_receive(user1):
     ''' Test the receive api '''
-
     # Send Mobile Originated simulated message;
     # Ensure receive API returns 'done' -- ok status
-    r = client.post('/api/receive', data=mo_msg)
+    r = user1.post('/api/receive', data=mo_msg)
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.data == b'done'
 
     # Ensure new message exist via message api
-    r = client.get(message.endpoint, content_type="application/json")
+    r = user1.get(message.endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert len(r.json) == 1
     m = r.json[0]
 
     # Verify the message matches the one posted to the api
-    #TODO: assert m['imei'] == mo_msg['imei']
+    #assert m['imei'] == mo_msg['imei']
     assert m['momsn'] == mo_msg['momsn']
     assert m['transmit_time'] == mo_msg['transmit_time']
     assert m['iridium_latitude'] == mo_msg['iridium_latitude']
@@ -40,9 +39,9 @@ def test_receive(client):
     assert m['message'] == text
 
     # Delete the message and make sure it's deleted
-    r = client.delete(message.endpoint + '/{}'.format(m['id']), content_type="application/json")
+    r = user1.delete(message.endpoint + '/{}'.format(m['id']), content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
-    r = client.get(message.endpoint, content_type="application/json")
+    r = user1.get(message.endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert len(r.json) == 0
 
@@ -50,7 +49,7 @@ mt_msg = {
     "message": "This is a test"
 }
 
-def test_send(user1):
+def test_rockblock_send(user1):
     ''' Test the send api '''
 
     # Send the Mobile Terminated message
