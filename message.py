@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from models import Message, db
+from models import Message, Device, db
 
 endpoint = '/api/message'
 
@@ -47,8 +47,14 @@ def message_get(id=-1):
 def message_post():
     try:
         data = request.json
+
+        # Lookup device by imei
+        dev = Device.query.filter_by(imei=data['imei']).first()
+
+        # TODO: what if it's not found?
+
         message = Message(
-            #imei = data['imei'],
+            device_id = dev['id'],
             momsn = data['momsn'],
             sender_id = current_user.id,
             transmit_time = data['transmit_time'],

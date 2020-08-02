@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from models import Message, db
+from models import Message, Device, db
 from json_parser import dt_fmt
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
@@ -20,7 +20,7 @@ def send():
         return "Unauthorized", 401
 
     try:
-        #data = request.json
+        #TODO: data = request.json
         data = json.loads(request.data.decode())
         text = data["message"]
         hex = binascii.b2a_hex(text.encode('utf-8'))
@@ -84,8 +84,7 @@ def send():
 def receive():
 
     parameters = [
-        'imei', 'momsn', 'transmit_time',
-        'iridium_latitude', 'iridium_longitude', 'iridium_cep', 'data'
+        'imei', 'momsn', 'transmit_time', 'iridium_latitude', 'iridium_longitude', 'iridium_cep', 'data'
     ]
 
     # check for missing parameters
@@ -100,14 +99,11 @@ def receive():
         return 'bad request: missing: {}'.format(', '.join(missing)), 400
 
     imei = request.form.get('imei')
-    if not imei == current_app.config['IMEI']:
-        print('receive(): bad imei')
-        return 'bad imei', 400
+    device = Device.query.filter_by(imei = imei).first_or_404()
 
     try:
         momsn = request.form.get('momsn')
-        #TODO: lookup sender_id based on IMEI lookup in devices
-        #sender_id = 1
+        sender_id = 1 # TODO: lookup sender_id
         transmit_time = request.form.get('transmit_time')
         time = datetime.strftime(datetime.utcnow(), dt_fmt)
         iridium_latitude = request.form.get('iridium_latitude')
@@ -116,9 +112,16 @@ def receive():
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
         msg = Message(
-            sender_id=sender_id, message=text, momsn=momsn, transmit_time=transmit_time, time=time,
-            iridium_latitude=iridium_latitude, iridium_longitude=iridium_longitude,
-            iridium_cep=iridium_cep)
+            device_id=device.id,
+            sender_id=sender_id,
+            message=text,
+            momsn=momsn,
+            transmit_time=transmit_time,
+            time=time,
+            iridium_latitude=iridium_latitude,
+            iridium_longitude=iridium_longitude,
+            iridium_cep=iridium_cep
+        )
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
         return 'bad request: error processing parameters: {}'.format(e), 400
