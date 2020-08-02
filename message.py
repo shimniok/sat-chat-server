@@ -42,7 +42,7 @@ def message_get(id=-1):
 
     return jsonify(message.to_dict())
 
-
+'''
 @message_bp.route(endpoint, methods=['post'])
 def message_post():
     try:
@@ -70,7 +70,7 @@ def message_post():
 
     except Exception as e:
         return "Error: {}".format(e), 400
-
+'''
 
 @message_bp.route(endpoint + '/<id>', methods=['delete'])
 def message_delete(id=-1):
