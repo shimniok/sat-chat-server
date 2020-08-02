@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from models import Message, Device, db
+from models import Message, Device, User, db
 from json_parser import dt_fmt
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
@@ -99,11 +99,14 @@ def receive():
         return 'bad request: missing: {}'.format(', '.join(missing)), 400
 
     imei = request.form.get('imei')
+    # match IMEI to a device
     device = Device.query.filter_by(imei = imei).first_or_404()
+    # match device to an owner
+    sender = User.query.filter_by(id = device.owner_id).first_or_404()
 
     try:
         momsn = request.form.get('momsn')
-        sender_id = 1 # TODO: lookup sender_id
+        sender_id = sender.id
         transmit_time = request.form.get('transmit_time')
         time = datetime.strftime(datetime.utcnow(), dt_fmt)
         iridium_latitude = request.form.get('iridium_latitude')
