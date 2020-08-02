@@ -15,7 +15,7 @@ login_manager.session_protection = "strong"
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 1 == 0: # TODO: roles
+        if current_user.id != 1:
             return "Unauthorized", 404
         return f(*args, **kwargs)
     return decorated_function
@@ -48,7 +48,7 @@ def auth_post():
 
     except Exception as e:
         print("auth_post(): Exception: {}".format(e))
-        return "bad request", 400
+        return "bad request {}".format(e), 400
 
 @auth_bp.route('/auth', methods=['delete'])
 def auth_delete():
