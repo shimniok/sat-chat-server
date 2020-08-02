@@ -7,6 +7,7 @@ from models import User, Device
 from werkzeug.security import generate_password_hash
 import json
 from models import db
+from auth import admin_required
 
 endpoint='/api/user'
 
@@ -31,6 +32,7 @@ def user_get(id):
 
 
 @user_bp.route(endpoint, methods=['post'])
+@admin_required
 def user_post():
     #Get request parameters
     print("user_post()")
@@ -51,7 +53,9 @@ def user_post():
 
 
 @user_bp.route(endpoint+'/<id>', methods=['delete'])
+@admin_required
 def user_delete(id=-1):
+
     u = User.query.filter_by(id=id).first_or_404()
     db.session.delete(u)
     db.session.commit()
