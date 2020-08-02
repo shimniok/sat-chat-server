@@ -6,6 +6,7 @@ from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 import json
 import user
+import device
 
 tmpdb_file = "/tmp/test.db"
 tmpdb_uri = 'sqlite:///{}'.format(tmpdb_file)
@@ -75,6 +76,11 @@ def user1(client):
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     user2 = r.json
 
+    # Create device1
+    r = client.post(device.endpoint, json=my_device1, content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+    device1 = r.json
+
     # log out of admin
     #r = client.get('/auth', content_type='application/json')
     #assert r.status_code == 200, 'Error: {}'.format(r.data)
@@ -93,4 +99,6 @@ def user1(client):
     r = client.delete(user.endpoint+'/{}'.format(user1['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     r = client.delete(user.endpoint+'/{}'.format(user2['id']), content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+    r = client.delete(device.endpoint+'/{}'.format(device1['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
