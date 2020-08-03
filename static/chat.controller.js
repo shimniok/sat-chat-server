@@ -69,7 +69,7 @@ function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, Me
     if (session.valid()) {
       getMessages();
     }
-    $scope.timeout = $timeout(poller, 10000);
+    $scope.timeout = $timeout(poller, 30000);
   };
 
   poller();
