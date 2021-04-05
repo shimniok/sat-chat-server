@@ -10,6 +10,7 @@ from flask_login import current_user
 from datetime import datetime, timezone
 from worker import q
 from json_parser import dt_fmt
+from device import get_my_device
 
 loopback_bp = Blueprint('loopback', __name__)
 momsn_file = "momsn.txt"
@@ -28,16 +29,13 @@ def loopback_post():
     global momsn_file
 
     ## Receive
+    imei = request.form.get('imei')
     username = request.form.get('username')
     password = request.form.get('password')
 
     app = current_app
-    if not (username == app.config['USERNAME'] and password == app.config['PASSWORD']):
-        return "Unauthorized", 401
 
-    imei = request.form.get('imei')
-    if not (imei == app.config['IMEI']):
-        return "Unauthorized", 401
+    # TODO: Simulate authentication with IMEI, USERNAME, PASSWORD
 
     # convert hex message back to text and add some text
     hex = request.form.get('data')
@@ -62,7 +60,7 @@ def loopback_post():
 
     url = request.url_root + url_for('rockblock.receive')[1:]
     message = {
-        'imei': os.environ['IMEI'],
+        'imei': imei,
         'momsn': mobile_momsn + 1,
         'transmit_time': datetime.strftime(datetime.utcnow(), dt_fmt),
         'iridium_latitude': "39.5807",

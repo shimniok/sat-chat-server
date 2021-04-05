@@ -8,6 +8,7 @@ from flask_login import current_user
 from datetime import datetime, timezone
 from models import Message, Device, User, db
 from json_parser import dt_fmt
+from device import get_my_device, get_device_by_imei
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
@@ -18,6 +19,11 @@ rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_fold
 def send():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
+
+    # Get my device
+    my_device = get_my_device()
+    if my_device == None:
+        return jsonify([])
 
     try:
         #TODO: data = request.json
@@ -30,9 +36,9 @@ def send():
         return "problem preparing message", 401
 
     data = {
-        'username': current_app.config['USERNAME'],
-        'password': current_app.config['PASSWORD'],
-        'imei': current_app.config['IMEI'],
+        'username': my_device.username,
+        'password': my_device.password,
+        'imei': my_device.imei,
         'data': hex
     }
     r = requests.post(url = current_app.config['API_ENDPOINT'], data = data)
@@ -100,7 +106,7 @@ def receive():
 
     imei = request.form.get('imei')
     # match IMEI to a device
-    device = Device.query.filter_by(imei = imei).first_or_404()
+    device = get_device_by_imei(imei)
     # match device to an owner
     sender = User.query.filter_by(id = device.owner_id).first_or_404()
 

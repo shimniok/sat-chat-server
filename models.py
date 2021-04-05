@@ -50,7 +50,7 @@ class Message(OutputMixin, db.Model):
     iridium_longitude = Column(Float())
     iridium_cep = Column(Integer)
 
-    def __init__(self, device_id=-1, sender_id=-1, momsn=-1, message='',
+    def __init__(self, device_id=None, sender_id=-1, momsn=-1, message='',
         transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
@@ -71,7 +71,7 @@ class Message(OutputMixin, db.Model):
 class User(OutputMixin, UserMixin, db.Model):
     __tablename__ = 'users'
     PROTECTED_COLUMNS = [ 'password' ]
-    RELATIONSHIPS_TO_DICT = False
+    RELATIONSHIPS_TO_DICT = True
 
     id = Column(Integer, primary_key=True)
     email = Column(String(), unique=True)
@@ -103,15 +103,3 @@ class Device(OutputMixin, db.Model):
         self.username = username
         self.password = generate_password_hash(username, method='sha256')
 
-
-#class Connection(OutputMixin, Model):
-#    __tablename__ = 'connections'
-#    PROTECTED_COLUMNS = [ ]
-
-#    id = Column(Integer, primary_key=True)
-    #device_id = Column(Integer, ForeignKey("devices.id"))
-    #device = relationship("Device", uselist=False, back_populates='devices')
-    #connected_user_id = 0
-
-#    def __repr__(self):
-#        return ""
