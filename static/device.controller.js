@@ -2,53 +2,43 @@ angular.module('device', ['ngResource'])
 
 .controller('DeviceController', ['$scope', '$log', 'DeviceService',
   function($scope, $log, DeviceService) {
-    $scope.device = null;
-
     // see if we have a device already and if so, assign to model
-    DeviceService.query(content_type='application/json').$promise
-    .then(function(result) {
-      if (result.length > 0) {
-        $log.log(result[0]);
-        $scope.device = result[0];
-        //$scope.password = "password"; // bogus password as placeholder
-        $scope.username = result[0].username;
-        $scope.imei = result[0].imei;
-      }
-      return result[0];
-    }, function(result) {
-      $scope.device = null;
-    });
+    getDevice = function() {
+      DeviceService.query(content_type='application/json').$promise
+      .then(function(result) {
+        if (result.length > 0) {
+          $log.log(result[0]);
+          $scope.device = result[0];
+        }
+        return result[0];
+      }, function(result) {
+        return {
+          imei: "",
+          username: "",
+          password: ""
+        }
+      });
+    };
 
     $scope.save = function() {
       $log.log('DeviceController: save');
 
-      var newDevice = {
-        "imei": $scope.imei,
-        "username": $scope.username,
-        "password": $scope.password
-      }
+      // If id property present, then we're updating not saving.
+      // if ('id' in $scope.device) {
+      // }
 
-      DeviceService.save(newDevice, function(result) {
+      // Only copy password if it's been changed
+      if ($scope.password1 != "")
+        $scope.device.password = $scope.password1;
+
+      DeviceService.save($scope.device, function(result) {
         $log.log('DeviceController: save() success');
-        $scope.imei = '';
-        $scope.username = '';
-        $scope.password = '';
+        $scope.device = getDevice();
+        $scope.password1 = "";
       });
 
     };
 
-    $scope.update = function() {
-      $log.log('DeviceController: update');
-
-      var update = {};
-
-      if ($scope.imei != $scope.device.imei) update.imei = $scope.imei;
-      if ($scope.username != $scope.device.username) update.username = $scope.username;
-
-      if ($scope.password1 != "" && $scope.password1 == $scope.password2) {
-        update.password = $scope.password1;
-      }
-
-    };
+    $scope.device = getDevice();
 
   }]);

@@ -86,11 +86,13 @@ def send():
             'error_text': r.text
         }
     if result['status'] == 'FAILED':
-        print("{}".format(result.error_text))
+        print("{}".format(result['error_text']))
     return jsonify(result)
 
 
-# Receive data from Rock7
+## receive
+## Receive data from Rock7
+## 
 @rockblock_bp.route('/receive', methods=['get','post'])
 def receive():
 
@@ -98,7 +100,6 @@ def receive():
         'imei', 'momsn', 'transmit_time', 'iridium_latitude', 
         'iridium_longitude', 'iridium_cep', 'data'
     ]
-
     # check for missing parameters
     missing = []
     for p in parameters:
@@ -110,37 +111,27 @@ def receive():
         print('receive(): bad request: missing: {}'.format(', '.join(missing)))
         return 'bad request: missing: {}'.format(', '.join(missing)), 400
 
-    imei = request.form.get('imei')
     # match IMEI to a device
-    device = get_device_by_imei(imei)
-
+    device = get_device_by_imei( request.form.get('imei') )
     try:
-        momsn = request.form.get('momsn')
-        transmit_time = request.form.get('transmit_time')
-        time = datetime.strftime(datetime.utcnow(), dt_fmt)
-        iridium_latitude = request.form.get('iridium_latitude')
-        iridium_longitude = request.form.get('iridium_longitude')
-        iridium_cep = request.form.get('iridium_cep')
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
         msg = Message(
             device_id=device.id,
             message=text,
-            momsn=momsn,
-            transmit_time=transmit_time,
-            time=time,
-            iridium_latitude=iridium_latitude,
-            iridium_longitude=iridium_longitude,
-            iridium_cep=iridium_cep
+            momsn=request.form.get('momsn'),
+            transmit_time=request.form.get('transmit_time'),
+            time=datetime.strftime(datetime.utcnow(), dt_fmt),
+            iridium_latitude=request.form.get('iridium_latitude'),
+            iridium_longitude=request.form.get('iridium_longitude'),
+            iridium_cep=request.form.get('iridium_cep')
         )
+        # Add message to database
+        db.session.add(msg)
+        db.session.commit()
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
         return 'bad request: error processing parameters: {}'.format(e), 400
-
-    # Add message to database
-    try:
-        db.session.add(msg)
-        db.session.commit()
     except Exception as e:
         print('receive(): unable to add to database {}'.format(e))
         return 'unable to add to database {}'.format(e), 400
