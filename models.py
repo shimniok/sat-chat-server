@@ -50,7 +50,7 @@ class Message(OutputMixin, db.Model):
     iridium_longitude = Column(Float())
     iridium_cep = Column(Integer)
 
-    def __init__(self, device_id=None, sender_id=-1, momsn=-1, message='',
+    def __init__(self, device_id=None, sender_id=None, momsn=-1, message='',
         transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
