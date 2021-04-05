@@ -18,10 +18,15 @@ def device_before():
     if not current_user.is_authenticated:
         abort(401)
 
+def get_my_device():
+    return Device.query.filter_by(owner_id = current_user.id).first()
+
+def get_device_by_imei(imei):
+    return Device.query.filter_by(imei = imei).first_or_404()
 
 @device_bp.route(endpoint, methods=['get'])
 def device_get():
-    device = Device.query.filter_by(owner_id = current_user.id).first()
+    device = get_my_device()
 
     if device == None:
         return jsonify([])
