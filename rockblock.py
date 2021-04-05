@@ -25,6 +25,9 @@ def send():
     if my_device == None:
         return jsonify([])
 
+    #################################################################
+    ## Prepare message for sending to Rock7 endpoint
+    ##
     try:
         #TODO: data = request.json
         data = json.loads(request.data.decode())
@@ -43,9 +46,10 @@ def send():
     }
     r = requests.post(url = current_app.config['API_ENDPOINT'], data = data)
 
-    # Parse return from request and return json
-    #   Success: OK,12345678  --The number uniquely identifies your message.
-    #   Failure: FAILED,15,Textual description of failure
+    #################################################################
+    ## Parse return from request and return json
+    ##   Success: OK,12345678  --The number uniquely identifies your message.
+    ##   Failure: FAILED,15,Textual description of failure
     msg_bits = r.text.split(',')
     if not r.status_code == 200:
         result = {
@@ -56,6 +60,7 @@ def send():
     elif msg_bits[0] == 'OK':
         m = Message(
             sender_id=current_user.id,
+            device_id=my_device.id,
             momsn=msg_bits[1],
             message=text,
             transmit_time=datetime.strftime(datetime.utcnow(), dt_fmt),
@@ -90,7 +95,8 @@ def send():
 def receive():
 
     parameters = [
-        'imei', 'momsn', 'transmit_time', 'iridium_latitude', 'iridium_longitude', 'iridium_cep', 'data'
+        'imei', 'momsn', 'transmit_time', 'iridium_latitude', 
+        'iridium_longitude', 'iridium_cep', 'data'
     ]
 
     # check for missing parameters
@@ -107,12 +113,9 @@ def receive():
     imei = request.form.get('imei')
     # match IMEI to a device
     device = get_device_by_imei(imei)
-    # match device to an owner
-    sender = User.query.filter_by(id = device.owner_id).first_or_404()
 
     try:
         momsn = request.form.get('momsn')
-        sender_id = sender.id
         transmit_time = request.form.get('transmit_time')
         time = datetime.strftime(datetime.utcnow(), dt_fmt)
         iridium_latitude = request.form.get('iridium_latitude')
@@ -122,7 +125,6 @@ def receive():
         text = binascii.a2b_hex(hex).decode("utf-8")
         msg = Message(
             device_id=device.id,
-            sender_id=sender_id,
             message=text,
             momsn=momsn,
             transmit_time=transmit_time,
