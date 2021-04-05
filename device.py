@@ -35,7 +35,8 @@ def device_get():
 
 
 @device_bp.route(endpoint, methods=['post'])
-def devices_post():
+def device_post():
+    print("device_post (new)")
     if not request.json:
         abort(400)
     try:
@@ -55,22 +56,27 @@ def devices_post():
 
 
 
-@device_bp.route(endpoint+'/<id>', methods=['put'])
-def device_put(id):
+@device_bp.route(endpoint+'/<id>', methods=['post'])
+def device_post_id(id):
+    print("device_post (update)")
     if not request.json:
         abort(400)
     try:
         #TODO: ensure current_user owns this device!
         dev = Device.query.filter_by(id=id).first_or_404()
-        dev.imei = request.json['imei']
-        dev.username = request.json['username']
-        dev.password = request.json['password']
+        if 'imei' in request.json:
+            dev.imei = request.json['imei']
+        if 'username' in request.json:            
+            dev.username = request.json['username']
+        if 'password' in request.json:        
+            dev.password = request.json['password']
         db.session.commit()
 
     except Exception as e:
         return "Bad request: {}".format(e), 400
 
     return jsonify(dev.to_dict())
+
 
 
 @device_bp.route(endpoint+'/<id>', methods=['delete'])

@@ -26,7 +26,7 @@ def init_db(app):
             name='admin',
             email='admin@example.com',
             password=generate_password_hash('admin', method='sha256')
-        );
+        )
     db.session.add(admin)
     db.session.commit()
     return
@@ -87,7 +87,7 @@ class User(OutputMixin, UserMixin, db.Model):
 
 class Device(OutputMixin, db.Model):
     __tablename__ = 'devices'
-    PROTECTED_COLUMNS = [ 'IMEI', 'password' ]
+    PROTECTED_COLUMNS = [ 'password' ]
     RELATIONSHIPS_TO_DICT = False
 
     id = Column(Integer, primary_key=True)

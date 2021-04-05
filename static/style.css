@@ -11,44 +11,12 @@
 
 #message-window {
     overflow-y: scroll;
-    /*
-    height: calc(100vh - 7rem - 3rem);
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: flex-end;
-    */
 }
 
 #message-row {
-    /*
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-between;
-    */
     min-height: 0;
     min-width: 0;
 }
-
-/*
-#app-main {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-#header-title {
-    font-weight: bold;
-    margin-left: 0;
-}
-
-#input-row {
-    height: 7rem;
-    text-align: center;
-}
-*/
 
 .mine {
     background-color: #fff;
@@ -64,4 +32,14 @@
 
 .dialog-no-x.close {
     display: none;
+}
+
+h3.dialog-title {
+    font-size: larger;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+input.form-control {
+    margin: 0 0 15px 0;
 }

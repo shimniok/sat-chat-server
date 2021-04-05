@@ -1,34 +1,19 @@
-
 <div class="container-fluid bg-secondary" id="app">
-
     <div class="row row-col-1 justify-content-center h-100">
         <div class="d-flex flex-column my-auto mx-auto bg-light p-3">
-            <form name="device" ng-hide="device.length > 0"
-                oninput='password2.setCustomValidity(password1.value != password2.value ? "Passwords do not match." : "")'>
-                <div class="form-group form-group-inline">
-                    <label for="imei">RockBlock IMEI</label>
-                    <input class="form-control" type="text" name="imei" ng-model='imei'/>
-                </div>
+            <h3 class="dialog-title">RockBlock Settings</h3>
+            <form name="device">
+                <label for="imei">RockBlock IMEI</label>
+                <input class="form-control" type="text" name="imei" ng-model='device.imei'/>
 
-                <div class="form-group">
-                    <label for="username">Rock7 Username</label>
-                    <input class="form-control" type="email" name="username" ng-model='username'/>
-                </div>
+                <label for="username">Rock7 Username</label>
+                <input class="form-control" type="email" name="username" ng-model='device.username'/>
 
-                <div class="form-group" ng-hide="device != null">
-                    <label for="password">Rock7 Password</label>
-                    <input class="form-control" type="password" name="password" ng-model='password'/>
-                </div>
+                <label for="password">New Rock7 Password</label>
+                <input class="form-control bg-error" type="password" name="password1" ng-model='password1'/>
 
-                <div class="form-group" ng-hide="device == null">
-                    <label for="password">New Rock7 Password</label>
-                    <input class="form-control bg-error" type="password" name="password1" ng-model='password1'/>
-
-                    <label for="password">Confirm Rock7 Password</a>
-                    <input class="form-control" type="password" name="password2" ng-model='password2'/>
-                </div>
-                <button type="submit" class="btn btn-primary" ng-click="update()" ng-hide="device == null">Update</button>
-                <button type="submit" class="btn btn-primary" ng-click="save()" ng-hide="device != null">Submit</button>
+                <!-- <button type="submit" class="btn btn-primary" ng-click="update()" ng-hide="device == null">Update</button> -->
+                <button type="submit" class="btn btn-primary" ng-click="save()">Submit</button>
             </form>
         </div>
     </div>
