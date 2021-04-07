@@ -2,18 +2,29 @@
 
 {% block content %}
 <script src="{{ url_for('static', filename='app.module.js') }}"></script>
-<script src="{{ url_for('static', filename='message.service.js') }}"></script>
-<script src="{{ url_for('static', filename='rockblock.service.js') }}"></script>
 <script src="{{ url_for('static', filename='auth.service.js') }}"></script>
-<script src="{{ url_for('static', filename='login.controller.js') }}"></script>
-<script src="{{ url_for('static', filename='session.controller.js') }}"></script>
-<script src="{{ url_for('static', filename='session.service.js') }}"></script>
 <script src="{{ url_for('static', filename='chat.controller.js') }}"></script>
-<script src="{{ url_for('static', filename='admin.controller.js') }}"></script>
 <script src="{{ url_for('static', filename='device.controller.js') }}"></script>
 <script src="{{ url_for('static', filename='device.service.js') }}"></script>
+<script src="{{ url_for('static', filename='login.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='message.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='message.service.js') }}"></script>
+<script src="{{ url_for('static', filename='nav.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='rockblock.service.js') }}"></script>
+<script src="{{ url_for('static', filename='session.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='session.service.js') }}"></script>
+<script src="{{ url_for('static', filename='user.controller.js') }}"></script>
+<script src="{{ url_for('static', filename='user.service.js') }}"></script>
 
-<div ng-controller="SessionController">
-    <div ng-view></div>
+<div class="container-fluid bg-secondary" id="app">
+    <div class="col-sm-8 col-md-7 col-lg-6 d-flex flex-column flex-grow-1 flex-fill h-100 mx-auto">
+
+        <div ng-controller="SessionController">
+            <nav-bar></nav-bar>
+
+            <div ng-view></div>
+        </div>
+    </div>
 </div>
+
 {% endblock %}

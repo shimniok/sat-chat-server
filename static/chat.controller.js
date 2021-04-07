@@ -1,78 +1,83 @@
-angular.module('chat', [
-  'rockblock',
-  'message'
-])
+angular
+  .module("chat", ["rockblock.service", "message.service"])
 
-.controller('ChatController', [
-  '$scope', '$log', '$timeout', '$location', '$anchorScroll', '$timeout', 'MessageService',
-  'MessageSinceService', 'RockBlockProvider', 'SessionService',
+  .controller("ChatController", [
+    "$scope",
+    "$log",
+    "$timeout",
+    "$anchorScroll",
+    "MessageService",
+    "MessageSinceService",
+    "RockBlockProvider",
+    "SessionService",
 
-function($scope, $log, $timeout, $location, $anchorScroll, $timeout, Message, MessageSince, RockBlock, session) {
-  $scope.messages = null;
+    function (
+      $scope,
+      $log,
+      $timeout,
+      $anchorScroll,
+      messageService,
+      messageSinceService,
+      rockBlockService,
+      session
+    ) {
+      $scope.messages = null;
 
-  var arrayLast = function(a) {
-    return (a == null || a.length == 0) ? null : a[a.length - 1];
-  }
+      var arrayLast = function (a) {
+        return a == null || a.length == 0 ? null : a[a.length - 1];
+      };
 
-  $log.log($scope.messages);
+      $log.log($scope.messages);
 
-  //TDOO: Nav Controller, Nav Template
+      $scope.sendMessage = function () {
+        var message = $scope.message;
 
-  $scope.admin = function() {
-    $location.url("/admin");
-  };
-
-  $scope.device = function() {
-    $location.url("/device");
-  }
-
-  $scope.sendMessage = function() {
-    var message = $scope.message;
-
-    if (message)
-      RockBlock.send({"message": message}, function(results) {
-        $scope.message = ""; // clear form
-        getMessages();
-      });
-  };
-
-  var gotoBottom = function() {
-    $timeout(function() {
-      $anchorScroll('bottom');
-    });
-  };
-
-  var getMessages = function() {
-    if ($scope.messages == null) {
-      $scope.messages = Message.query(function() {
-        gotoBottom();
-      });
-    } else {
-      last = arrayLast($scope.messages);
-      if (last != null) {
-        MessageSince.query( {"momsn": last.momsn}, function(results) {
-          gotoBottom();
-          results.forEach(function(m) {
-            $scope.messages.push(m);
+        if (message)
+          rockBlockService.send({ message: message }, function (results) {
+            $scope.message = ""; // clear form
+            getMessages();
           });
+      };
+
+      var gotoBottom = function () {
+        $timeout(function () {
+          $anchorScroll("bottom");
         });
-      }
-    }
-  };
+      };
 
-  // TODO: backoff algorithm or login timeout
+      var getMessages = function () {
+        if ($scope.messages == null) {
+          $scope.messages = messageService.query(function () {
+            gotoBottom();
+          });
+        } else {
+          last = arrayLast($scope.messages);
+          if (last != null) {
+            messageSinceService.query(
+              { momsn: last.momsn },
+              function (results) {
+                gotoBottom();
+                results.forEach(function (m) {
+                  $scope.messages.push(m);
+                });
+              }
+            );
+          }
+        }
+      };
 
-  var timeout = "";
+      // TODO: backoff algorithm or login timeout
 
-  var poller = function() {
-    $log.log("poller()");
-    if (session.valid()) {
-      getMessages();
-    }
-    $scope.timeout = $timeout(poller, 30000);
-  };
+      var timeout = "";
 
-  poller();
+      var poller = function () {
+        $log.log("poller()");
+        if (session.valid()) {
+          getMessages();
+        }
+        $scope.timeout = $timeout(poller, 30000);
+      };
 
-}
-]);
+      poller();
+    },
+  ]);
