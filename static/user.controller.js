@@ -7,6 +7,11 @@ angular
     "UserService",
     function ($scope, $log, userService) {
       $scope.users = userService.query();
+      $scope.newUser = {
+        name: "",
+        email: "",
+        password: "",
+      };
 
       //   $scope.deleteMessage = function(m) {
       //     $log.log("deleteMessage() " + m.id);
