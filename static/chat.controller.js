@@ -21,7 +21,7 @@ angular
       rockBlockService,
       session
     ) {
-      $scope.messages = null;
+      $scope.messages = messageService.query();
 
       var arrayLast = function (a) {
         return a == null || a.length == 0 ? null : a[a.length - 1];
