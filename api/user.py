@@ -3,11 +3,10 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from models import User, Device
 from werkzeug.security import generate_password_hash
 import json
-from models import db
-from auth import admin_required
+from api.models import User, Device, db
+from api.auth import admin_required
 
 endpoint='/api/user'
 

@@ -1,4 +1,4 @@
-from test_fixture import *
+from test_fixture import client, application
 from user import endpoint
 
 new = {

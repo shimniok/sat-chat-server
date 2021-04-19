@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
-from models import Message, Device, db
+from api.models import Message, Device, db
 
 endpoint = '/api/message'
 
