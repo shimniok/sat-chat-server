@@ -10,7 +10,7 @@ from flask_login import current_user
 from datetime import datetime, timezone
 from worker import q
 from json_parser import dt_fmt
-from device import get_my_device
+from api.device import get_my_device
 
 loopback_bp = Blueprint('loopback', __name__)
 momsn_file = "momsn.txt"
@@ -68,7 +68,7 @@ def loopback_post():
         'iridium_cep': 8,
         'data': hex
     }
-    from loopback import do_send
+    #from loopback import do_send
     job = q.enqueue_call(
            func = do_send, args = (url,message,), result_ttl=5000
         )

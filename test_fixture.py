@@ -1,12 +1,13 @@
 import pytest
 import os
-from app import create_app
-from models import db, User, init_db
+import json
 from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
-import json
-import user
-import device
+from app import create_app
+import api.models
+import api.user
+import api.device
+from api.models import init_db as init_db
 
 tmpdb_file = "/tmp/test.db"
 tmpdb_uri = 'sqlite:///{}'.format(tmpdb_file)
@@ -58,7 +59,7 @@ def client(application):
 
     with application.test_client() as client:
         # Login
-        r = client.post('/auth', json=admin_data, content_type='application/json')
+        r = client.post(api.auth.endpoint, json=admin_data, content_type='application/json')
         assert r.status_code == 200,'unable to login as admin user'
 
         yield client
@@ -68,13 +69,13 @@ def client(application):
 def user1(client):
 
     # Create user1
-    r = client.post(user.endpoint, json=user1_data, content_type='application/json')
+    r = client.post(api.user.endpoint, json=user1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     user1 = r.json
     user1_data['id'] = r.json['id']
 
     # Create user2
-    r = client.post(user.endpoint, json=user2_data, content_type='application/json')
+    r = client.post(api.user.endpoint, json=user2_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     user2 = r.json
     user2_data['id'] = r.json['id']
@@ -91,7 +92,7 @@ def user1(client):
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
     # Create device1 owned by user1
-    r = client.post(device.endpoint, json=device1_data, content_type='application/json')
+    r = client.post(api.device.endpoint, json=device1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     device1 = r.json
     device1_data['id'] = r.json['id']
@@ -100,9 +101,11 @@ def user1(client):
 
     r = client.post('/auth', json=admin_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    r = client.delete(user.endpoint+'/{}'.format(user1['id']), content_type='application/json')
+    r = client.delete(api.user.endpoint+'/{}'.format(user1['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    r = client.delete(user.endpoint+'/{}'.format(user2['id']), content_type='application/json')
+    r = client.delete(
+        api.user.endpoint+'/{}'.format(user2['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    r = client.delete(device.endpoint+'/{}'.format(device1['id']), content_type='application/json')
+    r = client.delete(
+        api.device.endpoint+'/{}'.format(device1['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)

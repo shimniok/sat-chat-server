@@ -3,9 +3,11 @@
 from flask import Blueprint, render_template, redirect, request, url_for, flash, jsonify, current_app
 from flask_login import login_required, login_user, logout_user, LoginManager, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, db
+from api.models import User, db
 from functools import wraps
 import json
+
+endpoint = '/auth'
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates')
 
@@ -26,13 +28,13 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@auth_bp.route('/auth', methods=['get'])
+@auth_bp.route(endpoint, methods=['get'])
 @login_required
 def auth_get():
     return jsonify(current_user.to_dict())
 
 
-@auth_bp.route('/auth', methods=['post'])
+@auth_bp.route(endpoint, methods=['post'])
 def auth_post():
     try:
         data = json.loads(request.data.decode())
@@ -50,7 +52,7 @@ def auth_post():
         print("auth_post(): Exception: {}".format(e))
         return "bad request {}".format(e), 400
 
-@auth_bp.route('/auth', methods=['delete'])
+@auth_bp.route(endpoint, methods=['delete'])
 def auth_delete():
     logout_user()
     return jsonify({})

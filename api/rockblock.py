@@ -6,9 +6,9 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from models import Message, Device, User, db
 from json_parser import dt_fmt
-from device import get_my_device, get_device_by_imei
+from api.device import get_my_device, get_device_by_imei
+from api.models import Message, Device, User, db
 
 rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
 
