@@ -58,7 +58,7 @@ def test_rockblock_send(user1):
     assert r.content_type == 'application/json'
     r = user1.get(message.endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
-    assert len(r.json) == 1
+    assert len(r.json) == 1, 'unexpected json result length: {}'.format(r.json)
     m = r.json[0]
 
     # Ensure the message text matches the one we sent

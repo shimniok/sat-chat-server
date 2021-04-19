@@ -23,7 +23,7 @@ def send():
     # Get my device
     my_device = get_my_device()
     if my_device == None:
-        return jsonify([])
+        return "Device not found", 404
 
     #################################################################
     ## Prepare message for sending to Rock7 endpoint
