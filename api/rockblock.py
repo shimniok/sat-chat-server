@@ -40,11 +40,15 @@ def send():
         #TODO: data = request.json
         data = json.loads(request.data.decode())
         text = data["message"]
+        
+        if text == "" or text == None:
+            return "bad request: empty message", 400
+
         hex = binascii.b2a_hex(text.encode('utf-8'))
         print("send text={} hex={}".format(text, hex))
     except Exception as e:
         print("send(): problem preparing message {}".format(e))
-        return "problem preparing message", 401
+        return "problem preparing message", 400
 
     data = {
         'username': my_device.username,
