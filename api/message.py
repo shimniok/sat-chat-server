@@ -14,12 +14,19 @@ def message_before():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
+# TODO: only allow access to messages to/from me
 
 @message_bp.route(endpoint, methods=['get'])
 def messages_get():
-    # TODO: use 'since' get parameter? e.g., ?since=momsn
-    # TODO: only show messages to/from me
-    messages = Message.query.order_by(Message.momsn).all()
+
+    since_id = request.args.get('since_id')
+    if since_id != None:
+        print("since_id provided")
+        latest = Message.query.filter(Message.id == since_id).first_or_404("No such message id")
+        filter = Message.time > latest.time
+
+    messages = Message.query.filter(filter).order_by(Message.time).all()
+
     return jsonify([m.to_dict() for m in messages])
 
 
