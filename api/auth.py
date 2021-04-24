@@ -7,7 +7,7 @@ from api.models import User, db
 from functools import wraps
 import json
 
-endpoint = '/auth'
+endpoint = '/api/auth'
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates')
 
@@ -58,25 +58,25 @@ def auth_delete():
     return jsonify({})
 
 
-@auth_bp.route('/signup', methods=['get'])
-def signup_get():
-    return render_template('signup.html')
+# @auth_bp.route('/signup', methods=['get'])
+# def signup_get():
+#     return render_template('signup.html')
 
 
-@auth_bp.route('/signup', methods=['post'])
-def signup_post():
-    email = request.form.get('email')
-    name = request.form.get('name')
-    password = request.form.get('password')
-    user = User.query.filter_by(email=email).first() # does the email already exist in database?
-    if user:
-        flash('That email address is already in use')
-        return redirect('/signup')
-    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
-    db.session.add(new_user)
-    db.session.commit()
+# @auth_bp.route('/signup', methods=['post'])
+# def signup_post():
+#     email = request.form.get('email')
+#     name = request.form.get('name')
+#     password = request.form.get('password')
+#     user = User.query.filter_by(email=email).first() # does the email already exist in database?
+#     if user:
+#         flash('That email address is already in use')
+#         return redirect('/signup')
+#     new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+#     db.session.add(new_user)
+#     db.session.commit()
 
-    return redirect('/signup')
+#     return redirect('/signup')
 
 
 #@auth_bp.route('/login', methods=['get'])
