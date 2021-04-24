@@ -19,6 +19,8 @@ def message_before():
 @message_bp.route(endpoint, methods=['get'])
 def messages_get():
 
+    filter = True
+
     since_id = request.args.get('since_id')
     if since_id != None:
         print("since_id provided")
