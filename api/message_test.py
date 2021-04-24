@@ -23,6 +23,14 @@ def test_empty_messages(client):
     messages = r.json
     assert len(messages) == 0, 'message list not 0 length'
 
+# TODO: Test message get
+
+# TODO: Test message get?since_id
+
+# TODO: Test message post
+
+# TODO: Test message delete
+
 '''
 def test_post_messages(client):
     # Post new message_get
