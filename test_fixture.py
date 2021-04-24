@@ -38,7 +38,6 @@ device1_data = {
     'password': 'device1'
 }
 
-
 @pytest.fixture(scope='module')
 def application():
     '''
@@ -67,18 +66,16 @@ def client(application):
 
 @pytest.fixture(scope='module')
 def user1(client):
-
+    
     # Create user1
     r = client.post(api.user.endpoint, json=user1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    user1 = r.json
-    user1_data['id'] = r.json['id']
+    user1_record = r.json
 
     # Create user2
     r = client.post(api.user.endpoint, json=user2_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    user2 = r.json
-    user2_data['id'] = r.json['id']
+    user2_record = r.json
 
     # log out of admin
     #r = client.get('/auth', content_type='application/json')
@@ -88,24 +85,25 @@ def user1(client):
     #r = client.delete('/auth/{}'.format(me['id']), content_type='application/json')
 
     # log in as user1
-    r = client.post('/auth', json=user1_data, content_type='application/json')
+    r = client.post(api.auth.endpoint, json=user1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
     # Create device1 owned by user1
     r = client.post(api.device.endpoint, json=device1_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    device1 = r.json
-    device1_data['id'] = r.json['id']
+    device1_record = r.json
+    assert device1_record['owner_id'] == user1_record['id']
 
     yield client
 
-    r = client.post('/auth', json=admin_data, content_type='application/json')
+    r = client.post(api.auth.endpoint, json=admin_data,
+                    content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
-    r = client.delete(api.user.endpoint+'/{}'.format(user1['id']), content_type='application/json')
-    assert r.status_code == 200, 'Error: {}'.format(r.data)
-    r = client.delete(
-        api.user.endpoint+'/{}'.format(user2['id']), content_type='application/json')
+    r = client.delete(api.user.endpoint+'/{}'.format(user1_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     r = client.delete(
-        api.device.endpoint+'/{}'.format(device1['id']), content_type='application/json')
+        api.user.endpoint+'/{}'.format(user2_record['id']), content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+    r = client.delete(
+        api.device.endpoint+'/{}'.format(device1_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)

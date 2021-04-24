@@ -10,19 +10,27 @@ from json_parser import dt_fmt
 from api.device import get_my_device, get_device_by_imei
 from api.models import Message, Device, User, db
 
-rockblock_bp = Blueprint('rockblock', __name__, url_prefix='/api', template_folder='templates')
+send_endpoint = "/api/send"
+receive_endpoint = "/api/receive"
+
+rockblock_bp = Blueprint('rockblock', __name__, template_folder='templates')
 
 # TODO: Convert to using message api versus databse
 
 # Send data to Rock7
-@rockblock_bp.route('/send', methods=['post'])
+
+
+@rockblock_bp.route(send_endpoint, methods=['post'])
 def send():
+    print("rockblock.send()")
+
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
     # Get my device
     my_device = get_my_device()
     if my_device == None:
+        print("device not found")
         return "Device not found", 404
 
     #################################################################
@@ -93,8 +101,10 @@ def send():
 ## receive
 ## Receive data from Rock7
 ## 
-@rockblock_bp.route('/receive', methods=['get','post'])
+@rockblock_bp.route(receive_endpoint, methods=['get','post'])
 def receive():
+
+    print("rockblock.receive()")
 
     parameters = [
         'imei', 'momsn', 'transmit_time', 'iridium_latitude', 

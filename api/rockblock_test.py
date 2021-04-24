@@ -1,12 +1,13 @@
-from test_fixture import user1, client, application
+from test_fixture import user1, client, application, device1_data
 from datetime import datetime
 import binascii
 from json_parser import dt_fmt
 from api.message import endpoint as msg_endpoint
+from api.rockblock import send_endpoint, receive_endpoint
 
 text = 'Test Message'
 mo_msg = {
-    'imei': '300234010753370',
+    'imei': device1_data['imei'],
     'momsn': 99,
     'transmit_time': datetime.strftime(datetime.utcnow(), dt_fmt),
     'iridium_latitude': 39.5807,
@@ -19,7 +20,7 @@ def test_rockblock_receive(user1):
     ''' Test the receive api '''
     # Send Mobile Originated simulated message;
     # Ensure receive API returns 'done' -- ok status
-    r = user1.post('/api/receive', data=mo_msg)
+    r = user1.post(receive_endpoint, data=mo_msg)
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.data == b'done'
 
@@ -54,7 +55,7 @@ def test_rockblock_send(user1):
     ''' Test the send api '''
 
     # Send the Mobile Terminated message
-    r = user1.post('/api/send', json=mt_msg, content_type="application/json")
+    r = user1.post(send_endpoint, json=mt_msg, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
     r = user1.get(msg_endpoint, content_type="application/json")
