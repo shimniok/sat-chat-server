@@ -17,19 +17,22 @@ def message_before():
 
 @message_bp.route(endpoint, methods=['get'])
 def messages_get():
+    # TODO: use 'since' get parameter? e.g., ?since=momsn
+    # TODO: only show messages to/from me
     messages = Message.query.order_by(Message.momsn).all()
     return jsonify([m.to_dict() for m in messages])
 
 
-@message_bp.route(endpoint + '/since', methods=['get'])
-def message_since_bogus():
-    return jsonify([])
+@message_bp.route(endpoint + '/since/', methods=['get'])
+def message_since_all():
+    return messages_get()
 
 
 # Get messages since the specified momsn
 @message_bp.route(endpoint + '/since/<momsn>', methods=['get'])
 def messages_since(momsn):
     momsn = int(momsn)
+    # TODO: more efficient way to query database here?
     messages = Message.query.order_by(Message.momsn).all()
 
     return jsonify([m.to_dict() for m in messages if m.momsn > momsn])
@@ -42,27 +45,24 @@ def message_get(id=-1):
 
     return jsonify(message.to_dict())
 
-'''
+
 @message_bp.route(endpoint, methods=['post'])
 def message_post():
     try:
         data = request.json
 
         # Lookup device by imei
-        dev = Device.query.filter_by(imei=data['imei']).first()
-
-        # TODO: what if it's not found?
-
+        dev = Device.query.filter_by(imei=data['imei']).first_or_404()
         message = Message(
-            device_id = dev['id'],
-            momsn = data['momsn'],
-            sender_id = current_user.id,
-            transmit_time = data['transmit_time'],
-            time = data['time'],
-            iridium_latitude = float(data['iridium_latitude']),
-            iridium_longitude = float(data['iridium_longitude']),
-            iridium_cep = data['iridium_cep'],
-            message = data['message']
+            device_id=dev['id'],
+            momsn=data['momsn'],
+            sender_id=current_user.id,
+            transmit_time=data['transmit_time'],
+            time=data['time'],
+            iridium_latitude=float(data['iridium_latitude']),
+            iridium_longitude=float(data['iridium_longitude']),
+            iridium_cep=data['iridium_cep'],
+            message=data['message']
         )
         db.session.add(message)
         db.session.commit()
@@ -70,7 +70,7 @@ def message_post():
 
     except Exception as e:
         return "Error: {}".format(e), 400
-'''
+
 
 @message_bp.route(endpoint + '/<id>', methods=['delete'])
 def message_delete(id=-1):
