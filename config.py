@@ -22,9 +22,6 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
-    # IMEI = os.environ['IMEI']
-    # USERNAME = os.environ['USERNAME']
-    # PASSWORD = os.environ['PASSWORD']
     API_ENDPOINT = os.environ['API_ENDPOINT']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     LOOPBACK_ENABLED = False
