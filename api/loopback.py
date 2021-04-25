@@ -16,10 +16,8 @@ loopback_bp = Blueprint('loopback', __name__)
 momsn_file = "momsn.txt"
 
 def do_send(url, message):
-    print("do_stuff url={} message={}".format(url, message))
-
     r = requests.post(url=url, data=message)
-
+    print("-- loopback: do_send: url={} message={} status={}".format(url, message, r.status_code))
     return
 
 
@@ -49,8 +47,8 @@ def loopback_post():
             momsn_str = f.read()
             f.close()
     except OSError as e:
-        print("loopback: {}: {}".format(momsn_file, e))
-    # If we can't convert it to int, set it to 99
+        print("-- loopback: momsn: {}: {}".format(momsn_file, e))
+
     try:
         momsn = int(momsn_str)
     except:
@@ -72,7 +70,7 @@ def loopback_post():
     job = q.enqueue_call(
            func = do_send, args = (url,message,), result_ttl=5000
         )
-    print("loopback: job id: {}".format(job.get_id()))
+    print("-- loopback: job id: {}".format(job.get_id()))
 
     # Update static momsn message serial number
     try:

@@ -31,7 +31,7 @@ def send():
     my_device = get_my_device()
     if my_device == None:
         print("device not found")
-        return "Device not found", 404
+        return "device not found", 404
 
     #################################################################
     ## Prepare message for sending to Rock7 endpoint
@@ -45,10 +45,10 @@ def send():
             return "bad request: empty message", 400
 
         hex = binascii.b2a_hex(text.encode('utf-8'))
-        print("send text={} hex={}".format(text, hex))
+        print("send() text={} hex={}".format(text, hex))
     except Exception as e:
         print("send(): problem preparing message {}".format(e))
-        return "problem preparing message", 400
+        return "error preparing message", 400
 
     data = {
         'username': my_device.username,
@@ -57,6 +57,8 @@ def send():
         'data': hex
     }
     r = requests.post(url = current_app.config['API_ENDPOINT'], data = data)
+
+    print("send(): message posted, status={} {}".format(r.status_code, r.text))
 
     #################################################################
     ## Parse return from request and return json
