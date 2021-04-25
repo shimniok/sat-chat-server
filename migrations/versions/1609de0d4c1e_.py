@@ -7,6 +7,7 @@ Create Date: 2021-04-19 09:39:11.883640
 """
 from alembic import op
 import sqlalchemy as sa
+from psycopg2.errors import UndefinedTable
 
 
 # revision identifiers, used by Alembic.
@@ -22,7 +23,7 @@ def upgrade():
         op.drop_table('conversations')
         op.drop_table('contacts')
         op.drop_table('roles')
-    except psycopg2.errors.UndefinedTable:
+    except UndefinedTable:
         pass
     except Exception as e:
         print("Error dropping tables: "+e)
