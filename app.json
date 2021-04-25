@@ -1,0 +1,19 @@
+{
+  "name": "Sat Chat Server",
+  "description": "Chat application for use with mobile Rock7 RockBLOCK device.",
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python"
+    }
+  ],
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup-python": "python -m pip install --upgrade pip",
+        "test-setup-installtools": "pip install setuptools wheel twine",
+        "test-install-dependencies": "pip install -r requirements.txt",
+        "test-run": "pytest"
+      }
+    }
+  }
+}
