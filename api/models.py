@@ -87,7 +87,7 @@ class User(OutputMixin, UserMixin, db.Model):
 
 class Device(OutputMixin, db.Model):
     __tablename__ = 'devices'
-    PROTECTED_COLUMNS = [ 'password' ]
+    #PROTECTED_COLUMNS = [ 'password' ]
     RELATIONSHIPS_TO_DICT = False
 
     id = Column(Integer, primary_key=True)

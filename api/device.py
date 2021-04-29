@@ -11,17 +11,21 @@ device_bp = Blueprint('device', __name__)
 
 # TODO: admin role can interact with anything
 
+
 @device_bp.before_request
 def device_before():
     print("device_before()")
     if not current_user.is_authenticated:
         abort(401)
 
+
 def get_my_device():
-    return Device.query.filter_by(owner_id = current_user.id).first()
+    return Device.query.filter_by(owner_id=current_user.id).first()
+
 
 def get_device_by_imei(imei):
-    return Device.query.filter_by(imei = imei).first_or_404()
+    return Device.query.filter_by(imei=imei).first_or_404()
+
 
 @device_bp.route(endpoint, methods=['get'])
 def device_get():
@@ -39,20 +43,31 @@ def device_post():
     if not request.json:
         abort(400)
     try:
-        dev = Device(
-            imei = request.json['imei'],
-            username = request.json['username'],
-            password = request.json['password'],
-            owner_id = current_user.id
-        )
-        db.session.add(dev)
-        db.session.commit()
+        my_device = get_my_device()
+        print(my_device)
+        if my_device == None:
+            dev = Device(
+                imei=request.json['imei'],
+                username=request.json['username'],
+                password=request.json['password'],
+                owner_id=current_user.id
+            )
+            db.session.add(dev)
+            db.session.commit()
+        else:
+            dev = my_device
+            if 'imei' in request.json:
+                dev.imei = request.json['imei']
+            if 'username' in request.json:
+                dev.username = request.json['username']
+            if 'password' in request.json:
+                dev.password = request.json['password']
+            db.session.commit()
     except Exception as e:
         print("Error: {}".format(e))
         return "Bad request: {}".format(e), 400
 
     return jsonify(dev.to_dict())
-
 
 
 @device_bp.route(endpoint+'/<id>', methods=['post'])
@@ -61,13 +76,13 @@ def device_post_id(id):
     if not request.json:
         abort(400)
     try:
-        #TODO: ensure current_user owns this device!
+        # TODO: ensure current_user owns this device!
         dev = Device.query.filter_by(id=id).first_or_404()
         if 'imei' in request.json:
             dev.imei = request.json['imei']
-        if 'username' in request.json:            
+        if 'username' in request.json:
             dev.username = request.json['username']
-        if 'password' in request.json:        
+        if 'password' in request.json:
             dev.password = request.json['password']
         db.session.commit()
 
@@ -77,12 +92,11 @@ def device_post_id(id):
     return jsonify(dev.to_dict())
 
 
-
 @device_bp.route(endpoint+'/<id>', methods=['delete'])
 def device_del(id):
     try:
-        #TODO: ensure current_user owns this device!
-        dev = Device.query.filter_by(id = id).first_or_404()
+        # TODO: ensure current_user owns this device!
+        dev = Device.query.filter_by(id=id).first_or_404()
         db.session.delete(dev)
         db.session.commit()
     except Exception as e:
