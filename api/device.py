@@ -29,12 +29,12 @@ def get_device_by_imei(imei):
 
 @device_bp.route(endpoint, methods=['get'])
 def device_get():
-    device = get_my_device()
+    my_device = get_my_device()
 
-    if device == None:
-        return jsonify([])
+    if my_device == None:
+        return jsonify({})
     else:
-        return jsonify([device.to_dict()])
+        return jsonify(my_device.to_dict())
 
 
 @device_bp.route(endpoint, methods=['post'])
