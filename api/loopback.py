@@ -12,6 +12,8 @@ from worker import q
 from json_parser import dt_fmt
 from api.device import get_my_device
 
+endpoint="/api/loopback"
+
 loopback_bp = Blueprint('loopback', __name__)
 momsn_file = "momsn.txt"
 
@@ -22,7 +24,7 @@ def do_send(url, message):
 
 
 # Loopback for testing only. Emulates Rock7 MT web service
-@loopback_bp.route('/loopback', methods=['post'])
+@loopback_bp.route(endpoint, methods=['post'])
 def loopback_post():
     global momsn_file
 
@@ -36,9 +38,12 @@ def loopback_post():
     # TODO: Simulate authentication with IMEI, USERNAME, PASSWORD
 
     # convert hex message back to text and add some text
-    hex = request.form.get('data')
-    text = binascii.a2b_hex(hex).decode("utf-8") + " reply"
-    hex = binascii.b2a_hex(text.encode('utf-8'))
+    try:
+        hex = request.form.get('data')
+        text = binascii.a2b_hex(hex).decode("utf-8") + " reply"
+        hex = binascii.b2a_hex(text.encode('utf-8'))
+    except Exception as e:
+        print("-- loopback: conversion error: {}".format(e))
 
     # Read static momsn message serial number
     momsn_str = ""
