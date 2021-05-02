@@ -17,7 +17,7 @@ def init_db(app):
     db.init_app(app)
 
     # creates db if it doesn't exist
-    db.create_all()
+    #db.create_all() -- should be handled by alembic
 
     # insert admin user if doesn't exist
     admin = User.query.filter_by(name='admin').first()
