@@ -57,9 +57,6 @@ def application():
 
     yield app
 
-#    if os.path.exists(tmpdb_file):
-#        os.remove(tmpdb_file)
-
 
 @pytest.fixture(scope='module')
 def client(application):
