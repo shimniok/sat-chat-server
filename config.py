@@ -16,6 +16,7 @@ def create_config(env):
         print("Unrecognized APP_SETTINGS. Must be: Development|Staging|Production")
     return config
 
+
 class Config(object):
     DEVELOPMENT = False
     DEBUG = False
@@ -29,6 +30,8 @@ class Config(object):
     REMEMBER_COOKIE_SECURE = True
     REMEMBER_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_REFRESH_EACH_REQUEST = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -49,3 +52,4 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    DEBUG = True

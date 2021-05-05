@@ -1,6 +1,7 @@
 import pytest
 import os
 import json
+from config import create_config
 from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 from app import create_app
@@ -10,7 +11,7 @@ import api.device
 from api.models import init_db as init_db
 
 tmpdb_file = "/tmp/test.db"
-tmpdb_uri = 'sqlite:///{}'.format(tmpdb_file)
+tmpdb_uri = "sqlite:///{}".format(tmpdb_file)
 
 admin_data = {
     "email": "admin@example.com",
@@ -38,19 +39,26 @@ device1_data = {
     'password': 'device1'
 }
 
+
 @pytest.fixture(scope='module')
 def application():
     '''
     Create a Flask app context for the tests.
     '''
 
-    app = create_app()
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = tmpdb_uri
+    # Prepare environment
+    test_config = create_config(env="Testing")
+    test_config.SQLALCHEMY_DATABASE_URI = tmpdb_uri
+    
+    app = create_app(test_config)
     app.app_context().push()
-    init_db(app)
+    
+    assert os.path.exists(tmpdb_file)
 
     yield app
+
+#    if os.path.exists(tmpdb_file):
+#        os.remove(tmpdb_file)
 
 
 @pytest.fixture(scope='module')
@@ -59,7 +67,7 @@ def client(application):
     with application.test_client() as client:
         # Login
         r = client.post(api.auth.endpoint, json=admin_data, content_type='application/json')
-        assert r.status_code == 200,'unable to login as admin user'
+        assert r.status_code == 200, 'Error: {}'.format(r.data)
 
         yield client
 
@@ -78,11 +86,6 @@ def user1(client):
     user2_record = r.json
 
     # log out of admin
-    #r = client.get('/auth', content_type='application/json')
-    #assert r.status_code == 200, 'Error: {}'.format(r.data)
-    #me = r.json
-    #assert me['id'] == 1
-    #r = client.delete('/auth/{}'.format(me['id']), content_type='application/json')
 
     # log in as user1
     r = client.post(api.auth.endpoint, json=user1_data, content_type='application/json')
@@ -96,14 +99,16 @@ def user1(client):
 
     yield client
 
-    r = client.post(api.auth.endpoint, json=admin_data,
-                    content_type='application/json')
+    r = client.post(api.auth.endpoint, json=admin_data, content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
+
     r = client.delete(api.user.endpoint+'/{}'.format(user1_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
+
     r = client.delete(
         api.user.endpoint+'/{}'.format(user2_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
+
     r = client.delete(
         api.device.endpoint+'/{}'.format(device1_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, Float, String, DateTime
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy, Model
+from flask_migrate import Migrate, upgrade
 from output_mixin import OutputMixin
 from flask_login import UserMixin
 from datetime import datetime, timezone
@@ -16,19 +17,29 @@ db = SQLAlchemy()
 def init_db(app):
     db.init_app(app)
 
-    # creates db if it doesn't exist
-    #db.create_all() -- should be handled by alembic
+    if app.config['TESTING'] == True:
+        # initialize test database
+        db.create_all()
+    else:
+        # upgrade the database
+        try:
+            Migrate(app, db)
+            upgrade()
+        except Exception as e:
+            print("db migration failed: {}".format(str(e)))
+    
+    # insert admin user if doesn't exist
+    admin = User.query.filter_by(name='admin').first()
+    if not admin:
+        admin = User(
+            name='admin',
+            email='admin@example.com',
+            password=generate_password_hash('admin', method='sha256')
+        )
+        db.session.add(admin)
+        db.session.commit()
+    print("admin user id={}".format(admin.id))
 
-    # # insert admin user if doesn't exist
-    # admin = User.query.filter_by(name='admin').first()
-    # if not admin:
-    #     admin = User(
-    #         name='admin',
-    #         email='admin@example.com',
-    #         password=generate_password_hash('admin', method='sha256')
-    #     )
-    # db.session.add(admin)
-    # db.session.commit()
     return
 
 

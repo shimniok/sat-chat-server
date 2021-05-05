@@ -6,13 +6,17 @@ from json_parser import dt_fmt
 
 db = SQLAlchemy()
 
+
 def create_app(test_config=None):
 
     app = Flask(__name__, instance_relative_config=True)
 
-    #app.config.from_object(os.environ['APP_SETTINGS'])
-    app.config.from_object(create_config(env = os.environ['APP_SETTINGS']))
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    if test_config == None:
+        my_config = create_config(env=os.environ['APP_SETTINGS'])
+    else:
+        my_config = test_config
+
+    app.config.from_object(my_config)
 
     # setup login manager and initialize for this app
     from api.auth import login_manager
