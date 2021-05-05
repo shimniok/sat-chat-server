@@ -17,7 +17,9 @@ login_manager.session_protection = "strong"
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if current_user.id != 1:
+        u = User.query.filter_by(id = current_user.id).first()
+        print("admin_required: u.name={} priv?={}".format(u.name, u.admin))
+        if u.admin != None and not u.admin:
             return "Unauthorized", 404
         return f(*args, **kwargs)
     return decorated_function

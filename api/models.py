@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, Float, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, Float, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy, Model
 from flask_migrate import Migrate, upgrade
@@ -25,6 +25,7 @@ def init_db(app):
         try:
             Migrate(app, db)
             upgrade()
+            print("upgrade complete")
         except Exception as e:
             print("db migration failed: {}".format(str(e)))
     
@@ -34,11 +35,15 @@ def init_db(app):
         admin = User(
             name='admin',
             email='admin@example.com',
-            password=generate_password_hash('admin', method='sha256')
+            password=generate_password_hash('admin', method='sha256'),
+            admin=True
         )
         db.session.add(admin)
         db.session.commit()
-    print("admin user id={}".format(admin.id))
+    
+    if not admin.admin:
+        admin.admin = True
+        db.session.commit()
 
     return
 
@@ -89,11 +94,13 @@ class User(OutputMixin, UserMixin, db.Model):
     name = Column(String())
     password = Column(String())
     device = relationship("Device", uselist=False, back_populates="owner")
+    admin = Column(Boolean())
 
-    def __init__(self, email="", name="", password=""):
+    def __init__(self, email="", name="", password="", admin=False):
         self.email=email
         self.name=name
         self.password=password
+        self.admin=admin
 
 
 class Device(OutputMixin, db.Model):
