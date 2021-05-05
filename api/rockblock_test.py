@@ -12,7 +12,7 @@ mo_msg = {
     'transmit_time': datetime.strftime(datetime.utcnow(), dt_fmt),
     'iridium_latitude': 39.5807,
     'iridium_longitude': -104.8772,
-    'iridium_cep': 8,
+    'iridium_cep': 8.2,
     'data': binascii.b2a_hex(text.encode('utf-8'))
 }
 
