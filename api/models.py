@@ -59,7 +59,7 @@ class Message(OutputMixin, db.Model):
     time = Column(DateTime())
     iridium_latitude = Column(Float())
     iridium_longitude = Column(Float())
-    iridium_cep = Column(Integer)
+    iridium_cep = Column(Float())
 
     def __init__(self, device_id=None, sender_id=None, momsn=-1, message='',
         transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
