@@ -11,8 +11,21 @@ from json_parser import dt_fmt
 
 db = SQLAlchemy()
 
+rock7_date_format = "%y-%m-%d %H:%M:%S"
+json_date_format = dt_fmt
+
 #TODO: create roles table, add role Column to each user
-#TODO: add Devices, assign device to user as owner / sender
+
+
+def decode_date(dtstr):
+    for f in [ rock7_date_format, json_date_format ]:
+        try:
+            t = datetime.strptime(dtstr, f)
+            return t
+        except:
+            pass
+    raise ValueError
+
 
 def init_db(app):
     db.init_app(app)
@@ -67,7 +80,7 @@ class Message(OutputMixin, db.Model):
     iridium_cep = Column(Float())
 
     def __init__(self, device_id=None, sender_id=None, momsn=-1, message='',
-        transmit_time="1970-01-01T00:00Z", time="1970-01-01T00:00Z",
+        transmit_time="70-01-01 00:00", time="70-01-01 00:00",
         iridium_latitude=0, iridium_longitude=0, iridium_cep=0):
 
         self.device_id = device_id
@@ -75,8 +88,8 @@ class Message(OutputMixin, db.Model):
         self.momsn = momsn
         self.message = message
         try:
-            self.transmit_time = datetime.strptime(transmit_time, dt_fmt)
-            self.time = datetime.strptime(time, dt_fmt)
+            self.transmit_time = decode_date(transmit_time)
+            self.time = decode_date(time)
         except ValueError as e:
             print("Message: bad time format: {}".format(e))
         self.iridium_latitude=iridium_latitude

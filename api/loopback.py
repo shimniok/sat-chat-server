@@ -9,8 +9,8 @@ from flask import Blueprint, request, url_for, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
 from worker import q
-from json_parser import dt_fmt
 from api.device import get_my_device
+from api.models import rock7_date_format
 
 endpoint="/api/loopback"
 
@@ -65,7 +65,7 @@ def loopback_post():
     message = {
         'imei': imei,
         'momsn': mobile_momsn + 1,
-        'transmit_time': datetime.strftime(datetime.utcnow(), dt_fmt),
+        'transmit_time': datetime.strftime(datetime.utcnow(), rock7_date_format),
         'iridium_latitude': "39.5807",
         'iridium_longitude': "-104.8772",
         'iridium_cep': 8.7,

@@ -6,20 +6,33 @@ import json
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
-from json_parser import dt_fmt
 from api.device import get_my_device, get_device_by_imei
-from api.models import Message, Device, User, db
+from api.models import Message, Device, User, db, rock7_date_format
 
 send_endpoint = "/api/send"
 receive_endpoint = "/api/receive"
 
 rockblock_bp = Blueprint('rockblock', __name__, template_folder='templates')
 
-# TODO: Convert to using message api versus databse
-
+########################################################################
+# send
 # Send data to Rock7
-
-
+#
+# See: https://docs.rockblock.rock7.com/reference#testinput
+#
+# Their API returns:
+# OK | FAILED, error code
+#
+# Error codes:
+#  10	Invalid login credentials
+#  11	No RockBLOCK with this IMEI found on your account
+#  12	RockBLOCK has no line rental
+#  13	Your account has insufficient credit
+#  14	Could not decode hex data
+#  15	Data too long
+#  16	No data
+#  99	System Error
+#
 @rockblock_bp.route(send_endpoint, methods=['post'])
 def send():
     print("rockblock.send()")
@@ -33,12 +46,11 @@ def send():
         print("device not found")
         return "device not found", 404
 
-    #################################################################
+    ##
     ## Prepare message for sending to Rock7 endpoint
     ##
     try:
-        #TODO: data = request.json
-        data = json.loads(request.data.decode())
+        data = request.json 
         text = data["message"]
         
         if text == "" or text == None:
@@ -60,7 +72,7 @@ def send():
 
     print("send(): message posted, status={} {}".format(r.status_code, r.text))
 
-    #################################################################
+    ##
     ## Parse return from request and return json
     ##   Success: OK,12345678  --The number uniquely identifies your message.
     ##   Failure: FAILED,15,Textual description of failure
@@ -77,8 +89,8 @@ def send():
             device_id=my_device.id,
             momsn=msg_bits[1],
             message=text,
-            transmit_time=datetime.strftime(datetime.utcnow(), dt_fmt),
-            time=datetime.strftime(datetime.utcnow(), dt_fmt)
+            transmit_time=datetime.strftime(datetime.utcnow(), rock7_date_format),
+            time=datetime.strftime(datetime.utcnow(), rock7_date_format)
         )
         #print('receive(): transmit_time: {}'.format(m.transmit_time))
         id = db.session.add(m)
@@ -104,8 +116,11 @@ def send():
     return jsonify(result)
 
 
+###############################################################
 ## receive
 ## Receive data from Rock7
+##
+## See: https://docs.rockblock.rock7.com/reference#receiving-mo-messages-via-http-webhook
 ## 
 @rockblock_bp.route(receive_endpoint, methods=['get','post'])
 def receive():
@@ -137,7 +152,7 @@ def receive():
             message=text,
             momsn=request.form.get('momsn'),
             transmit_time=request.form.get('transmit_time'),
-            time=datetime.strftime(datetime.utcnow(), dt_fmt),
+            time=datetime.strftime(datetime.utcnow(), rock7_date_format),
             iridium_latitude=request.form.get('iridium_latitude'),
             iridium_longitude=request.form.get('iridium_longitude'),
             iridium_cep=request.form.get('iridium_cep')
@@ -147,9 +162,9 @@ def receive():
         db.session.commit()
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
-        return 'bad request: error processing parameters: {}'.format(e), 400
+        return 'bad request: error processing parameters', 400
     except Exception as e:
         print('receive(): unable to add to database {}'.format(e))
-        return 'unable to add to database {}'.format(e), 400
+        return 'unable to add to database', 400
 
     return "done"
