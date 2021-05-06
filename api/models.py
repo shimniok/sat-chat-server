@@ -33,14 +33,6 @@ def init_db(app):
     if app.config['TESTING'] == True:
         # initialize test database
         db.create_all()
-    else:
-        # upgrade the database
-        try:
-            Migrate(app, db)
-            upgrade()
-            print("upgrade complete")
-        except Exception as e:
-            print("db migration failed: {}".format(str(e)))
     
     # insert admin user if doesn't exist
     admin = User.query.filter_by(name='admin').first()
