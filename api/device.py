@@ -9,7 +9,7 @@ endpoint = '/api/device'
 
 device_bp = Blueprint('device', __name__)
 
-# TODO: admin role can interact with anything
+# TODO: admin role can access all
 
 
 @device_bp.before_request

@@ -128,5 +128,5 @@ class Device(OutputMixin, db.Model):
         self.owner_id = owner_id
         self.imei = imei
         self.username = username
-        self.password = generate_password_hash(username, method='sha256')
+        self.password = password
 
