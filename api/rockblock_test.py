@@ -25,7 +25,7 @@ mt_msg = {
 
 def test_rockblock_receive(user1):
     ''' Test the receive api '''
-    # Send Mobile Originated simulated message;
+    # Send simulated Mobile Originated message;
     # Ensure receive API returns 'done' -- ok status
     r = user1.post(receive_endpoint, data=mo_msg)
     assert r.status_code == 200, 'Error {}'.format(r.data)
@@ -40,7 +40,8 @@ def test_rockblock_receive(user1):
     # Verify the message matches the one posted to the api
     #assert m['imei'] == mo_msg['imei']
     assert m['momsn'] == mo_msg['momsn']
-    assert decode_date(m['transmit_time']) == decode_date(mo_msg['transmit_time'])
+    assert decode_date(m['transmit_time']) == decode_date(
+        mo_msg['transmit_time'])
     assert m['iridium_latitude'] == mo_msg['iridium_latitude']
     assert m['iridium_longitude'] == mo_msg['iridium_longitude']
     assert m['iridium_cep'] == mo_msg['iridium_cep']
@@ -53,6 +54,33 @@ def test_rockblock_receive(user1):
     r = user1.get(msg_endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert len(r.json) == 0
+
+
+def test_rockblock_receive_empty(user1):
+    ''' Test the receive api '''
+    # Send Mobile Originated empty message;
+    # Ensure receive API returns 'done' -- ok status
+    mo_msg2 = mo_msg
+    mo_msg2['data'] = ""
+
+    r = user1.post(receive_endpoint, data=mo_msg2)
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    assert r.data == b'done'
+
+    # # Ensure new message exist via message api
+    r = user1.get(msg_endpoint, content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    assert len(r.json) == 1
+    m = r.json[0]
+
+    # Delete the message and make sure it's deleted
+    r = user1.delete(
+        msg_endpoint + '/{}'.format(m['id']), content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    r = user1.get(msg_endpoint, content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    assert len(r.json) == 0
+
 
 def test_rockblock_send(user1):
     ''' Test the send api '''

@@ -127,13 +127,17 @@ def receive():
 
     print("rockblock.receive()")
 
-    parameters = [
-        'imei', 'momsn', 'transmit_time', 'iridium_latitude', 
-        'iridium_longitude', 'iridium_cep', 'data'
+    required = [
+        'imei', 
+        'momsn', 
+        'transmit_time', 
+        'iridium_latitude', 
+        'iridium_longitude', 
+        'iridium_cep'
     ]
     # check for missing parameters
     missing = []
-    for p in parameters:
+    for p in required:
         if not request.form.get(p):
             missing.append(p)
         else:
@@ -143,7 +147,8 @@ def receive():
         return 'bad request: missing: {}'.format(', '.join(missing)), 400
 
     # match IMEI to a device
-    device = get_device_by_imei( request.form.get('imei') )
+    device = get_device_by_imei(request.form.get('imei'))
+
     try:
         hex = request.form.get('data')
         text = binascii.a2b_hex(hex).decode("utf-8")
