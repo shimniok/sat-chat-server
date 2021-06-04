@@ -151,20 +151,21 @@ def receive():
 
     try:
         hex = request.form.get('data')
-        text = binascii.a2b_hex(hex).decode("utf-8")
-        msg = Message(
-            device_id=device.id,
-            message=text,
-            momsn=request.form.get('momsn'),
-            transmit_time=request.form.get('transmit_time'),
-            time=datetime.strftime(datetime.utcnow(), rock7_date_format),
-            iridium_latitude=request.form.get('iridium_latitude'),
-            iridium_longitude=request.form.get('iridium_longitude'),
-            iridium_cep=request.form.get('iridium_cep')
-        )
-        # Add message to database
-        db.session.add(msg)
-        db.session.commit()
+        if not hex == "":
+            text = binascii.a2b_hex(hex).decode("utf-8")
+            msg = Message(
+                device_id=device.id,
+                message=text,
+                momsn=request.form.get('momsn'),
+                transmit_time=request.form.get('transmit_time'),
+                time=datetime.strftime(datetime.utcnow(), rock7_date_format),
+                iridium_latitude=request.form.get('iridium_latitude'),
+                iridium_longitude=request.form.get('iridium_longitude'),
+                iridium_cep=request.form.get('iridium_cep')
+            )
+            # Add message to database
+            db.session.add(msg)
+            db.session.commit()
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
         return 'bad request: error processing parameters', 400

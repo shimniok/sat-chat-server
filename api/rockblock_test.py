@@ -59,7 +59,7 @@ def test_rockblock_receive(user1):
 def test_rockblock_receive_empty(user1):
     ''' Test the receive api '''
     # Send Mobile Originated empty message;
-    # Ensure receive API returns 'done' -- ok status
+    # Ensure receive API returns 'done' -- ok status -- and message ignored
     mo_msg2 = mo_msg
     mo_msg2['data'] = ""
 
@@ -70,16 +70,7 @@ def test_rockblock_receive_empty(user1):
     # # Ensure new message exist via message api
     r = user1.get(msg_endpoint, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
-    assert len(r.json) == 1
-    m = r.json[0]
-
-    # Delete the message and make sure it's deleted
-    r = user1.delete(
-        msg_endpoint + '/{}'.format(m['id']), content_type="application/json")
-    assert r.status_code == 200, 'Error {}'.format(r.data)
-    r = user1.get(msg_endpoint, content_type="application/json")
-    assert r.status_code == 200, 'Error {}'.format(r.data)
-    assert len(r.json) == 0
+    assert len(r.json) == 0, 'expected json result length: {}'.format(r.json[0])
 
 
 def test_rockblock_send(user1):
