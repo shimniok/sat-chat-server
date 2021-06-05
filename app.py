@@ -47,8 +47,4 @@ def create_app(test_config=None):
         from api.rockblock import rockblock_bp
         app.register_blueprint(rockblock_bp)
 
-        if app.config['DEVELOPMENT']:
-            from api.loopback import loopback_bp
-            app.register_blueprint(loopback_bp)
-
         return app
