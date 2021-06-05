@@ -35,24 +35,24 @@ def init_db(app):
         db.create_all()
     
     # insert admin user if doesn't exist
-    try:
-        admin = User.query.filter_by(name='admin').first()
-        if not admin:
-            admin = User(
-                name='admin',
-                email='admin@example.com',
-                password=generate_password_hash('admin', method='sha256'),
-                admin=True
-            )
-            db.session.add(admin)
-            db.session.commit()
+    # try:
+    #     admin = User.query.filter_by(name='admin').first()
+    #     if not admin:
+    #         admin = User(
+    #             name='admin',
+    #             email='admin@example.com',
+    #             password=generate_password_hash('admin', method='sha256'),
+    #             admin=True
+    #         )
+    #         db.session.add(admin)
+    #         db.session.commit()
     
-        if not admin.admin:
-            admin.admin = True
-            db.session.commit()
-    except Exception as e:
-        print("Exception in init_db: {}".format(str(e)))
-        pass
+    #     if not admin.admin:
+    #         admin.admin = True
+    #         db.session.commit()
+    # except Exception as e:
+    #     print("Exception in init_db: {}".format(str(e)))
+    #     pass
 
     return
 
