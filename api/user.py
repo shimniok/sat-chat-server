@@ -62,7 +62,28 @@ def user_post():
         print(u)
         return jsonify(u.to_dict())
     except Exception as e:
-        return "Error: {}".format(e), 400
+        return "Error: {}".format(e), 400 # TODO: log to file, provide minimal error
+
+
+@user_bp.route(endpoint, methods=['patch'])
+def user_patch():
+    me = User.query.filter_by(id=current_user.id).first()
+    data = request.json
+    try:
+        if 'name' in data:
+            me.name = data['name']
+        if 'email' in data:
+            me.email = data['email']
+        if 'phone' in data:
+            me.phone = data['phone']
+        if 'password' in data:
+            me.password = generate_password_hash(
+                data['password'], method='sha256')
+        db.session.commit()
+    except Exception as e:
+        print("{}: {}".format(endpoint, e))
+        return "Error encountered", 400
+    return jsonify(me.to_dict())
 
 
 @user_bp.route(endpoint+'/<id>', methods=['delete'])

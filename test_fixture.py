@@ -23,14 +23,14 @@ user1_data = {
     'email': "user1@example.com",
     'name': 'User1',
     'password': 'user1',
-    'remember': 1
+    'phone': '555-555-5551'
 }
 
 user2_data = {
     'email': "user2@example.com",
     'name': 'User2',
     'password': 'user2',
-    'remember': 1
+    'phone': '555-555-5552'
 }
 
 device1_data = {

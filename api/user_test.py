@@ -1,4 +1,4 @@
-from test_fixture import client, application
+from test_fixture import client, user1, user1_data, application
 from user import endpoint, filter_phone
 
 new_user = {
@@ -34,7 +34,8 @@ def test_user_list(client):
     assert "password" not in u, "password is being returned by api"
 
 
-def test_user_post(client):
+def test_user_post_delete(client):
+    # Post
     r = client.post(endpoint, json=new_user, content_type="application/json")
     assert r.status_code == 200, 'Error {}'.format(r.data)
     assert r.content_type == 'application/json'
@@ -48,6 +49,19 @@ def test_user_post(client):
     assert u['email'] == new_user['email']
     assert u['phone'] == new_user['phone']
     assert u['admin'] == new_user['admin']
+    # Delete
+    r = client.delete(
+        endpoint+'/{}'.format(u['id']), content_type="application/json")
+    assert r.status_code == 200
+    assert r.content_type == "application/json"
+    u = r.json
+    assert u['name'] == new_user['name']
+    assert u['email'] == new_user['email']
+    assert u['phone'] == new_user['phone']
+    assert u['admin'] == new_user['admin']
+    r = client.get(endpoint+'/{}'.format(u['id']), content_type="application/json")
+    assert r.status_code == 404
+    
     
 def test_filter_phone(client):
     assert filter_phone("+1-555-555-5555") == ""
@@ -61,20 +75,36 @@ def test_filter_phone(client):
     assert filter_phone("555-555-55555") == ""
 
 
-def test_user_delete(client):
-    r = client.get(endpoint, content_type="application/json")
-    assert r.status_code == 200
-    assert r.content_type == 'application/json'
-    users = r.json
-    for u in users:
-         if u['email'] == new_user['email']:
-             user = u
-             break
-    r = client.delete(endpoint+'/{}'.format(u['id']), content_type="application/json")
-    assert r.status_code == 200
-    assert r.content_type == "application/json"
-    u = r.json
-    assert u['name'] == new_user['name']
-    assert u['email'] == new_user['email']
-    assert u['phone'] == new_user['phone']
-    assert u['admin'] == new_user['admin']
+def test_user_patch(user1):
+    data1 = {
+        'phone': '555-555-5000'
+    }
+    r1 = user1.patch(endpoint, json=data1, content_type="application/json")
+    assert r1.status_code == 200, 'Error {}'.format(r.data)
+    u1 = r1.json
+    assert u1['phone'] == data1['phone']
+    assert u1['phone'] != user1_data['phone']
+
+    r2 = user1.get(endpoint+'/{}'.format(u1['id']), content_type="application/json")
+    assert r2.status_code == 200, 'Error {}'.format(r.data)
+    u2 = r2.json
+    assert u2['phone'] == u1['phone']
+    assert u2['phone'] != user1_data['phone']
+
+# def test_user_delete(client):
+#     r = client.get(endpoint, content_type="application/json")
+#     assert r.status_code == 200
+#     assert r.content_type == 'application/json'
+#     users = r.json
+#     for user in users:
+#          if user['email'] == new_user['email']:
+#              u = user
+#              break
+#     r = client.delete(endpoint+'/{}'.format(u['id']), content_type="application/json")
+#     assert r.status_code == 200
+#     assert r.content_type == "application/json"
+#     u = r.json
+#     assert u['name'] == new_user['name']
+#     assert u['email'] == new_user['email']
+#     assert u['phone'] == new_user['phone']
+#     assert u['admin'] == new_user['admin']
