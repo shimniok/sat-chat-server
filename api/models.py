@@ -103,13 +103,15 @@ class User(OutputMixin, UserMixin, db.Model):
     name = Column(String())
     password = Column(String())
     device = relationship("Device", uselist=False, back_populates="owner")
+    phone = Column(String())
     admin = Column(Boolean())
 
-    def __init__(self, email="", name="", password="", admin=False):
-        self.email=email
-        self.name=name
-        self.password=password
-        self.admin=admin
+    def __init__(self, email="", name="", password="", phone="", admin=False):
+        self.email = email
+        self.name = name
+        self.password = password
+        self.phone = phone
+        self.admin = admin
 
 
 class Device(OutputMixin, db.Model):

@@ -1,5 +1,6 @@
 ## USER API ##############################################################################################
 
+import re
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +9,7 @@ import json
 from api.models import User, Device, db
 from api.auth import admin_required
 
-endpoint='/api/user'
+endpoint = '/api/user'
 
 user_bp = Blueprint('user', __name__, template_folder='templates')
 
@@ -16,6 +17,14 @@ user_bp = Blueprint('user', __name__, template_folder='templates')
 def user_before():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
+
+
+def filter_phone(phone):
+    pattern = re.compile('^\\d{3}-\\d{3}-\\d{4}$')
+    if pattern.match(phone):
+        return phone
+    else:
+        return ""
 
 
 @user_bp.route(endpoint, methods=['get'])
@@ -33,15 +42,20 @@ def user_get(id):
 @user_bp.route(endpoint, methods=['post'])
 @admin_required
 def user_post():
-    #Get request parameters
+    # Get request parameters
     print("user_post()")
+
+    data = request.json
     try:
-        data = request.json
         u = User(
             email=data['email'],
-            name=data['name'],
             password=generate_password_hash(data['password'], method='sha256')
         )
+        if 'name' in data:
+            u.name = data['name']
+        if 'phone' in data:
+            u.phone = filter_phone(data['phone'])
+
         print("new user created")
         db.session.add(u)
         db.session.commit()

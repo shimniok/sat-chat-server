@@ -1,10 +1,12 @@
 from test_fixture import client, application
-from user import endpoint
+from user import endpoint, filter_phone
 
 new_user = {
     'email': 'test@example.com',
     'name': 'Test',
-    'password': 'Password'
+    'password': 'Password',
+    'phone': '555-555-5555',
+    'admin': False
 }
 
 
@@ -19,11 +21,14 @@ def test_user_list(client):
     assert len(d) == 1
     u = d[0]
 
+    # TODO: test for initial user from env variables
+
     # email field
     assert "email" in u, "email keyword missing"
     assert u['email'] == 'admin@example.com', "email doesn't match"
     assert "name" in u, "name keyword missing"
     assert u['name'] == 'admin', "name doesn't match"
+    assert "phone" in u, "phone keyword missing"
 
     # Password not returned via api
     assert "password" not in u, "password is being returned by api"
@@ -41,6 +46,19 @@ def test_user_post(client):
     u = r.json
     assert u['name'] == new_user['name']
     assert u['email'] == new_user['email']
+    assert u['phone'] == new_user['phone']
+    assert u['admin'] == new_user['admin']
+    
+def test_filter_phone(client):
+    assert filter_phone("+1-555-555-5555") == ""
+    assert filter_phone("55-555-5555") == ""
+    assert filter_phone("555-55-5555") == ""
+    assert filter_phone("555-555-555") == ""
+    assert filter_phone("555-555-5a55") == ""
+    assert filter_phone("5555555555") == ""
+    assert filter_phone("5555-555-5555") == ""
+    assert filter_phone("555-5555-5555") == ""
+    assert filter_phone("555-555-55555") == ""
 
 
 def test_user_delete(client):
@@ -56,5 +74,7 @@ def test_user_delete(client):
     assert r.status_code == 200
     assert r.content_type == "application/json"
     u = r.json
-    assert u['email'] == new_user['email']
     assert u['name'] == new_user['name']
+    assert u['email'] == new_user['email']
+    assert u['phone'] == new_user['phone']
+    assert u['admin'] == new_user['admin']
