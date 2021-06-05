@@ -14,6 +14,8 @@ def create_config(env):
         config = TestingConfig()
     else:
         print("Unrecognized APP_SETTINGS. Must be: Development|Staging|Production")
+        raise Exception(
+            "APP_SETTINGS must be: Development|Staging|Production")
     return config
 
 
