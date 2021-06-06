@@ -13,6 +13,10 @@ endpoint = '/api/user'
 
 user_bp = Blueprint('user', __name__, template_folder='templates')
 
+def get_me():
+    return User.query.filter_by(id=current_user.id).first()
+
+
 @user_bp.before_request
 def user_before():
     if not current_user.is_authenticated:
@@ -29,8 +33,8 @@ def filter_phone(phone):
 
 @user_bp.route(endpoint, methods=['get'])
 def users_get():
-    users = User.query.all()
-    return jsonify([u.to_dict() for u in users])
+    u = get_me()
+    return jsonify(u.to_dict())
 
 
 @user_bp.route(endpoint+'/<id>', methods=['get'])
@@ -67,7 +71,7 @@ def user_post():
 
 @user_bp.route(endpoint, methods=['patch'])
 def user_patch():
-    me = User.query.filter_by(id=current_user.id).first()
+    me = get_me()
     data = request.json
     try:
         if 'name' in data:
