@@ -1,5 +1,5 @@
 import pytest
-from test_fixture import user1, client, application, device1_data
+from test_fixture import user1, client, application, shared_data
 from loopback import endpoint
 import binascii
 

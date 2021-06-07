@@ -13,34 +13,9 @@ from api.models import init_db as init_db
 tmpdb_file = "/tmp/test.db"
 tmpdb_uri = "sqlite:///{}".format(tmpdb_file)
 
-admin_data = {
-    "email": "admin@example.com",
-    "password": "admin",
-    "remember": 1
-}
+shared_data = {}
 
-user1_data = {
-    'email': "user1@example.com",
-    'name': 'User1',
-    'password': 'user1',
-    'phone': '555-555-5551'
-}
-
-user2_data = {
-    'email': "user2@example.com",
-    'name': 'User2',
-    'password': 'user2',
-    'phone': '555-555-5552'
-}
-
-device1_data = {
-    'imei': '300234010753370',
-    'username': 'device1@example.com',
-    'password': 'device1'
-}
-
-
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def application():
     '''
     Create a Flask app context for the tests.
@@ -57,54 +32,97 @@ def application():
 
     yield app
 
+# TODO: pass data as property on test fixture (application, client, user1, etc)
 
 @pytest.fixture(scope='module')
 def client(application):
 
-    with application.test_client() as client:
+    with application.test_client() as my_client:
+        
+        shared_data['admin'] = {
+            "email": "admin@example.com",
+            "name": "admin",
+            "password": "admin",
+            "remember": 1
+        }
+        
         # Login
-        r = client.post(api.auth.endpoint, json=admin_data, content_type='application/json')
+        r = my_client.post(
+            api.auth.endpoint, json=shared_data['admin'], content_type='application/json')
         assert r.status_code == 200, 'Error: {}'.format(r.data)
 
-        yield client
+        shared_data['user_count'] = 1
+        
+        yield my_client
 
 
 @pytest.fixture(scope='module')
 def user1(client):
+    global user1_record
+    global shared_data
     
+    shared_data['user1'] = {
+        'email': "user1@example.com",
+        'name': 'User1',
+        'password': 'user1',
+        'phone': '500-555-0006'
+    }
+
+
+    shared_data['device1'] = {
+        'imei': '300234010753370',
+        'username': 'device1@example.com',
+        'password': 'device1'
+    }
+    
+    # user2_data = {
+    #     'email': "user2@example.com",
+    #     'name': 'User2',
+    #     'password': 'user2',
+    #     'phone': '555-555-5552'
+    # }
+
     # Create user1
-    r = client.post(api.user.endpoint, json=user1_data, content_type='application/json')
+    r = client.post(api.user.endpoint, json=shared_data['user1'], content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     user1_record = r.json
+    shared_data['user1_id'] = user1_record['id']
 
+    shared_data['user_count'] += 1
+    
     # Create user2
-    r = client.post(api.user.endpoint, json=user2_data, content_type='application/json')
-    assert r.status_code == 200, 'Error: {}'.format(r.data)
-    user2_record = r.json
+    # r = client.post(api.user.endpoint, json=user2_data, content_type='application/json')
+    # assert r.status_code == 200, 'Error: {}'.format(r.data)
+    # user2_record = r.json
 
     # log out of admin
 
     # log in as user1
-    r = client.post(api.auth.endpoint, json=user1_data, content_type='application/json')
+    r = client.post(api.auth.endpoint,
+                    json=shared_data['user1'], content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
     # Create device1 owned by user1
-    r = client.post(api.device.endpoint, json=device1_data, content_type='application/json')
+    r = client.post(api.device.endpoint,
+                    json=shared_data['device1'], content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
     device1_record = r.json
     assert device1_record['owner_id'] == user1_record['id']
 
     yield client
 
-    r = client.post(api.auth.endpoint, json=admin_data, content_type='application/json')
-    assert r.status_code == 200, 'Error: {}'.format(r.data)
-
-    r = client.delete(api.user.endpoint+'/{}'.format(user1_record['id']), content_type='application/json')
+    r = client.post(api.auth.endpoint,
+                    json=shared_data['admin'], content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
     r = client.delete(
-        api.user.endpoint+'/{}'.format(user2_record['id']), content_type='application/json')
+        api.user.endpoint+'/{}'.format(user1_record['id']
+                                       ), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
+
+    # r = client.delete(
+    #     api.user.endpoint+'/{}'.format(user2_record['id']), content_type='application/json')
+    # assert r.status_code == 200, 'Error: {}'.format(r.data)
 
     r = client.delete(
         api.device.endpoint+'/{}'.format(device1_record['id']), content_type='application/json')
