@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 from api.models import Message, Device, db
+from api.device import get_my_device
 
 endpoint = '/api/message'
 
@@ -15,6 +16,16 @@ def message_before():
         return "Unauthorized", 401
 
 # TODO: only allow access to messages to/from me
+
+
+def get_latest_mt_message():
+    my_dev = get_my_device()
+    messages = Message.query.filter(
+        Message.device_id == my_dev.id,
+        Message.sender_id == current_user.id).order_by(Message.time.desc()).all()
+    # filter only those sent by me to the mobile
+    return messages[0]
+
 
 @message_bp.route(endpoint, methods=['get'])
 def messages_get():
@@ -50,7 +61,7 @@ def messages_since(momsn):
 @message_bp.route(endpoint + '/<id>', methods=['get'])
 def message_get(id=-1):
 
-    message = Message.query.filter_by(id = id).first_or_404()
+    message = Message.query.filter_by(id=id).first_or_404()
 
     return jsonify(message.to_dict())
 
@@ -84,7 +95,7 @@ def message_post():
 @message_bp.route(endpoint + '/<id>', methods=['delete'])
 def message_delete(id=-1):
 
-    msg = Message.query.filter_by(id = id).first_or_404()
+    msg = Message.query.filter_by(id=id).first_or_404()
     db.session.delete(msg)
     db.session.commit()
 
