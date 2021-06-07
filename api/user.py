@@ -17,6 +17,10 @@ def get_me():
     return User.query.filter_by(id=current_user.id).first()
 
 
+def get_user_by_id(id):
+    return User.query.filter_by(id=id).first()
+
+
 @user_bp.before_request
 def user_before():
     if not current_user.is_authenticated:

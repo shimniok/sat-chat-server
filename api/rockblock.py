@@ -8,6 +8,7 @@ from flask_login import current_user
 from datetime import datetime, timezone
 from api.device import get_my_device, get_device_by_imei
 from api.models import Message, Device, User, db, rock7_date_format
+from api.user import get_user_by_id
 
 send_endpoint = "/api/send"
 receive_endpoint = "/api/receive"
@@ -166,6 +167,11 @@ def receive():
             # Add message to database
             db.session.add(msg)
             db.session.commit()
+            
+            # Notify via SMS
+            user = get_user_by_id(device.owner_id)
+            print("receive: user.name=<{}>".format(user.name))
+            
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
         return 'bad request: error processing parameters', 400

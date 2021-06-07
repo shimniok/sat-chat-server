@@ -33,6 +33,8 @@ class Config(object):
     REMEMBER_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_REFRESH_EACH_REQUEST = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    TWILIO_ACCOUNT_SID=os.environ['TWILIO_ACCOUNT_SID']
+    TWILIO_AUTH_TOKEN=os.environ['TWILIO_AUTH_TOKEN']
 
 
 class ProductionConfig(Config):
