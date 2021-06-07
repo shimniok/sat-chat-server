@@ -1,8 +1,9 @@
+import pytest
 from test_fixture import application, client, user1, shared_data
 from datetime import datetime, timezone
 import binascii
 from models import Message, db
-from message import endpoint, get_latest_mt_message
+from message import endpoint, get_latest_mt_message, get_latest_mo_message
 
 # msg = {
 #     'imei': shared_data['device1']['imei'],
@@ -16,16 +17,8 @@ from message import endpoint, get_latest_mt_message
 # }
 
 
-def test_empty_messages(client):
-    # Make sure database is empty
-    r = client.get(endpoint, content_type="application/json")
-    assert r.status_code == 200, 'Error {}'.format(r.data)
-    messages = r.json
-    assert len(messages) == 0, 'message list not 0 length'
-
-
-def test_get_latest_mt(user1):
-
+@pytest.fixture(scope="module")
+def messages(user1):
     # TODO: make this a fixture for other tests
     from api.device import get_my_device
     dev = get_my_device()
@@ -34,7 +27,7 @@ def test_get_latest_mt(user1):
     me = get_me()
 
     from api.models import Message
-    
+
     # create outgoing message #1
     msg1 = Message(
         device_id=dev.id,
@@ -44,7 +37,7 @@ def test_get_latest_mt(user1):
         time="21-06-07 15:28:15"
     )
     db.session.add(msg1)
-    
+
     # create outgoing message #2
     msg2 = Message(
         device_id=dev.id,
@@ -63,15 +56,41 @@ def test_get_latest_mt(user1):
         time="21-06-07 15:33:25"
     )
     db.session.add(msg3)
+
+    # create received message
+    msg4 = Message(
+        device_id=dev.id,
+        message='inbound2',
+        transmit_time="21-06-07 15:37:41",
+        time="21-06-07 15:37:41"
+    )
+    db.session.add(msg4)
+    
     db.session.commit()
-    
-    m = get_latest_mt_message()
-    assert m.message == msg2.message
-    
+
+    yield [ msg1, msg2, msg3, msg4 ]
+
     db.session.delete(msg1)
     db.session.delete(msg2)
     db.session.delete(msg3)
     db.session.commit()
+
+
+def test_empty_messages(client):
+    # Make sure database is empty
+    r = client.get(endpoint, content_type="application/json")
+    assert r.status_code == 200, 'Error {}'.format(r.data)
+    messages = r.json
+    assert len(messages) == 0, 'message list not 0 length'
+
+
+def test_get_latest_mt(messages):
+    m = get_latest_mt_message()
+    assert m.message == messages[1].message
+
+def test_get_latest_mo(messages):
+    m = get_latest_mo_message()
+    assert m.message == messages[3].message
     
     
 # TODO: Test message get

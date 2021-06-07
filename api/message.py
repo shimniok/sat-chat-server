@@ -23,9 +23,14 @@ def get_latest_mt_message():
     messages = Message.query.filter(
         Message.device_id == my_dev.id,
         Message.sender_id == current_user.id).order_by(Message.time.desc()).all()
-    # filter only those sent by me to the mobile
     return messages[0]
 
+def get_latest_mo_message():
+    my_dev = get_my_device()
+    messages = Message.query.filter(
+        Message.device_id == my_dev.id,
+        Message.sender_id == None).order_by(Message.time.desc()).all()    
+    return messages[0]
 
 @message_bp.route(endpoint, methods=['get'])
 def messages_get():
