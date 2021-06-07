@@ -1,19 +1,19 @@
-from test_fixture import *
+from test_fixture import application, client, shared_data
 from datetime import datetime, timezone
 import binascii
 from models import Message
 from message import endpoint
 
-msg = {
-    'imei': device1_data['imei'],
-    'momsn': 999,
-    'transmit_time': "2020-07-25T06:12:30Z",
-    'time': "2020-07-25T06:13:45Z",
-    'iridium_latitude': 39.5807,
-    'iridium_longitude': -104.8772,
-    'iridium_cep': 8,
-    'message': 'my data' #binascii.b2a_hex('Test message'.encode('utf-8'))
-}
+# msg = {
+#     'imei': shared_data['device1']['imei'],
+#     'momsn': 999,
+#     'transmit_time': "2020-07-25T06:12:30Z",
+#     'time': "2020-07-25T06:13:45Z",
+#     'iridium_latitude': 39.5807,
+#     'iridium_longitude': -104.8772,
+#     'iridium_cep': 8,
+#     'message': 'my data' #binascii.b2a_hex('Test message'.encode('utf-8'))
+# }
 
 
 def test_empty_messages(client):

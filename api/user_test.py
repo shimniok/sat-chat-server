@@ -1,5 +1,5 @@
-from test_fixture import client, user1, user1_data, application
-from user import endpoint, filter_phone
+from test_fixture import application, client, user1, shared_data
+from user import endpoint, filter_phone, get_user_by_id
 
 new_user = {
     'email': 'test@example.com',
@@ -17,13 +17,7 @@ def test_user_list(client):
     assert r.status_code == 200, 'Error {}'.format(r.data)
 
     # only one user returned
-    d = r.json #json.loads(r.data.decode())
-    assert len(d) == 1
-    u = d[0]
-
-    # TODO: test for initial user from env variables
-
-    # email field
+    u = r.json
     assert "email" in u, "email keyword missing"
     assert u['email'] == 'admin@example.com', "email doesn't match"
     assert "name" in u, "name keyword missing"
@@ -49,6 +43,7 @@ def test_user_post_delete(client):
     assert u['email'] == new_user['email']
     assert u['phone'] == new_user['phone']
     assert u['admin'] == new_user['admin']
+
     # Delete
     r = client.delete(
         endpoint+'/{}'.format(u['id']), content_type="application/json")
@@ -83,28 +78,17 @@ def test_user_patch(user1):
     assert r1.status_code == 200, 'Error {}'.format(r.data)
     u1 = r1.json
     assert u1['phone'] == data1['phone']
-    assert u1['phone'] != user1_data['phone']
+    assert u1['phone'] != shared_data['user1']['phone']
 
     r2 = user1.get(endpoint+'/{}'.format(u1['id']), content_type="application/json")
-    assert r2.status_code == 200, 'Error {}'.format(r.data)
+    assert r2.status_code == 200, 'Error {}'.format(r2.data)
     u2 = r2.json
     assert u2['phone'] == u1['phone']
-    assert u2['phone'] != user1_data['phone']
+    assert u2['phone'] != shared_data['user1']['phone']
+    
 
-# def test_user_delete(client):
-#     r = client.get(endpoint, content_type="application/json")
-#     assert r.status_code == 200
-#     assert r.content_type == 'application/json'
-#     users = r.json
-#     for user in users:
-#          if user['email'] == new_user['email']:
-#              u = user
-#              break
-#     r = client.delete(endpoint+'/{}'.format(u['id']), content_type="application/json")
-#     assert r.status_code == 200
-#     assert r.content_type == "application/json"
-#     u = r.json
-#     assert u['name'] == new_user['name']
-#     assert u['email'] == new_user['email']
-#     assert u['phone'] == new_user['phone']
-#     assert u['admin'] == new_user['admin']
+def test_get_user_by_id(user1):
+    user = get_user_by_id(shared_data['user1_id'])
+    assert user != None
+    assert user.id == shared_data['user1_id']
+

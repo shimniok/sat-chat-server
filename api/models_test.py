@@ -1,4 +1,4 @@
-from test_fixture import *
+from test_fixture import application
 from models import *
 
 def test_db_user(application):
