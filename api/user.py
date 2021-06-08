@@ -70,7 +70,8 @@ def user_post():
         print(u)
         return jsonify(u.to_dict())
     except Exception as e:
-        return "Error: {}".format(e), 400 # TODO: log to file, provide minimal error
+        print("user_post() error: {}".format(e))
+        return "user_post() error", 400
 
 
 @user_bp.route(endpoint, methods=['patch'])
