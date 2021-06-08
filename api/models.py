@@ -14,8 +14,6 @@ db = SQLAlchemy()
 rock7_date_format = "%y-%m-%d %H:%M:%S"
 json_date_format = dt_fmt
 
-#TODO: create roles table, add role Column to each user
-
 
 def decode_date(dtstr):
     for f in [ rock7_date_format, json_date_format ]:
@@ -59,7 +57,7 @@ def init_db(app):
 
 class Message(OutputMixin, db.Model):
     __tablename__ = 'messages'
-    #TODO: RELATIONSHIPS_TO_DICT = True
+    #RELATIONSHIPS_TO_DICT = True
     RELATIONSHIPS_TO_DICT = False
 
     id = Column(Integer, primary_key=True)
@@ -132,3 +130,16 @@ class Device(OutputMixin, db.Model):
         self.username = username
         self.password = password
 
+
+class Notification(OutputMixin, db.Model):
+    __tablename__ = 'notifications'
+    #PROTECTED_COLUMNS = [ 'password' ]
+    RELATIONSHIPS_TO_DICT = False
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    time = Column(DateTime())
+
+    def __init__(self, user_id, time):
+        self.user_id = user_id
+        self.time = time

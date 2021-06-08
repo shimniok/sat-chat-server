@@ -19,7 +19,6 @@ from message import endpoint, get_latest_mt_message, get_latest_mo_message
 
 @pytest.fixture(scope="module")
 def messages(user1):
-    # TODO: make this a fixture for other tests
     from api.device import get_my_device
     dev = get_my_device()
 

@@ -32,7 +32,6 @@ def application():
 
     yield app
 
-# TODO: pass data as property on test fixture (application, client, user1, etc)
 
 @pytest.fixture(scope='module')
 def client(application):

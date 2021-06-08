@@ -6,6 +6,8 @@ from json_parser import dt_fmt
 
 db = SQLAlchemy()
 
+#TODO log accesses
+#TODO evaluate flask_login security
 
 def create_app(test_config=None):
 
