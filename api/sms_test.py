@@ -1,5 +1,5 @@
 from test_fixture import application, client, user1, shared_data
-from sms import phone_to_twilio_format
+from sms import phone_to_twilio_format, notify_user
 import json
 from twilio.base.exceptions import TwilioRestException
 
@@ -35,6 +35,6 @@ def test_send(user1):
     assert response.sid != None
     
 def test_to_twilio(user1):
-    assert phone_to_twilio_format("123-456-7890") == "+1234567890"
+    assert phone_to_twilio_format("123-456-7890") == "+11234567890"
     assert phone_to_twilio_format("1234567890") == None
     assert phone_to_twilio_format("1-123-456-7890") == None

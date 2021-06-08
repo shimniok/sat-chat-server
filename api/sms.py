@@ -1,3 +1,4 @@
+import re
 from flask import current_app
 from datetime import datetime
 from user import get_user_by_id
@@ -27,11 +28,8 @@ def notify_user(user_id):
     client = Client(current_app.config['TWILIO_ACCOUNT_SID'],
                     current_app.config['TWILIO_AUTH_TOKEN'])
 
-    try:
-        client.messages.create(
-            body=message_template,
-            to=me.phone,
-            from_=from_phone
-        )
-    except Exception:
-        pass
+    return client.messages.create(
+        body=message_template,
+        to=phone_to_twilio_format(me.phone),
+        from_=from_phone
+    )

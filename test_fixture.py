@@ -64,7 +64,7 @@ def user1(client):
         'email': "user1@example.com",
         'name': 'User1',
         'password': 'user1',
-        'phone': '123-456-7890'
+        'phone': '303-555-5555' # fake test phone number
     }
 
 
