@@ -1,25 +1,24 @@
+from flask import current_app
+from datetime import datetime
 from user import get_user_by_id
-from api.models import User
+from api.models import Notification, rock7_date_format, db
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 
-class SMS:
-    message_template = "new message on https://satchat.geodexters.us/"
-    
-    def __init__(self, app):
-        self.client = Client(app.config['TWILIO_ACCOUNT_SID'], 
-                             app.config['TWILIO_AUTH_TOKEN'])
-        self.from_phone = app.config['TWILIO_PHONE']
-        return
+message_template = "new message on https://satchat.geodexters.us/"
 
-    def notify_user(self, user):
-        print("name={} phone={}", user.name, user.phone)
-        self.send_message(self.message_template, user.phone)
-        return
+from_phone = current_app.config['TWILIO_PHONE']
+client = Client(current_app.config['TWILIO_ACCOUNT_SID'],
+                current_app.config['TWILIO_AUTH_TOKEN'])
+
+def notify_user(user_id):
+    me = get_user_by_id(user_id)
     
-    def send_message(self, message, to_phone):
-        return self.client.messages.create(
-            body=message,
-            to=to_phone,
-            from_=self.from_phone
+    try:
+        client.messages.create(
+            body=message_template,
+            to=me.phone,
+            from_=from_phone
         )
+    except Exception:
+        pass

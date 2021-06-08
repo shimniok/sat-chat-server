@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from api.device import get_my_device, get_device_by_imei
 from api.models import Message, Device, User, db, rock7_date_format
 from api.user import get_user_by_id
+from api.sms import notify_user
 
 send_endpoint = "/api/send"
 receive_endpoint = "/api/receive"
@@ -128,6 +129,7 @@ def receive():
 
     print("rockblock.receive()")
 
+    # check for missing parameters
     required = [
         'imei', 
         'momsn', 
@@ -136,7 +138,6 @@ def receive():
         'iridium_longitude', 
         'iridium_cep'
     ]
-    # check for missing parameters
     missing = []
     for p in required:
         if not request.form.get(p):
@@ -150,6 +151,15 @@ def receive():
     # match IMEI to a device
     device = get_device_by_imei(request.form.get('imei'))
 
+    # send notification if it's been awhile
+    #now = datetime.strftime(datetime.utcnow(), rock7_date_format)
+    notifications = Notification.query.filter_by(Notification.user_id = current_user.id).order_by(Notification.time.desc())
+    elapsed = datetime.utcnow() - notifications[0]
+    print("receive: elapsed time={}".format(elapsed.minute))
+    if elapsed.minute > 15:
+        notify_user(device.owner_id) # TODO: check how long since last notification
+    
+    # save the message in the database
     try:
         hex = request.form.get('data')
         if not hex == "":
@@ -167,11 +177,7 @@ def receive():
             # Add message to database
             db.session.add(msg)
             db.session.commit()
-            
-            # Notify via SMS
-            user = get_user_by_id(device.owner_id)
-            print("receive: user.name=<{}>".format(user.name))
-            
+                       
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
         return 'bad request: error processing parameters', 400
