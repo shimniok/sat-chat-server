@@ -63,3 +63,4 @@ docs/_build/
 
 .envrc
 test.sh
+pylintrc
