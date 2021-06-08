@@ -70,8 +70,8 @@ def user_post():
         print(u)
         return jsonify(u.to_dict())
     except Exception as e:
-        print("user_post() error: {}".format(e))
-        return "user_post() error", 400
+        print("{}: {}".format(endpoint, e))
+        return "error", 400
 
 
 @user_bp.route(endpoint, methods=['patch'])
@@ -91,7 +91,7 @@ def user_patch():
         db.session.commit()
     except Exception as e:
         print("{}: {}".format(endpoint, e))
-        return "Error encountered", 400
+        return "error", 400
     return jsonify(me.to_dict())
 
 
