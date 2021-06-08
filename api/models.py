@@ -14,6 +14,8 @@ db = SQLAlchemy()
 rock7_date_format = "%y-%m-%d %H:%M:%S"
 json_date_format = dt_fmt
 
+standard_phone_format = "^\\d{3}-\\d{3}-\\d{4}$"
+
 
 def decode_date(dtstr):
     for f in [ rock7_date_format, json_date_format ]:

@@ -64,7 +64,7 @@ def user1(client):
         'email': "user1@example.com",
         'name': 'User1',
         'password': 'user1',
-        'phone': '500-555-0006'
+        'phone': '123-456-7890'
     }
 
 

@@ -7,7 +7,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
 from api.device import get_my_device, get_device_by_imei
-from api.models import Message, Device, User, db, rock7_date_format
+from api.models import Message, Device, User, db, rock7_date_format, Notification
 from api.user import get_user_by_id
 from api.sms import notify_user
 
@@ -153,11 +153,11 @@ def receive():
 
     # send notification if it's been awhile
     #now = datetime.strftime(datetime.utcnow(), rock7_date_format)
-    notifications = Notification.query.filter_by(Notification.user_id = current_user.id).order_by(Notification.time.desc())
-    elapsed = datetime.utcnow() - notifications[0]
-    print("receive: elapsed time={}".format(elapsed.minute))
-    if elapsed.minute > 15:
-        notify_user(device.owner_id) # TODO: check how long since last notification
+    #notifications = Notification.query.filter(Notification.user_id = current_user.id).order_by(Notification.time.desc())
+    #elapsed = datetime.utcnow() - notifications[0]
+    #print("receive: elapsed time={}".format(elapsed.minute))
+    #if elapsed.minute > 15:
+    #    notify_user(device.owner_id) # TODO: check how long since last notification
     
     # save the message in the database
     try:

@@ -1,6 +1,5 @@
-from flask import current_app
 from test_fixture import application, client, user1, shared_data
-from sms import SMS
+from sms import phone_to_twilio_format
 import json
 from twilio.base.exceptions import TwilioRestException
 
@@ -31,9 +30,11 @@ numbers = {
 
 
 def test_send(user1):
-    sms = SMS(current_app)
-    assert sms != None
-    response = sms.send_message(
-        message="test", to_phone="+5571981265131")
+    response = notify_user(shared_data['user1_id']) # send_message(message="test", to_phone="+5571981265131")
+    assert response != None
     assert response.sid != None
-
+    
+def test_to_twilio(user1):
+    assert phone_to_twilio_format("123-456-7890") == "+1234567890"
+    assert phone_to_twilio_format("1234567890") == None
+    assert phone_to_twilio_format("1-123-456-7890") == None

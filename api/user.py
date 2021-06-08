@@ -28,7 +28,8 @@ def user_before():
 
 
 def filter_phone(phone):
-    pattern = re.compile('^\\d{3}-\\d{3}-\\d{4}$')
+    from api.models import standard_phone_format
+    pattern = re.compile(standard_phone_format) # TODO: deal with phone number format
     if pattern.match(phone):
         return phone
     else:
