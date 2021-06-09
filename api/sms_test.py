@@ -85,6 +85,9 @@ def test_send_and_log(user1):
 
 
 def test_minutes_since(user1):
+    # no notifications in the system
+    assert notification_interval_exceeded(shared_data['user1_id']) == True
+  
     delta_min = NOTIFY_INTERVAL_MINUTES + 1
     
     prev_1 = datetime.utcnow() - timedelta(minutes=delta_min)
@@ -97,3 +100,14 @@ def test_minutes_since(user1):
     db.session.delete(n1)
     db.session.commit()
 
+    delta_min = NOTIFY_INTERVAL_MINUTES - 1
+
+    prev_1 = datetime.utcnow() - timedelta(minutes=delta_min)
+    n1 = Notification(user_id=shared_data['user1_id'], time=prev_1)
+    db.session.add(n1)
+    db.session.commit()
+
+    assert notification_interval_exceeded(shared_data['user1_id']) == False
+
+    db.session.delete(n1)
+    db.session.commit()
