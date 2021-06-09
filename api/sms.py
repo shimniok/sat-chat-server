@@ -1,7 +1,7 @@
 import re
 from flask import current_app
 from datetime import datetime
-from user import get_user_by_id
+from api.user import get_user_by_id
 from api.models import Notification, rock7_date_format, standard_phone_format, db
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
