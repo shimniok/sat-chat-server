@@ -5,7 +5,7 @@ from config import create_config
 from alembic.command import upgrade as alembic_upgrade
 from alembic.config import Config as AlembicConfig
 from app import create_app
-import api.models
+from api.models import Message, Notification, db
 import api.user
 import api.device
 from api.models import init_db as init_db
@@ -126,3 +126,63 @@ def user1(client):
     r = client.delete(
         api.device.endpoint+'/{}'.format(device1_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
+
+
+@pytest.fixture(scope="module")
+def messages(user1):
+    from api.device import get_my_device
+    dev = get_my_device()
+
+    from api.user import get_me
+    me = get_me()
+
+    from api.models import Message
+
+    # create outgoing message #1
+    msg1 = Message(
+        device_id=dev.id,
+        sender_id=me.id,
+        message='outbound1',
+        transmit_time="21-06-07 15:28:15",
+        time="21-06-07 15:28:15"
+    )
+    db.session.add(msg1)
+
+    # create outgoing message #2
+    msg2 = Message(
+        device_id=dev.id,
+        sender_id=me.id,
+        message='outbound2',
+        transmit_time="21-06-07 15:35:45",
+        time="21-06-07 15:35:45"
+    )
+    db.session.add(msg2)
+
+    # create received message
+    msg3 = Message(
+        device_id=dev.id,
+        message='inbound1',
+        transmit_time="21-06-07 15:33:25",
+        time="21-06-07 15:33:25"
+    )
+    db.session.add(msg3)
+
+    # create received message
+    msg4 = Message(
+        device_id=dev.id,
+        message='inbound2',
+        transmit_time="21-06-07 15:37:41",
+        time="21-06-07 15:37:41"
+    )
+    db.session.add(msg4)
+
+    db.session.commit()
+
+    yield [msg1, msg2, msg3, msg4]
+
+    db.session.delete(msg1)
+    db.session.delete(msg2)
+    db.session.delete(msg3)
+    db.session.delete(msg4)
+    db.session.commit()
+
