@@ -8,6 +8,7 @@ from twilio.base.exceptions import TwilioRestException
 
 message_template = "new message on https://satchat.geodexters.us/"
 
+NOTIFY_INTERVAL_MINUTES = 15
 
 def phone_to_twilio_format(phone):
     """ 
@@ -24,6 +25,8 @@ def phone_to_twilio_format(phone):
 def get_latest_notification(user_id):
     notifications = Notification.query.filter_by(user_id=user_id).order_by(
         Notification.time.desc()).all()
+    if notifications == None or len(notifications) == 0:
+        return None
     return notifications[0]
 
 
@@ -34,14 +37,19 @@ def log_notification(user_id):
     db.session.commit()
 
 
-def minutes_since_last_notification(user_id):
+def notification_interval_exceeded(user_id):
+    result = False
     now = datetime.strftime(datetime.utcnow(), rock7_date_format)
     latest = get_latest_notification(user_id)
-    # what if there is no latest?
-    elapsed = datetime.utcnow() - get_latest_notification(user_id)
-    
-    print("receive: elapsed time={}".format(elapsed.minute))
-    return elapsed.minute
+    if not latest == None:
+        n = get_latest_notification(user_id)
+        elapsed = datetime.utcnow() - n.time
+        if elapsed.total_seconds()/60 > NOTIFY_INTERVAL_MINUTES:
+            result = True
+    else:
+        result = True
+
+    return result
 
 
 def notify_user(user_id):
