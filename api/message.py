@@ -15,8 +15,6 @@ def message_before():
     if not current_user.is_authenticated:
         return "Unauthorized", 401
 
-# TODO: only allow access to messages to/from me
-
 
 def get_latest_mt_message():
     my_dev = get_my_device()
@@ -37,13 +35,21 @@ def messages_get():
 
     filter = True
 
-    since_id = request.args.get('since_id')
-    if since_id != None:
-        print("since_id provided")
-        latest = Message.query.filter(Message.id == since_id).first_or_404("No such message id")
-        filter = Message.time > latest.time
+    #since_id = request.args.get('since_id')
+    # if since_id != None:
+    # print("since_id provided")
+    # my_dev = get_my_device()
+    # latest = Message.query.filter(
+    #     Message.device_id == my_dev.id,
+    #     Message.id == since_id).first_or_404("No such message id")
+    # filter = Message.time > latest.time
 
-    messages = Message.query.filter(filter).order_by(Message.time).all()
+    my_dev = get_my_device()
+    if my_dev == None:
+        messages = []
+    else:
+        messages = Message.query.filter(
+            Message.device_id == my_dev.id).order_by(Message.time).all()
 
     return jsonify([m.to_dict() for m in messages])
 
@@ -58,7 +64,9 @@ def message_since_all():
 def messages_since(momsn):
     momsn = int(momsn)
     # TODO: more efficient way to query database here?
-    messages = Message.query.order_by(Message.momsn).all()
+    my_dev = get_my_device()
+    messages = Message.query.filter(
+        Message.device_id == my_dev.id).order_by(Message.momsn).all()
 
     return jsonify([m.to_dict() for m in messages if m.momsn > momsn])
 
@@ -66,7 +74,9 @@ def messages_since(momsn):
 @message_bp.route(endpoint + '/<id>', methods=['get'])
 def message_get(id=-1):
 
-    message = Message.query.filter_by(id=id).first_or_404()
+    my_dev = get_my_device()
+    Message.query.filter(Message.device_id == my_dev.id,
+                         Message.id == id).first_or_404()
 
     return jsonify(message.to_dict())
 
