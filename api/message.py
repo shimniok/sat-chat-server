@@ -104,7 +104,8 @@ def message_post():
         return jsonify(message.to_dict())
 
     except Exception as e:
-        return "Error: {}".format(e), 400
+        print("Error: {}".format(e))
+        return "Error", 400
 
 
 @message_bp.route(endpoint + '/<id>', methods=['delete'])
