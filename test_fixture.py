@@ -67,6 +67,12 @@ def user1(client):
         'phone': '303-555-5555' # fake test phone number
     }
 
+    shared_data['user2'] = {
+        'email': "user2@example.com",
+        'name': 'User2',
+        'password': 'user2',
+        'phone': '303-555-5555'  # fake test phone number
+    }
 
     shared_data['device1'] = {
         'imei': '300234010753370',
@@ -74,12 +80,11 @@ def user1(client):
         'password': 'device1'
     }
     
-    # user2_data = {
-    #     'email': "user2@example.com",
-    #     'name': 'User2',
-    #     'password': 'user2',
-    #     'phone': '555-555-5552'
-    # }
+    shared_data['device2'] = {
+        'imei': '200234010753370',
+        'username': 'device2@example.com',
+        'password': 'device2'
+    }
 
     # Create user1
     r = client.post(api.user.endpoint, json=shared_data['user1'], content_type='application/json')
@@ -87,15 +92,27 @@ def user1(client):
     user1_record = r.json
     shared_data['user1_id'] = user1_record['id']
 
-    shared_data['user_count'] += 1
-    
     # Create user2
-    # r = client.post(api.user.endpoint, json=user2_data, content_type='application/json')
-    # assert r.status_code == 200, 'Error: {}'.format(r.data)
-    # user2_record = r.json
+    r = client.post(api.user.endpoint, json=shared_data['user2'], content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+    user2_record = r.json
+    shared_data['user2_id'] = user2_record['id']
 
-    # log out of admin
+    shared_data['user_count'] += 1
 
+    # log in as user2
+    r = client.post(api.auth.endpoint,
+                    json=shared_data['user2'], content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+
+    # Create device2 owned by user2
+    r = client.post(api.device.endpoint,
+                    json=shared_data['device2'], content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+    device2_record = r.json
+    assert device2_record['owner_id'] == user2_record['id']
+    shared_data['device2_id'] = device2_record['id']
+    
     # log in as user1
     r = client.post(api.auth.endpoint,
                     json=shared_data['user1'], content_type='application/json')
@@ -110,21 +127,30 @@ def user1(client):
 
     yield client
 
+    # login as admin
     r = client.post(api.auth.endpoint,
                     json=shared_data['admin'], content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
+    # delete user1
     r = client.delete(
         api.user.endpoint+'/{}'.format(user1_record['id']
                                        ), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
-    # r = client.delete(
-    #     api.user.endpoint+'/{}'.format(user2_record['id']), content_type='application/json')
-    # assert r.status_code == 200, 'Error: {}'.format(r.data)
+    # delete user2
+    r = client.delete(
+        api.user.endpoint+'/{}'.format(user2_record['id']), content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
 
+    # delete device1
     r = client.delete(
         api.device.endpoint+'/{}'.format(device1_record['id']), content_type='application/json')
+    assert r.status_code == 200, 'Error: {}'.format(r.data)
+
+    # delete device2
+    r = client.delete(
+        api.device.endpoint+'/{}'.format(device2_record['id']), content_type='application/json')
     assert r.status_code == 200, 'Error: {}'.format(r.data)
 
 
@@ -176,13 +202,23 @@ def messages(user1):
     )
     db.session.add(msg4)
 
+    # message for device2
+    msg5 = Message(
+        device_id=shared_data['device2_id'],
+        message='inbound1 dev2',
+        transmit_time="21-06-07 15:39:12",
+        time="21-06-07 15:39:12"
+    )
+    db.session.add(msg5)
+    
     db.session.commit()
 
-    yield [msg1, msg2, msg3, msg4]
+    yield [msg1, msg2, msg3, msg4, msg5]
 
     db.session.delete(msg1)
     db.session.delete(msg2)
     db.session.delete(msg3)
     db.session.delete(msg4)
+    db.session.delete(msg5)
     db.session.commit()
 

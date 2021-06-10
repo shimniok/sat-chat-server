@@ -10,6 +10,7 @@ endpoint = '/api/message'
 
 message_bp = Blueprint('message', __name__)
 
+
 @message_bp.before_request
 def message_before():
     if not current_user.is_authenticated:
@@ -23,12 +24,14 @@ def get_latest_mt_message():
         Message.sender_id == current_user.id).order_by(Message.time.desc()).all()
     return messages[0]
 
+
 def get_latest_mo_message():
     my_dev = get_my_device()
     messages = Message.query.filter(
         Message.device_id == my_dev.id,
-        Message.sender_id == None).order_by(Message.time.desc()).all()    
+        Message.sender_id == None).order_by(Message.time.desc()).all()
     return messages[0]
+
 
 @message_bp.route(endpoint, methods=['get'])
 def messages_get():
@@ -87,7 +90,9 @@ def message_post():
         data = request.json
 
         # Lookup device by imei
-        dev = Device.query.filter_by(imei=data['imei']).first_or_404()
+        dev = Device.query.filter_by(
+            imei=data['imei']).first_or_404()
+
         message = Message(
             device_id=dev['id'],
             momsn=data['momsn'],
@@ -99,6 +104,7 @@ def message_post():
             iridium_cep=data['iridium_cep'],
             message=data['message']
         )
+
         db.session.add(message)
         db.session.commit()
         return jsonify(message.to_dict())
