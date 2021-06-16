@@ -152,14 +152,11 @@ def receive():
     # match IMEI to a device
     device = get_device_by_imei(request.form.get('imei'))
 
-    user_id = device.owner_id
-    if notification_interval_exceeded(user_id):
-         notify_user(user_id)
-        
-    # save the message in the database
+    # save the message in the database, notify user
     try:
         hex = request.form.get('data')
         if not hex == "":
+
             text = binascii.a2b_hex(hex).decode("utf-8")
             msg = Message(
                 device_id=device.id,
@@ -174,6 +171,10 @@ def receive():
             # Add message to database
             db.session.add(msg)
             db.session.commit()
+
+            user_id = device.owner_id
+            if notification_interval_exceeded(user_id):
+                notify_user(user_id)
                        
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))
