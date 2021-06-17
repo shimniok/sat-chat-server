@@ -64,3 +64,7 @@ docs/_build/
 .envrc
 test.sh
 pylintrc
+socket_unclosed.txt
+.~lock.*
+*.csv
+*.ods
