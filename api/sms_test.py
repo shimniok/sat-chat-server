@@ -84,7 +84,7 @@ def test_send_and_log(user1):
     db.session.commit()
 
 
-def test_minutes_since(user1):
+def test_notification_interval_exceeded(user1):
     # no notifications in the system
     assert notification_interval_exceeded(shared_data['user1_id']) == True
   
