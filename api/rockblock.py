@@ -157,7 +157,7 @@ def receive():
         hex = request.form.get('data')
         if not hex == "":
 
-            text = binascii.a2b_hex(hex).decode("utf-8")
+            text = binascii.a2b_hex(hex).decode("utf-8").encode("unicode_escape").decode("utf-8")
             msg = Message(
                 device_id=device.id,
                 message=text,
