@@ -8,7 +8,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user
 from datetime import datetime, timezone
 from api.device import get_my_device, get_device_by_imei
-from api.models import Message, Device, User, db, rock7_date_format, Notification
+from api.models import Message, Device, User, db, json_date_format, rock7_date_format, Notification
 from api.user import get_user_by_id
 from api.sms import notify_user, notification_interval_exceeded
 
@@ -174,7 +174,13 @@ def receive():
 
             user_id = device.owner_id
             if notification_interval_exceeded(user_id):
-                notify_user(user_id)
+                notify_user(user_id, 
+                            "new message on https://satchat.geodexters.us/ sent at {ts}, MOMSN={msn}, approximate location {lat},{lon}".format(
+                                ts=datetime.strftime(msg.transmit_time, json_date_format),
+                                lat=msg.iridium_latitude,
+                                lon=msg.iridium_longitude,
+                                msn=msg.momsn
+                            ))
                        
     except (ValueError, TypeError) as e:
         print('receive(): bad request: error processing parameters: {}'.format(e))

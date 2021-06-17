@@ -6,8 +6,6 @@ from api.models import Notification, rock7_date_format, standard_phone_format, d
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 
-message_template = "new message on https://satchat.geodexters.us/"
-
 NOTIFY_INTERVAL_MINUTES = 15
 
 def phone_to_twilio_format(phone):
@@ -52,14 +50,14 @@ def notification_interval_exceeded(user_id):
     return result
 
 
-def notify_user(user_id):
+def notify_user(user_id, text):
     me = get_user_by_id(user_id)
     from_phone = current_app.config['TWILIO_PHONE']
     client = Client(current_app.config['TWILIO_ACCOUNT_SID'],
                     current_app.config['TWILIO_AUTH_TOKEN'])
 
     response = client.messages.create(
-        body=message_template,
+        body=text,
         to=phone_to_twilio_format(me.phone),
         from_=from_phone
     )

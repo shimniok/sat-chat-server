@@ -68,7 +68,7 @@ def test_latest_time(user1):
     
 def test_send_and_log(user1):
     timeout = timedelta(seconds=3) + datetime.utcnow()
-    response = notify_user(shared_data['user1_id']) 
+    response = notify_user(shared_data['user1_id'], "this is a test notification") 
     assert response != None
     assert response.sid != None
 
